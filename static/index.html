@@ -6,30 +6,28 @@
 <title>Реестр — сделки и компании российского рынка</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&subset=cyrillic&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=IBM+Plex+Sans:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F4F5F2; --card:#FFFFFF; --ink:#1B2228; --muted:#5B6570;
   --line:#DFE3DE; --line-soft:#EAEDE8;
   --accent:#1F5C46; --accent-ink:#174437; --accent-soft:#EAF1ED;
   --radius:6px;
-  --f-display:'Spectral',Georgia,serif;
+  --f-display:'Literata',Georgia,serif;
   --f-body:'IBM Plex Sans',system-ui,sans-serif;
-  --f-mono:'IBM Plex Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
-.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
-.label{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.label{font-family:var(--f-body);font-weight:600;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
 
 /* ---------- shell ---------- */
-.top{position:sticky;top:0;z-index:50;background:rgba(244,245,242,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:50;background:rgba(244,245,242,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .top-in{max-width:1080px;margin:0 auto;padding:0 24px;height:58px;display:flex;align-items:center;gap:32px}
-.wordmark{font-family:var(--f-display);font-weight:600;font-size:21px;letter-spacing:.01em}
+.wordmark{font-family:var(--f-display);font-weight:600;font-size:21px}
 .wordmark span{color:var(--accent)}
 nav{display:flex;gap:4px;margin-left:auto}
 nav a{padding:7px 13px;border-radius:var(--radius);font-size:14px;color:var(--muted)}
@@ -37,11 +35,17 @@ nav a:hover{color:var(--ink)}
 nav a.on{color:var(--ink);background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
 .wrap{max-width:1080px;margin:0 auto;padding:36px 24px 90px}
 
-/* ---------- hero ---------- */
-.hero{padding:22px 0 30px;border-bottom:1px solid var(--line);margin-bottom:28px}
-.hero h1{font-family:var(--f-display);font-weight:500;font-size:clamp(26px,4vw,36px);line-height:1.2;max-width:640px}
+/* ---------- hero + ИИ-поиск ---------- */
+.hero{padding:22px 0 30px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.hero h1{font-family:var(--f-display);font-weight:500;font-size:clamp(26px,4vw,36px);line-height:1.22;max-width:680px}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero p{color:var(--muted);margin-top:10px;max-width:560px}
+.aisearch{display:flex;gap:10px;margin-top:22px;max-width:640px}
+.aisearch input{flex:1;padding:13px 18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);font:inherit;color:var(--ink)}
+.aisearch input::placeholder{color:var(--muted)}
+.aisearch input:focus{outline:none;border-color:var(--accent)}
+.aisearch button{background:var(--accent);color:#fff;padding:0 22px;border-radius:var(--radius);font-weight:500;transition:background .15s;white-space:nowrap}
+.aisearch button:hover{background:var(--accent-ink)}
 
 /* ---------- filters ---------- */
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
@@ -50,53 +54,68 @@ nav a.on{color:var(--ink);background:var(--card);box-shadow:inset 0 0 0 1px var(
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 
 /* ---------- deal rows ---------- */
-.deal-row{display:grid;grid-template-columns:92px 1fr 170px;gap:20px;padding:20px 18px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;transition:border-color .15s,transform .15s;align-items:start}
+.deal-row{display:grid;grid-template-columns:92px 1fr 180px;gap:20px;padding:20px 18px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;transition:border-color .15s,transform .15s;align-items:start}
 .deal-row:hover{border-color:var(--accent);transform:translateY(-1px)}
-.deal-date{padding-top:3px}
-.deal-title{font-family:var(--f-display);font-weight:500;font-size:19px;line-height:1.3}
+.deal-title{font-family:var(--f-display);font-weight:500;font-size:19px;line-height:1.32}
 .deal-sub{color:var(--muted);font-size:13.5px;margin-top:5px}
 .deal-meta{text-align:right}
-.deal-sum{font-family:var(--f-mono);font-size:15px;font-weight:500}
-.deal-sum.na{color:var(--muted);font-weight:400}
-.tag{display:inline-block;margin-top:7px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:3px}
-.status{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.deal-sum{font-family:var(--f-display);font-weight:600;font-size:17px}
+.deal-sum.na{color:var(--muted);font-weight:400;font-size:14px;font-family:var(--f-body)}
+.tag{display:inline-block;margin-top:7px;font-weight:600;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:3px}
+.status{display:inline-block;font-weight:600;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
 .status.closed{border-color:var(--accent);color:var(--accent)}
 
 /* ---------- detail ---------- */
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13.5px;margin-bottom:22px}
 .back:hover{color:var(--ink)}
 .d-head{padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:26px}
-.d-head h1{font-family:var(--f-display);font-weight:500;font-size:clamp(24px,3.4vw,32px);line-height:1.25;margin:10px 0 12px}
+.d-head h1{font-family:var(--f-display);font-weight:500;font-size:clamp(24px,3.4vw,32px);line-height:1.28;margin:10px 0 12px}
 .d-parties{display:flex;flex-wrap:wrap;gap:8px 22px;color:var(--muted);font-size:14px}
 .d-parties b{color:var(--ink);font-weight:500}
 .d-parties a b{border-bottom:1px solid var(--line)}
 .d-parties a:hover b{border-color:var(--accent);color:var(--accent)}
 
-/* lens switcher — фирменный элемент */
+/* lens switcher */
 .lens{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);margin-bottom:24px}
-.lens button{padding:9px 20px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);transition:all .15s}
+.lens button{padding:9px 20px;font-weight:600;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);transition:all .15s}
 .lens button:last-child{border-right:none}
 .lens button.on{background:var(--accent);color:#fff}
 .lens button:not(.on):hover{color:var(--ink);background:var(--paper)}
 
-.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;animation:rise .25s ease}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;animation:rise .25s ease}
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.facts{animation:none}.deal-row:hover{transform:none}}
 .fact{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px}
 .fact .label{display:block;margin-bottom:7px}
-.fact .val{font-size:15px;line-height:1.45}
-.fact .val.big{font-family:var(--f-mono);font-size:19px;font-weight:500}
+.fact .val{font-size:14.5px;line-height:1.5}
+.fact .val.big{font-family:var(--f-display);font-weight:600;font-size:20px}
 .fact.wide{grid-column:1/-1}
 .src{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
 .src a{color:var(--accent);font-size:13.5px;display:inline-block;margin:4px 18px 0 0;border-bottom:1px solid var(--accent-soft)}
+.src a:hover{border-color:var(--accent)}
+
+/* ---------- мини-диалог ИИ в карточках ---------- */
+.miniai{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.miniai .label{display:block;margin-bottom:10px}
+.miniai-log{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.miniai-log:empty{display:none}
+.msg{max-width:88%;padding:10px 14px;border-radius:var(--radius);font-size:14px;line-height:1.55}
+.msg.user{align-self:flex-end;background:var(--accent);color:#fff}
+.msg.ai{align-self:flex-start;background:var(--paper);border:1px solid var(--line-soft)}
+.msg.ai a{color:var(--accent);border-bottom:1px solid var(--accent-soft)}
+.ask{display:flex;gap:10px}
+.ask input{flex:1;padding:11px 14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);font:inherit;color:var(--ink)}
+.ask input:focus{outline:none;border-color:var(--accent);background:var(--card)}
+.ask button{background:var(--ink);color:#fff;padding:0 20px;border-radius:var(--radius);font-weight:500;transition:background .15s}
+.ask button:hover{background:var(--accent-ink)}
 
 /* ---------- advisors ---------- */
 .notice{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius);padding:15px 18px;margin-bottom:24px;color:var(--muted);font-size:13.5px;line-height:1.6}
 .tbl{width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);border-collapse:separate;border-spacing:0;overflow:hidden}
-.tbl th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 18px;border-bottom:1px solid var(--line);font-weight:400}
-.tbl td{padding:15px 18px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.tbl th{font-weight:600;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 18px;border-bottom:1px solid var(--line)}
+.tbl td{padding:14px 18px;border-bottom:1px solid var(--line-soft);vertical-align:top}
 .tbl tr:last-child td{border-bottom:none}
-.tbl .num{font-family:var(--f-mono);text-align:right}
+.tbl .r{text-align:right}
 .firm-name{font-weight:500}
 .firm-focus{color:var(--muted);font-size:13px;margin-top:3px}
 
@@ -107,27 +126,16 @@ nav a.on{color:var(--ink);background:var(--card);box-shadow:inset 0 0 0 1px var(
 .co-card h3{font-family:var(--f-display);font-weight:500;font-size:18px;margin:8px 0 4px}
 .co-card .desc{color:var(--muted);font-size:13.5px;min-height:42px}
 .co-nums{display:flex;gap:26px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft)}
-.co-nums .val{font-family:var(--f-mono);font-size:15px;font-weight:500;margin-top:2px}
+.co-nums .val{font-family:var(--f-display);font-weight:600;font-size:15px;margin-top:2px}
 
-/* ---------- assistant ---------- */
+/* ---------- assistant page ---------- */
 .chat{max-width:720px;margin:0 auto}
-.chat-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);min-height:340px;padding:22px;display:flex;flex-direction:column;gap:16px}
-.msg{max-width:85%;padding:12px 16px;border-radius:var(--radius);font-size:14.5px;line-height:1.6}
-.msg.user{align-self:flex-end;background:var(--accent);color:#fff}
-.msg.ai{align-self:flex-start;background:var(--paper);border:1px solid var(--line-soft)}
-.msg.ai a{color:var(--accent);border-bottom:1px solid var(--accent-soft)}
-.msg .label{display:block;margin-bottom:6px}
+.chat-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);min-height:300px;padding:22px;display:flex;flex-direction:column;gap:14px}
 .suggests{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
-.ask{display:flex;gap:10px;margin-top:14px}
-.ask input{flex:1;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);font:inherit;color:var(--ink)}
-.ask input:focus{outline:none;border-color:var(--accent)}
-.ask button{background:var(--ink);color:#fff;padding:0 22px;border-radius:var(--radius);font-weight:500;transition:background .15s}
-.ask button:hover{background:var(--accent-ink)}
 
-/* ---------- section head ---------- */
 .sec-head{margin-bottom:22px}
 .sec-head h1{font-family:var(--f-display);font-weight:500;font-size:28px}
-.sec-head p{color:var(--muted);margin-top:6px;max-width:620px}
+.sec-head p{color:var(--muted);margin-top:6px;max-width:640px}
 
 footer{border-top:1px solid var(--line);margin-top:60px}
 .foot-in{max-width:1080px;margin:0 auto;padding:26px 24px;color:var(--muted);font-size:12.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
@@ -137,6 +145,8 @@ footer{border-top:1px solid var(--line);margin-top:60px}
   .deal-meta{text-align:left;display:flex;gap:12px;align-items:center}
   .top-in{gap:14px;overflow-x:auto}
   nav a{white-space:nowrap;padding:7px 9px}
+  .aisearch{flex-direction:column}
+  .aisearch button{padding:12px}
 }
 </style>
 </head>
@@ -158,59 +168,82 @@ footer{border-top:1px solid var(--line);margin-top:60px}
 
 <footer>
   <div class="foot-in">
-    <div>Реестр — сделки и компании российского рынка. Демонстрационная версия, данные вымышлены.</div>
-    <div class="mono">MVP 0.1</div>
+    <div>Реестр — сделки и компании российского рынка. Демо-версия. Данные собраны из публичных источников и могут быть неполными.</div>
+    <div class="num">MVP 0.2</div>
   </div>
 </footer>
 
 <script>
-/* ================= ДАННЫЕ (демо, вымышленные) ================= */
-const INDUSTRIES = ["Все","Уголь и ГМК","Энергетика","Ритейл","ИТ и телеком","Финансы"];
+/* ================= СПРАВОЧНИКИ ================= */
+const INDUSTRIES = ["Все","Нефть и газ","Уголь","ГМК и добыча","Энергетика","Химия и удобрения","Агро","Пищепром и напитки","Ритейл","E-commerce","Потребительские товары","ИТ и интернет","Телеком","Банки","Страхование","Инвестиции и рынок ЦБ","Транспорт и логистика","Порты и инфраструктура","Недвижимость","Строительство","Фарма и медицина","Медиа","Машиностроение"];
 
+/* ================= КОМПАНИИ ================= */
 const COMPANIES = {
-  vostug:{name:"Восточная угольная компания",ind:"Уголь и ГМК",desc:"Добыча энергетического угля, разрезы в Кузбассе и Хакасии. Экспорт в АТР через дальневосточные порты.",rev:"184 млрд ₽",ceo:"Кравцов А. П.",people:[["Генеральный директор","Кравцов А. П."],["Председатель СД","Мельников И. С."],["Бенефициар (по данным СМИ)","группа «Сибирский ресурс»"]]},
-  uglestar:{name:"Углестар",ind:"Уголь и ГМК",desc:"Коксующийся уголь премиальных марок, обогатительные фабрики в Кемеровской области.",rev:"96 млрд ₽",ceo:"Довженко П. Р.",people:[["Генеральный директор","Довженко П. Р."],["Финансовый директор","Ланская М. В."]]},
-  sibgen:{name:"СибГенерация",ind:"Энергетика",desc:"Тепловая генерация в Сибирском федеральном округе, 12 ГВт установленной мощности.",rev:"241 млрд ₽",ceo:"Орехов Д. Н.",people:[["Генеральный директор","Орехов Д. Н."],["Председатель СД","Багиров Т. А."]]},
-  retpol:{name:"Сеть «Полка»",ind:"Ритейл",desc:"Федеральная сеть магазинов у дома, 4 200 точек в 61 регионе.",rev:"512 млрд ₽",ceo:"Шумская Е. К.",people:[["Генеральный директор","Шумская Е. К."],["Директор по M&A","Гринёв С. О."]]},
-  dvport:{name:"Дальтранспорт",ind:"Уголь и ГМК",desc:"Стивидорные активы на Дальнем Востоке, перевалка угля и генеральных грузов.",rev:"38 млрд ₽",ceo:"Ким В. Л.",people:[["Генеральный директор","Ким В. Л."]]},
-  cloudt:{name:"Облако-Т",ind:"ИТ и телеком",desc:"Облачная инфраструктура и дата-центры, 6 площадок в европейской части России.",rev:"27 млрд ₽",ceo:"Ефимова А. Д.",people:[["Генеральный директор","Ефимова А. Д."],["Основатель","Тарасов Г. М."]]},
-  finkap:{name:"ФинКапитал Банк",ind:"Финансы",desc:"Универсальный банк, топ-30 по активам, фокус на корпоративном кредитовании.",rev:"акт. 1,9 трлн ₽",ceo:"Полозов М. А.",people:[["Председатель правления","Полозов М. А."]]},
-  agroin:{name:"АгроИнвест Юг",ind:"Ритейл",desc:"Вертикально интегрированный агрохолдинг: земля, переработка, собственная розница.",rev:"73 млрд ₽",ceo:"Стеценко Н. И.",people:[["Генеральный директор","Стеценко Н. И."]]},
+  rencap:{name:"Ренессанс Капитал",ind:"Инвестиции и рынок ЦБ",desc:"Инвестиционная компания. С 2024 года принадлежит менеджменту во главе с Максимом Орловским после выкупа у группы ОНЭКСИМ.",kpi:["Ключевое лицо","Максим Орловский, CEO по России и СНГ"]},
+  citibank:{name:"Ситибанк (РенКап Банк)",ind:"Банки",desc:"Бывшая российская «дочка» Citigroup, крупнейший кастодиан в России. После сделки переименован в АО «РенКап Банк».",kpi:["Активы (III кв. 2025)","≈ 1,1 трлн ₽"]},
+  carlsberg:{name:"Carlsberg Group",ind:"Пищепром и напитки",desc:"Датский пивоваренный концерн. Владел «Балтикой» с 2008 года, объявил об уходе из России в марте 2022-го.",kpi:["Штаб-квартира","Копенгаген, Дания"]},
+  baltika:{name:"Пивоваренная компания «Балтика»",ind:"Пищепром и напитки",desc:"Крупнейший пивоваренный бизнес России: заводы в восьми городах, бренды «Балтика», «Невское», «Арсенальное».",kpi:["Президент (2023–2024)","Таймураз Боллоев"]},
+  vginvest:{name:"ВГ Инвест",ind:"Пищепром и напитки",desc:"АО, зарегистрированное в августе 2024 года в Санкт-Петербурге. Генеральный директор — вице-президент «Балтики» Егор Гусельников.",kpi:["Генеральный директор","Егор Гусельников"]},
+  rosatom:{name:"Росатом (Uranium One Group)",ind:"ГМК и добыча",desc:"Горнорудный контур госкорпорации. Развивает литиевые проекты в Мали, Боливии и России (СП «Полярный литий» с «Норникелем»).",kpi:["Литиевые проекты","Мали · Боливия · Мурманская обл."]},
+  yandex:{name:"Яндекс",ind:"ИТ и интернет",desc:"Технологическая компания. Шеринговые сервисы (каршеринг, самокаты, пауэрбанки) выделены в отдельное направление Яндекс Go.",kpi:["Направление шеринга","Артём Молчанов"]},
+  berizaryad:{name:"Бери заряд!",ind:"ИТ и интернет",desc:"Крупнейший в России сервис аренды пауэрбанков: 40 тыс. станций, 6 млн пользователей, доля рынка ≈ 70%. Основан в 2018 году.",kpi:["Выручка 2023 (РСБУ)","1,86 млрд ₽ (×2,6 г/г)"]},
+  hugoboss:{name:"Hugo Boss (Хьюго Босс Рус)",ind:"Ритейл",desc:"Российская «дочка» немецкого производителя одежды премиум-сегмента. 19 магазинов на конец 2022 года. После сделки юрлицо переименовано в «Линк Фэшн».",kpi:["Выручка 2023 (РСБУ)","6,74 млрд ₽"]},
+  stockmann:{name:"Стокманн",ind:"Ритейл",desc:"Сеть универмагов, работает в России с 1989 года. С 2015-го принадлежит структурам Якова Панченко, давний оптовый партнёр Hugo Boss.",kpi:["Выручка 2023 (РСБУ)","14,8 млрд ₽ (+54,5%)"]},
+  delo:{name:"Группа компаний «Дело»",ind:"Порты и инфраструктура",desc:"Транспортно-логистический холдинг Сергея Шишкарёва. Лидер морской перевалки контейнеров и глубоководной перевалки зерна.",kpi:["Председатель СД","Сергей Шишкарёв"]},
+  cargill:{name:"Cargill",ind:"Агро",desc:"Один из крупнейших мировых зернотрейдеров. С сезона 2023/24 прекратил экспорт российского зерна и начал пересмотр портфеля активов в РФ.",kpi:["Штаб-квартира","Миннеаполис, США"]},
 };
 
-const FIRMS = {
-  bp:{name:"Барщевский и партнёры",focus:"M&A, недропользование, стратегические инвестиции"},
-  lct:{name:"ЛЕКС Консалт",focus:"корпоративное право, СП, опционные структуры"},
-  vd:{name:"Верден",focus:"антимонопольное регулирование, сделки с ФАС"},
-  sq:{name:"Севергин Квадрат",focus:"банковское финансирование, залоги"},
-  mk:{name:"Мирон и Ко",focus:"ИТ-сделки, интеллектуальная собственность"},
-};
-
+/* ================= СДЕЛКИ (реальные, по публичным источникам) ================= */
 const DEALS = [
- {id:"d1",date:"2026-06-18",title:"«Восточная угольная компания» консолидирует «Дальтранспорт»",buyer:"vostug",target:"dvport",ind:"Уголь и ГМК",type:"M&A · вертикальная интеграция",status:"Согласование ФАС",
-  eco:{sum:"31,5 млрд ₽",share:"100% долей",mult:"EV/EBITDA ≈ 5,2×",fin:"Кредит «ФинКапитал Банка» + собственные средства",note:"Оценка включает контроль над двумя терминалами общей мощностью 14 млн т/год"},
-  law:{struct:"Купля-продажа 100% долей ООО, единая закрывающая дата",appr:"ФАС (ходатайство подано 22.06); проверка по 57-ФЗ не требуется — покупатель российский",adv:[["Покупатель","bp","парт. Хмелёв Д."],["Продавец","lct","парт. Розанова И."],["Банк","sq",""]],terms:"Заявления и гарантии по стандарту российского права (431.2 ГК); индемнити по налоговым рискам 3 года"},
-  src:["Пресс-релиз покупателя","Интерфакс, 18.06.2026"]},
- {id:"d2",date:"2026-05-30",title:"Сеть «Полка» покупает розничное направление «АгроИнвест Юг»",buyer:"retpol",target:"agroin",ind:"Ритейл",type:"M&A · покупка бизнес-направления",status:"Закрыта",
-  eco:{sum:"18,2 млрд ₽",share:"Актив: 340 магазинов + 2 РЦ",mult:"≈ 0,4× выручки направления",fin:"Собственные средства",note:"Продавец сохраняет производство и переходит на долгосрочный контракт поставки"},
-  law:{struct:"Продажа через выделение направления в отдельное ООО с последующей продажей 100%",appr:"ФАС — согласовано 12.05, предписание по 4 локальным рынкам",adv:[["Покупатель","lct","парт. Розанова И."],["Продавец","vd",""]],terms:"Долгосрочный договор поставки как условие закрытия; заверения о состоянии арендного портфеля"},
-  src:["Совместный пресс-релиз сторон","Коммерсантъ, 31.05.2026"]},
- {id:"d3",date:"2026-04-12",title:"«СибГенерация» и «Углестар»: СП по обеспечению топливом",buyer:"sibgen",target:"uglestar",ind:"Энергетика",type:"Совместное предприятие",status:"Закрыта",
-  eco:{sum:"Не раскрыта",share:"СП 51/49",mult:"—",fin:"Взносы активами: разрез (49%) и логистическая инфраструктура (51%)",note:"Гарантированный объём поставки 6 млн т/год на 10 лет"},
-  law:{struct:"Учреждение ООО, вклады имуществом, корпоративный договор",appr:"ФАС — согласовано; сделка внутри одного региона",adv:[["СибГенерация","bp","парт. Хмелёв Д."],["Углестар","lct",""]],terms:"Корпоративный договор: тупиковые ситуации через русскую рулетку, опцион call у мажоритария с 2029 г."},
-  src:["Пресс-релиз «СибГенерации»"]},
- {id:"d4",date:"2026-03-27",title:"«ФинКапитал Банк» получает контроль в «Облако-Т»",buyer:"finkap",target:"cloudt",ind:"ИТ и телеком",type:"M&A · вход стратегического инвестора",status:"Закрыта",
-  eco:{sum:"12,8 млрд ₽",share:"60% долей",mult:"EV/EBITDA ≈ 9,1×",fin:"Собственные средства банка",note:"Основатель сохраняет 25% и операционную роль до 2028 г."},
-  law:{struct:"Купля-продажа долей двумя траншами (35% + 25%), второй транш — опцион put/call",appr:"ФАС — согласовано; уведомление ЦБ о непрофильном активе",adv:[["Покупатель","sq","парт. Агеев К."],["Продавцы","mk","парт. Лурье Я."]],terms:"Корпоративный договор: вето основателя по бюджету R&D; запрет конкуренции 3 года"},
-  src:["Раскрытие банка","РБК, 28.03.2026"]},
- {id:"d5",date:"2026-02-14",title:"«Углестар» продаёт непрофильный разрез «Черемшанский»",buyer:"vostug",target:"uglestar",ind:"Уголь и ГМК",type:"M&A · продажа актива",status:"Закрыта",
-  eco:{sum:"7,4 млрд ₽",share:"Актив: лицензия + имущественный комплекс",mult:"≈ 310 ₽/т запасов",fin:"Рассрочка 18 месяцев под залог актива",note:"Запасы 24 млн т энергетического угля"},
-  law:{struct:"Продажа имущественного комплекса с переоформлением лицензии на недропользование",appr:"Роснедра — переоформление лицензии; ФАС не требуется по порогам",adv:[["Покупатель","bp",""],["Продавец","vd","парт. Северцева О."]],terms:"Залог продаваемого комплекса до полной оплаты; гарантии по горноотводной документации"},
-  src:["Интерфакс, 14.02.2026"]},
- {id:"d6",date:"2026-01-22",title:"«Полка» привлекает синдицированный кредит на экспансию",buyer:"retpol",target:null,ind:"Ритейл",type:"Финансирование",status:"Закрыта",
-  eco:{sum:"45 млрд ₽",share:"Синдикат 4 банков, организатор — «ФинКапитал»",mult:"ЧД/EBITDA после сделки ≈ 2,1×",fin:"Срок 5 лет, ставка КС + 2,4%",note:"Средства — на открытие 800 магазинов и два распределительных центра"},
-  law:{struct:"Синдицированный кредит по 486-ФЗ, обеспечение — залог долей операционных компаний",appr:"Не требуются",adv:[["Заёмщик","lct",""],["Синдикат","sq","парт. Агеев К."]],terms:"Ковенанты: ЧД/EBITDA ≤ 3,0×; ограничение дивидендов при нарушении"},
-  src:["Пресс-релиз организатора"]},
+ {id:"citibank",date:"2026-02-18",title:"«Ренессанс Капитал» покупает российский Ситибанк у Citigroup",buyer:"rencap",target:"citibank",ind:"Банки",type:"Выкуп у иностранного владельца",status:"Закрыта",sum:"Не раскрыта",
+  eco:{sum:"Не раскрыта официально",share:"100% акций АО КБ «Ситибанк»",val:"Citi в отчёте 8-K оценивала поступления ≈ $0,2 млрд; «Известия» — не более 40 млрд ₽; убыток Citigroup от выхода ≈ $1,1 млрд",target_fin:"Активы ≈ 1,1 трлн ₽, капитал ≈ 133 млрд ₽ (топ-20 банков РФ)",fin:"Денежная сделка, покупатель — ООО «Ренессанс Капитал — Финансовый консультант»",rationale:"Крупнейший в России кастоди-бизнес, комплементарный инвестиционному профилю группы; сохранение обслуживания иностранных фондов и банков",context:"Citi пыталась выйти из России с 2021 года: розничный портфель продан «Уралсибу» ещё в 2022-м, три претендента отказались из-за невозможности получить ИТ-системы под санкциями США",finadv:"Не раскрывался"},
+  law:{struct:"Купля-продажа 100% акций у Citigroup Netherlands B.V.; после закрытия — переименование в АО «РенКап Банк»",appr:"Распоряжение Президента РФ от 12.11.2025 (банк в перечне, где сделки с «недружественными» иностранцами запрещены указом); одобрения в России и за рубежом",adv:"Юридические консультанты сторон в публичных источниках не раскрывались",terms:"Цена конфиденциальна; отлагательные условия, по заявлению покупателя, отсутствовали; процесс занял более года, половина — согласования"},
+  src:[["Интерфакс","https://www.interfax.ru/business/1073475"],["РБК","https://www.rbc.ru/rbcfreenews/6995c0bf9a794752aabcd4b7"],["Коммерсантъ (интервью Орловского)","https://www.kommersant.ru/doc/8571874"]]},
+
+ {id:"baltika",date:"2024-12-04",title:"Carlsberg продаёт «Балтику»: management buy-out через «ВГ Инвест»",buyer:"vginvest",target:"baltika",ind:"Пищепром и напитки",type:"Выкуп менеджментом (MBO) · выход иностранца",status:"Закрыта",sum:"34 млрд ₽",
+  eco:{sum:"34 млрд ₽ (по данным Reuters из протокола правкомиссии)",share:"98,65% долей напрямую + 1,35% через «Хоппи Юнион»",val:"Carlsberg отразила денежное вознаграждение ≈ 2,3 млрд датских крон (≈ $320 млн); правкомиссия фиксировала значительный дисконт — в 2022-м «Арнест» оценивал актив в ~71 млрд ₽",target_fin:"Заводы в 8 городах России, крупнейший пивоваренный бизнес страны",fin:"Помимо денежной части «Балтика» передала Carlsberg свои пакеты в Carlsberg Azerbaijan и Carlsberg Kazakhstan",rationale:"Для Carlsberg — выход из «зависшего» актива и урегулирование всех споров, включая права на бренды; для менеджмента — контроль над бизнесом, которым уже управляли",context:"Продажа 2023 года сорвалась: активы передали в управление Росимуществу указом Президента; 2 декабря 2024-го актив вывели из-под управления — и сделку закрыли за два дня",finadv:"Не раскрывался"},
+  law:{struct:"MBO: покупатель «ВГ Инвест» (гендиректор — вице-президент «Балтики»); обмен активами по «дочкам» в Азербайджане и Казахстане через продажу 100% «Хоппи Юнион»",appr:"Указ Президента от 02.12.2024 о выводе из-под временного управления Росимущества; одобрение правкомиссии по иностранным инвестициям",adv:"Юридические консультанты сторон в публичных источниках не раскрывались",terms:"В периметре сделки урегулированы все судебные споры сторон, включая споры о лицензиях на товарные знаки, расторгнутых Carlsberg в 2023 году"},
+  src:[["Интерфакс","https://www.interfax.ru/business/1006599"],["Коммерсантъ","https://www.kommersant.ru/doc/7345382"],["Forbes","https://www.forbes.ru/biznes/530315-carlsberg-otcitalas-o-polucennyh-za-prodazu-baltiki-320-mln"]]},
+
+ {id:"rosatom-mali",date:"2024-07-15",title:"Росатом развивает литиевый проект в Мали (Бугула, регион Сикасо)",buyer:"rosatom",target:null,ind:"ГМК и добыча",type:"Greenfield · международное СП",status:"Реализуется",sum:"Не раскрыта",
+  eco:{sum:"Инвестиции не раскрывались",share:"75% в горнодобывающем предприятии — у «дочки» Росатома",val:"Запасы лития в Мали USGS оценивает в 700 тыс. т; цель Мали — выйти на переработку уровня производства аккумуляторов к 2031–2032 гг.",target_fin:"—",fin:"Проектное финансирование внутри контура госкорпорации",rationale:"Росатом строит вертикаль «литий → гигафабрики → электромобиль»: сырьё из Мали и Боливии плюс Колмозерское месторождение (СП «Полярный литий» с «Норникелем»)",context:"Совместная добыча в регионе Сикасо идёт с марта 2023 года; в июле 2024-го Минпром Мали передал разрешение на добычу на месторождении Бугула компании Moketi Mining SARL — «дочке» Uranium One Group; годовая геологоразведка (отчёт за 2025-й) предварительно подтвердила потенциал участка",finadv:"—"},
+  law:{struct:"СП с малийской стороной, контроль 75% у структуры Росатома; права на добычу — через передачу государственного разрешения на месторождение Бугула локальной проектной компании",appr:"Одобрение Министерства горнодобывающей промышленности Мали (передача разрешения, июль 2024)",adv:"Консультанты в публичных источниках не раскрывались",terms:"Условия концессии и распределения продукции публично не раскрыты; страновой риск — Индия приостановила участие в проекте из-за вопросов безопасности"},
+  src:[["Интерфакс","https://www.interfax.ru/business/1092728"],["Neftegaz.ru","https://neftegaz.ru/news/Geological-exploration/857026-mali-zhdet-geologov-iz-rossii-dlya-razvedki-mestorozhdeniy-litiya-nefti-i-gaza/"]]},
+
+ {id:"berizaryad",date:"2024-12-27",title:"«Яндекс» покупает 100% сервиса «Бери заряд!»",buyer:"yandex",target:"berizaryad",ind:"ИТ и интернет",type:"M&A · стратегическая покупка",status:"Закрыта",sum:"Не раскрыта",
+  eco:{sum:"Не раскрыта (в материалах для инвесторов фигурировала оценка 4,2 млрд ₽; ранее МТС предлагали актив за 3,2 млрд ₽)",share:"100% АО «Заряд!»",val:"Экспертные оценки до сделки: 1,7 млрд ₽ (сравнительный подход) — 3,3 млрд ₽ (доходный)",target_fin:"Выручка 2023: 1,86 млрд ₽ (×2,6 г/г) · чистая прибыль 170 млн ₽ · EBITDA 250 млн ₽ · отрицательный чистый долг",fin:"Структурирование потребовало «нестандартных подходов» для разных категорий акционеров, включая миноритариев pre-IPO раунда (750 млн ₽ на платформе Rounds)",rationale:"Интеграция в экосистему Яндекс Go: шеринговые сервисы выделены в отдельное направление; план — вложить ещё 2 млрд ₽ и вырастить сеть с 40 до 100 тыс. станций к концу 2026-го",context:"Компания готовилась к IPO на Мосбирже в 2025–2026 гг.; переговоры с «Яндексом» начались после того, как не состоялась сделка с МТС, развернувшей собственный сервис",finadv:"Aspring Capital — финансовый консультант сделки"},
+  law:{struct:"Приобретение 100% акций АО «Заряд!» с интеграцией команды; основатель Кирилл Кулаков — советник по интеграции",appr:"Публично о согласованиях не сообщалось",adv:"Юридические консультанты сторон в публичных источниках не раскрывались; финансовый консультант — Aspring Capital",terms:"Отдельное структурирование выхода для миноритариев pre-IPO; сервис продолжил работу под своим брендом в контуре Яндекс Go"},
+  src:[["РБК","https://www.rbc.ru/business/27/12/2024/676e67529a7947343850afdd"],["Ведомости","https://www.vedomosti.ru/technology/articles/2024/12/27/1084123-yandeks-priobrel-beri-zaryad"],["Интерфакс","https://www.interfax.ru/business/1000951"]]},
+
+ {id:"hugoboss",date:"2024-08-02",title:"Hugo Boss продаёт российский бизнес «Стокманну»",buyer:"stockmann",target:"hugoboss",ind:"Ритейл",type:"Выход иностранца · продажа «дочки»",status:"Закрыта",sum:"Не раскрыта",
+  eco:{sum:"Не раскрыта (оценка Infoline: до 800 млн ₽ с учётом ~50% дисконта при рыночной стоимости 1,5–1,8 млрд ₽)",share:"100% ООО «Хьюго Босс Рус»",val:"Периметр: 19 магазинов в Москве, МО, Санкт-Петербурге и Ростове-на-Дону",target_fin:"Выручка 2023: 6,74 млрд ₽ · убыток 418,6 млн ₽",fin:"Денежная сделка",rationale:"Для «Стокманна» — усиление премиального портфеля универмагов и готовые локации; покупатель — давний оптовый партнёр бренда, что сохраняет поставки",context:"Hugo Boss закрыл розницу в России в марте 2022-го, но оптовые поставки не прекращал; с 2023-го искал покупателя с переориентацией на опт",finadv:"Не раскрывался"},
+  law:{struct:"Купля-продажа 100% долей ООО; бренд из названия юрлица уходит — компания переименована в «Линк Фэшн», магазины продолжают продавать Boss/Hugo как мультибренд-партнёр",appr:"Правкомиссия по иностранным инвестициям (апрель 2024); публичное условие — сохранение всех рабочих мест",adv:"Юридические консультанты сторон в публичных источниках не раскрывались",terms:"Условие о сохранении рабочих мест; вопрос долгосрочного использования бренда — через оптовое партнёрство, а не лицензию на розницу под маркой"},
+  src:[["РБК","https://www.rbc.ru/business/05/08/2024/66b08a1d9a794729886b51ad"],["Коммерсантъ","https://www.kommersant.ru/doc/6664914"],["Forbes","https://www.forbes.ru/biznes/518371-stokmann-zakryl-sdelku-po-priobreteniu-rossijskogo-biznesa-hugo-boss"]]},
+
+ {id:"ksk",date:"2024-02-08",title:"ГК «Дело» выкупает у Cargill блокпакет зернового терминала КСК",buyer:"delo",target:"cargill",ind:"Порты и инфраструктура",type:"Выкуп доли · консолидация 100%",status:"Закрыта",sum:"Не раскрыта",
+  eco:{sum:"Не раскрыта",share:"25% + 1 акция зернового терминала КСК (Новороссийск); консолидация «Делом» 100%",val:"КСК — лидер глубоководной перевалки зерна: мощность 8,5 млн т/год, первый в России терминал под суда свыше 100 тыс. т",target_fin:"Перевалка I пол. 2023: 4,1 млн т (×1,7 г/г); ≈ 12% всей перевалки зерна портами РФ",fin:"Денежная сделка",rationale:"Для «Дела» перевалка зерна — стратегическое направление; возврат блокпакета, проданного самому Cargill в 2013 году, когда трейдер давал ~20% грузооборота терминала",context:"Cargill с сезона 2023/24 прекратил экспорт российского зерна и пересматривал портфель; за трейдером в РФ остались переработка (крахмалопродукты, кормовые ингредиенты)",finadv:"Не раскрывался"},
+  law:{struct:"Купля-продажа акций (25% + 1) с прекращением прав Cargill в совете директоров терминала",appr:"Правкомиссия по иностранным инвестициям (документы поданы в сентябре 2023-го, закрытие — февраль 2024-го)",adv:"Юридические консультанты сторон в публичных источниках не раскрывались",terms:"Условия не раскрывались; сделка — часть общего сокращения присутствия мировых зернотрейдеров (Viterra, LDC) в России"},
+  src:[["InfraNews","https://www.infranews.ru/logistika/64348-gruppa-delo-vykupila-u-cargill-25-aktsij-zernovogo-terminala-ksk-v-novorossijske/"],["Коммерсантъ","https://www.kommersant.ru/doc/6211737"],["Forbes","https://www.forbes.ru/prodovolstvennaya-bezopasnost/496394-gk-delo-vykupit-bol-se-25-terminala-ksk-v-novorossijske-u-amerikanskoj-cargill"]]},
+];
+
+/* ================= ЮРИДИЧЕСКИЕ ФИРМЫ (федеральный рынок) ================= */
+const FIRMS = [
+ {name:"АЛРУД",focus:"M&A, антимонопольное право, санкционное регулирование"},
+ {name:"Егоров, Пугинский, Афанасьев и партнёры",focus:"корпоративное право, M&A, разрешение споров"},
+ {name:"Меллинг, Войтишкин и партнёры",focus:"M&A, банковское и финансовое право (экс-Baker McKenzie)"},
+ {name:"Никольская консалтинг",focus:"корпоративное право, M&A, международные сделки"},
+ {name:"Denuo",focus:"M&A, ПГЧ-проекты, налоговое структурирование (экс-PwC Legal)"},
+ {name:"VERBA Legal",focus:"M&A, рынки капитала, реструктуризации"},
+ {name:"Рыбалкин, Горцунян, Дякин и партнёры",focus:"корпоративные сделки, международный арбитраж"},
+ {name:"BGP Litigation",focus:"споры, санкционная практика, частные клиенты"},
+ {name:"Пепеляев Групп",focus:"налоги, антимонопольное регулирование, недвижимость"},
+ {name:"Stonebridge Legal",focus:"M&A, энергетика и ресурсы, финансирование"},
+ {name:"LEVEL Legal Services",focus:"M&A, споры, комплаенс (экс-Morgan Lewis)"},
+ {name:"Better Chance",focus:"корпоративное право, рынки капитала (экс-White & Case)"},
+ {name:"Иванян и партнёры",focus:"споры, корпоративное право, инфраструктура"},
+ {name:"КИАП",focus:"M&A, споры, интеллектуальная собственность"},
+ {name:"Lidings",focus:"фарма, ИС, коммерческое право"},
+ {name:"Orion Partners",focus:"M&A, частный капитал, реструктуризации"},
 ];
 
 /* ================= РОУТЕР ================= */
@@ -234,6 +267,38 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 
+/* ================= ИИ-ДВИЖОК (демо: поиск по локальной базе) ================= */
+function aiAnswer(q){
+  const s = q.toLowerCase();
+  const link = d => `<a href="#/deal/${d.id}">${d.title}</a>`;
+  if(/крупн|больш|дорог/.test(s)){
+    const d = DEALS.find(x=>x.id==="baltika");
+    return `Самая крупная сделка в базе с известной оценкой — ${link(d)}: 34 млрд ₽ по данным Reuters из протокола правкомиссии. По Ситибанку официальная цена не раскрыта — Citi оценивала поступления лишь в ~$0,2 млрд при убытке от выхода ~$1,1 млрд. Учтите: суммы известны не по всем сделкам.`;
+  }
+  if(/иностран|уход|выход|exit|санкц/.test(s)){
+    const ds = DEALS.filter(d=>/иностран|MBO|Выход/i.test(d.type));
+    return `Сделок выхода иностранных владельцев в базе ${ds.length}: ${ds.map(link).join("; ")}. Общие черты: одобрение правкомиссии по иностранным инвестициям, дисконт к рыночной оценке, для банков — отдельное распоряжение Президента.`;
+  }
+  if(/литий|мали|росатом|добыч/.test(s)){
+    const d = DEALS.find(x=>x.id==="rosatom-mali");
+    return `По литию в базе: ${link(d)}. Контроль 75% у «дочки» Росатома, разрешение на месторождение Бугула передано Moketi Mining SARL (Uranium One Group). Это часть вертикали «сырьё → гигафабрики → электромобиль».`;
+  }
+  if(/яндекс|заряд|it|ит|техно/.test(s)){
+    const d = DEALS.find(x=>x.id==="berizaryad");
+    return `Из ИТ-сделок: ${link(d)}. 100% АО «Заряд!», оценка в материалах для инвесторов — 4,2 млрд ₽, финансовый консультант — Aspring Capital. Цель — интеграция в Яндекс Go и рост сети до 100 тыс. станций.`;
+  }
+  if(/консультант|юрист|фирм|сопровожда/.test(s)){
+    return `Честный ответ: по сделкам в текущей базе юридические консультанты в публичных источниках не раскрывались — это типично для российского рынка после 2022 года. Известен финансовый консультант по «Бери заряд!» — Aspring Capital. Каталог юрфирм федерального рынка — в разделе <a href="#/advisors">Консультанты</a>.`;
+  }
+  if(/правкомисс|согласован|одобрен|указ/.test(s)){
+    const ds = DEALS.filter(d=>/правкомисс|Президент/i.test(d.law.appr));
+    return `Согласование правкомиссии по иностранным инвестициям или указ/распоряжение Президента упоминаются в ${ds.length} сделках: ${ds.map(link).join("; ")}. Откройте линзу «Юрист» на карточке — там детали по каждому согласованию.`;
+  }
+  const hit = DEALS.find(d=>(d.title+" "+d.ind+" "+d.type).toLowerCase().split(/[^а-яa-zё0-9]+/).some(w=>w.length>3&&s.includes(w)));
+  if(hit) return `Похоже, вы про ${link(hit)} (${hit.ind}, ${fmtDate(hit.date)}). Откройте карточку — там линзы «Экономист» и «Юрист» со всеми известными деталями и ссылками на первоисточники.`;
+  return `В демо-базе шесть сделок — по этому запросу точного совпадения нет. Попробуйте: «самая крупная сделка», «выходы иностранцев», «литий», «согласования правкомиссии». В полной версии здесь ИИ-поиск по всей базе.`;
+}
+
 /* ================= ЛЕНТА СДЕЛОК ================= */
 let filterInd = "Все";
 function renderDeals(){
@@ -242,22 +307,47 @@ function renderDeals(){
   <div class="hero">
     <h1>Сделки российского рынка — <em>в одном месте</em>, со ссылками на первоисточники</h1>
     <p>Каждая сделка — глазами экономиста и глазами юриста. Только то, что есть в публичном поле.</p>
+    <div class="aisearch">
+      <input id="heroq" placeholder="Спросите: какая самая крупная сделка? кто выходил из России?" aria-label="Вопрос ассистенту">
+      <button id="herogo">Спросить ИИ</button>
+    </div>
   </div>
   <div class="filters">${INDUSTRIES.map(i=>`<button class="chip ${i===filterInd?"on":""}" data-ind="${i}">${i}</button>`).join("")}</div>
   ${deals.map(d=>`
   <a class="deal-row" href="#/deal/${d.id}">
-    <div class="deal-date"><span class="label">${fmtDate(d.date)}</span><br><span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span></div>
+    <div><span class="label num">${fmtDate(d.date)}</span><br><span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span></div>
     <div>
       <div class="deal-title">${d.title}</div>
-      <div class="deal-sub">${d.type}${d.target?` · ${co(d.buyer).name} → ${co(d.target).name}`:""}</div>
+      <div class="deal-sub">${d.type}</div>
     </div>
     <div class="deal-meta">
-      <div class="deal-sum ${d.eco.sum==="Не раскрыта"?"na":""}">${d.eco.sum}</div>
+      <div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div>
       <span class="tag">${d.ind}</span>
     </div>
-  </a>`).join("")}`;
+  </a>`).join("") || `<p style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}`;
   app.querySelectorAll("[data-ind]").forEach(b=>b.onclick=()=>{filterInd=b.dataset.ind;renderDeals();});
+  const go=()=>{const v=document.getElementById("heroq").value.trim();if(v){sessionStorage.setItem("pendingQ",v);location.hash="#/assistant";}};
+  document.getElementById("herogo").onclick=go;
+  document.getElementById("heroq").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
 }
+
+/* ================= МИНИ-ДИАЛОГ ================= */
+function mountMiniAI(containerId, contextName){
+  const root=document.getElementById(containerId);
+  const log=root.querySelector(".miniai-log");
+  const input=root.querySelector("input");
+  const btn=root.querySelector("button");
+  const push=(cls,html)=>{const m=document.createElement("div");m.className="msg "+cls;m.innerHTML=html;log.appendChild(m);};
+  const send=()=>{const v=input.value.trim();if(!v)return;push("user",v);input.value="";setTimeout(()=>push("ai",aiAnswer(contextName+" "+v)),300);};
+  btn.onclick=send;
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")send();});
+}
+const miniAIHtml = ph => `
+  <div class="miniai" id="miniai">
+    <span class="label">Спросить ассистента</span>
+    <div class="miniai-log"></div>
+    <div class="ask"><input placeholder="${ph}"><button>Спросить</button></div>
+  </div>`;
 
 /* ================= КАРТОЧКА СДЕЛКИ ================= */
 let lens = "overview";
@@ -268,7 +358,7 @@ function renderDeal(id){
   <a class="back" href="#/">← Все сделки</a>
   <div class="d-head">
     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-      <span class="label">${fmtDate(d.date)}</span>
+      <span class="label num">${fmtDate(d.date)}</span>
       <span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span>
       <span class="tag">${d.ind}</span>
     </div>
@@ -285,27 +375,32 @@ function renderDeal(id){
     <button data-l="law">Юрист</button>
   </div>
   <div id="facts"></div>
-  <div class="src"><span class="label">Источники</span><br>${d.src.map(s=>`<a href="#" onclick="return false">${s}</a>`).join("")}</div>`;
+  <div class="src"><span class="label">Источники</span><br>${d.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join("")}</div>
+  ${miniAIHtml("Уточните детали этой сделки…")}`;
   const paint = ()=>{
     const f = document.getElementById("facts");
     if(lens==="eco") f.innerHTML = `<div class="facts">
-      <div class="fact"><span class="label">Сумма сделки</span><div class="val big">${d.eco.sum}</div></div>
+      <div class="fact wide"><span class="label">Сумма сделки</span><div class="val big num">${d.eco.sum}</div></div>
       <div class="fact"><span class="label">Предмет / доля</span><div class="val">${d.eco.share}</div></div>
-      <div class="fact"><span class="label">Мультипликатор</span><div class="val big">${d.eco.mult}</div></div>
-      <div class="fact"><span class="label">Финансирование</span><div class="val">${d.eco.fin}</div></div>
-      <div class="fact wide"><span class="label">Комментарий</span><div class="val">${d.eco.note}</div></div>
+      <div class="fact"><span class="label">Оценка и дисконт</span><div class="val num">${d.eco.val}</div></div>
+      <div class="fact"><span class="label">Показатели таргета</span><div class="val num">${d.eco.target_fin}</div></div>
+      <div class="fact"><span class="label">Форма расчётов</span><div class="val">${d.eco.fin}</div></div>
+      <div class="fact"><span class="label">Финансовый консультант</span><div class="val">${d.eco.finadv}</div></div>
+      <div class="fact wide"><span class="label">Цель сделки</span><div class="val">${d.eco.rationale}</div></div>
+      <div class="fact wide"><span class="label">Контекст</span><div class="val">${d.eco.context}</div></div>
     </div>`;
     else if(lens==="law") f.innerHTML = `<div class="facts">
       <div class="fact wide"><span class="label">Структура</span><div class="val">${d.law.struct}</div></div>
       <div class="fact wide"><span class="label">Согласования</span><div class="val">${d.law.appr}</div></div>
-      ${d.law.adv.map(a=>`<div class="fact"><span class="label">Консультант · ${a[0]}</span><div class="val"><b>${FIRMS[a[1]].name}</b>${a[2]?`<br><span style="color:var(--muted);font-size:13px">${a[2]}</span>`:""}</div></div>`).join("")}
-      <div class="fact wide"><span class="label">Договорные условия (из публичных данных)</span><div class="val">${d.law.terms}</div></div>
+      <div class="fact wide"><span class="label">Консультанты</span><div class="val">${d.law.adv}</div></div>
+      <div class="fact wide"><span class="label">Условия и особенности (из публичных данных)</span><div class="val">${d.law.terms}</div></div>
     </div>`;
     else f.innerHTML = `<div class="facts">
-      <div class="fact"><span class="label">Сумма</span><div class="val big">${d.eco.sum}</div></div>
+      <div class="fact"><span class="label">Сумма</span><div class="val big num">${d.sum}</div></div>
       <div class="fact"><span class="label">Предмет</span><div class="val">${d.eco.share}</div></div>
       <div class="fact"><span class="label">Статус</span><div class="val">${d.status}</div></div>
-      <div class="fact wide"><span class="label">Суть</span><div class="val">${d.eco.note}. ${d.law.struct}.</div></div>
+      <div class="fact wide"><span class="label">Суть</span><div class="val">${d.eco.rationale}</div></div>
+      <div class="fact wide"><span class="label">Контекст</span><div class="val">${d.eco.context}</div></div>
     </div>`;
   };
   paint();
@@ -314,12 +409,13 @@ function renderDeal(id){
     app.querySelectorAll("[data-l]").forEach(x=>x.classList.toggle("on",x===b));
     paint();
   });
+  mountMiniAI("miniai", d.title);
 }
 
 /* ================= КОМПАНИИ ================= */
 function renderCompanies(){
   app.innerHTML = `
-  <div class="sec-head"><h1>Компании</h1><p>Профили участников сделок: показатели, ключевые лица, история сделок из публичных источников.</p></div>
+  <div class="sec-head"><h1>Компании</h1><p>Участники сделок: профиль, ключевые лица и показатели, история сделок из публичных источников.</p></div>
   <div class="co-grid">
   ${Object.entries(COMPANIES).map(([id,c])=>`
     <a class="co-card" href="#/companies/${id}">
@@ -327,8 +423,8 @@ function renderCompanies(){
       <h3>${c.name}</h3>
       <div class="desc">${c.desc}</div>
       <div class="co-nums">
-        <div><span class="label">Выручка</span><div class="val">${c.rev}</div></div>
-        <div><span class="label">Сделок в базе</span><div class="val">${DEALS.filter(d=>d.buyer===id||d.target===id).length}</div></div>
+        <div><span class="label">${c.kpi[0]}</span><div class="val num">${c.kpi[1]}</div></div>
+        <div><span class="label">Сделок в базе</span><div class="val num">${DEALS.filter(d=>d.buyer===id||d.target===id).length}</div></div>
       </div>
     </a>`).join("")}
   </div>`;
@@ -345,78 +441,63 @@ function renderCompany(id){
     <div class="d-parties"><span>${c.desc}</span></div>
   </div>
   <div class="facts" style="margin-bottom:34px">
-    <div class="fact"><span class="label">Выручка (последняя отчётность)</span><div class="val big">${c.rev}</div></div>
-    ${c.people.map(p=>`<div class="fact"><span class="label">${p[0]}</span><div class="val">${p[1]}</div></div>`).join("")}
+    <div class="fact"><span class="label">${c.kpi[0]}</span><div class="val big num" style="font-size:17px">${c.kpi[1]}</div></div>
+    <div class="fact"><span class="label">Сделок в базе</span><div class="val big num">${deals.length}</div></div>
   </div>
   <div class="sec-head"><h1 style="font-size:22px">Сделки компании</h1></div>
   ${deals.map(d=>`
   <a class="deal-row" href="#/deal/${d.id}">
-    <div class="deal-date"><span class="label">${fmtDate(d.date)}</span></div>
+    <div><span class="label num">${fmtDate(d.date)}</span></div>
     <div><div class="deal-title" style="font-size:17px">${d.title}</div><div class="deal-sub">${d.type}</div></div>
-    <div class="deal-meta"><div class="deal-sum ${d.eco.sum==="Не раскрыта"?"na":""}">${d.eco.sum}</div></div>
-  </a>`).join("") || "<p style='color:var(--muted)'>Сделок в базе пока нет.</p>"}`;
+    <div class="deal-meta"><div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div></div>
+  </a>`).join("") || "<p style='color:var(--muted)'>Сделок в базе пока нет.</p>"}
+  ${miniAIHtml("Спросите об этой компании…")}`;
+  mountMiniAI("miniai", c.name);
 }
 
 /* ================= КОНСУЛЬТАНТЫ ================= */
 function renderAdvisors(){
-  const rows = Object.entries(FIRMS).map(([id,f])=>{
-    const ds = DEALS.filter(d=>d.law.adv.some(a=>a[1]===id));
-    return {id,f,n:ds.length,inds:[...new Set(ds.map(d=>d.ind))]};
-  }).sort((a,b)=>b.n-a.n);
   app.innerHTML = `
-  <div class="sec-head"><h1>Юридические консультанты</h1><p>Кто сопровождает сделки — по данным публичных источников.</p></div>
+  <div class="sec-head"><h1>Юридические консультанты</h1><p>Каталог фирм федерального рынка сделок.</p></div>
   <div class="notice">
-    <div style="font-family:var(--f-mono);color:var(--accent)">ⓘ</div>
-    <div>Список отсортирован по числу сделок, известных из публичных источников. Это не рейтинг качества: фирмы раскрывают не все сделки, и картина заведомо неполная. Выводы — за вами.</div>
+    <div style="font-weight:600;color:var(--accent)">ⓘ</div>
+    <div>Каталог не является рейтингом. Число сделок считается только по публичным источникам, а фирмы раскрывают далеко не все проекты — картина заведомо неполная. По сделкам текущей базы консультанты публично не раскрывались, что типично для рынка после 2022 года. Выводы — за вами.</div>
   </div>
   <table class="tbl">
-    <thead><tr><th>Фирма</th><th>Индустрии в базе</th><th class="num">Известных сделок</th></tr></thead>
+    <thead><tr><th>Фирма</th><th>Практики</th><th class="r">Известных сделок в базе</th></tr></thead>
     <tbody>
-    ${rows.map(r=>`<tr>
-      <td><div class="firm-name">${r.f.name}</div><div class="firm-focus">${r.f.focus}</div></td>
-      <td style="color:var(--muted);font-size:13.5px">${r.inds.join(" · ")||"—"}</td>
-      <td class="num">${r.n}</td>
+    ${FIRMS.map(f=>`<tr>
+      <td><div class="firm-name">${f.name}</div></td>
+      <td><div class="firm-focus">${f.focus}</div></td>
+      <td class="r num" style="color:var(--muted)">—</td>
     </tr>`).join("")}
     </tbody>
   </table>`;
 }
 
-/* ================= АССИСТЕНТ (демо на локальной базе) ================= */
-const CANNED = [
-  {q:"Самая крупная сделка в базе",test:s=>/крупн|больш/i.test(s),
-   a:()=>{const d=[...DEALS].filter(x=>x.eco.sum!=="Не раскрыта").sort((a,b)=>parseFloat(b.eco.sum.replace(",","."))-parseFloat(a.eco.sum.replace(",",".")))[0];
-     return `Самая крупная сделка с раскрытой суммой — <a href="#/deal/${d.id}">${d.title}</a>: ${d.eco.sum}, статус «${d.status}». Учтите: суммы раскрыты не по всем сделкам.`;}},
-  {q:"Кто сопровождает сделки в угле",test:s=>/угл|угол|гмк/i.test(s),
-   a:()=>{const ds=DEALS.filter(d=>d.ind==="Уголь и ГМК");const firms={};ds.forEach(d=>d.law.adv.forEach(a=>{firms[a[1]]=(firms[a[1]]||0)+1}));
-     const top=Object.entries(firms).sort((a,b)=>b[1]-a[1]).map(([id,n])=>`${FIRMS[id].name} (${n})`).join(", ");
-     return `В сегменте «Уголь и ГМК» в базе ${ds.length} сделки. Консультанты по числу известных сделок: ${top}. Это данные из публичных источников, не рейтинг качества. Сами сделки: ${ds.map(d=>`<a href="#/deal/${d.id}">${fmtDate(d.date)}</a>`).join(", ")}.`;}},
-  {q:"Где есть корпоративный договор",test:s=>/корпоратив|акционерн|опцион|кд/i.test(s),
-   a:()=>{const ds=DEALS.filter(d=>/корпоративный договор|опцион/i.test(d.law.terms+d.law.struct));
-     return `Корпоративный договор или опционные механизмы упомянуты в ${ds.length} сделках: ${ds.map(d=>`<a href="#/deal/${d.id}">${d.title}</a>`).join("; ")}. Откройте линзу «Юрист» на карточке — там условия.`;}},
-];
+/* ================= АССИСТЕНТ ================= */
+const SUGGESTS = ["Какая самая крупная сделка?","Кто выходил из российского рынка?","Что известно про литий в Мали?","Где были согласования правкомиссии?"];
 function renderAssistant(){
   app.innerHTML = `
   <div class="chat">
-    <div class="sec-head"><h1>Ассистент</h1><p>Отвечает только по базе платформы и всегда даёт ссылки на карточки. В демо — локальный поиск; в продакшене здесь будет ИИ поверх полной базы.</p></div>
+    <div class="sec-head"><h1>Ассистент</h1><p>Отвечает только по базе платформы со ссылками на карточки и источники. В демо — локальный поиск; в продакшене — ИИ поверх полной базы.</p></div>
     <div class="chat-box" id="chatbox">
-      <div class="msg ai"><span class="label">Реестр</span>Задайте вопрос о сделках, компаниях или консультантах — отвечу по данным базы со ссылками на источники.</div>
+      <div class="msg ai">Задайте вопрос о сделках, компаниях или консультантах — отвечу по данным базы.</div>
     </div>
-    <div class="suggests">${CANNED.map((c,i)=>`<button class="chip" data-q="${i}">${c.q}</button>`).join("")}</div>
+    <div class="suggests">${SUGGESTS.map((q,i)=>`<button class="chip" data-q="${i}">${q}</button>`).join("")}</div>
     <div class="ask">
-      <input id="q" placeholder="Например: кто сопровождает сделки в угле?" aria-label="Вопрос ассистенту">
+      <input id="q" placeholder="Например: кто выходил из России?" aria-label="Вопрос ассистенту">
       <button id="send">Спросить</button>
     </div>
   </div>`;
   const box=document.getElementById("chatbox");
-  const push=(cls,html)=>{const m=document.createElement("div");m.className="msg "+cls;m.innerHTML=(cls==="ai"?'<span class="label">Реестр</span>':"")+html;box.appendChild(m);box.scrollTop=box.scrollHeight;};
-  const answer=q=>{
-    push("user",q);
-    const hit=CANNED.find(c=>c.test(q));
-    setTimeout(()=>push("ai",hit?hit.a():"По этому вопросу в демо-базе данных пока нет. В полной версии ассистент ищет по всем сделкам, компаниям и консультантам."),350);
-  };
+  const push=(cls,html)=>{const m=document.createElement("div");m.className="msg "+cls;m.innerHTML=html;box.appendChild(m);box.scrollTop=box.scrollHeight;};
+  const answer=q=>{push("user",q);setTimeout(()=>push("ai",aiAnswer(q)),350);};
   document.getElementById("send").onclick=()=>{const v=document.getElementById("q").value.trim();if(v){answer(v);document.getElementById("q").value="";}};
   document.getElementById("q").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("send").click();});
-  app.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>answer(CANNED[b.dataset.q].q));
+  app.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>answer(SUGGESTS[b.dataset.q]));
+  const pending=sessionStorage.getItem("pendingQ");
+  if(pending){sessionStorage.removeItem("pendingQ");answer(pending);}
 }
 
 route();
