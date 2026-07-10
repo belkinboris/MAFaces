@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Реестр — сделки и компании российского рынка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&subset=cyrillic&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F5F2; --card:#FFFFFF; --ink:#1B2228; --muted:#5B6570;
+  --line:#DFE3DE; --line-soft:#EAEDE8;
+  --accent:#1F5C46; --accent-ink:#174437; --accent-soft:#EAF1ED;
+  --radius:6px;
+  --f-display:'Spectral',Georgia,serif;
+  --f-body:'IBM Plex Sans',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- shell ---------- */
+.top{position:sticky;top:0;z-index:50;background:rgba(244,245,242,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:0 24px;height:58px;display:flex;align-items:center;gap:32px}
+.wordmark{font-family:var(--f-display);font-weight:600;font-size:21px;letter-spacing:.01em}
+.wordmark span{color:var(--accent)}
+nav{display:flex;gap:4px;margin-left:auto}
+nav a{padding:7px 13px;border-radius:var(--radius);font-size:14px;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+nav a.on{color:var(--ink);background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.wrap{max-width:1080px;margin:0 auto;padding:36px 24px 90px}
+
+/* ---------- hero ---------- */
+.hero{padding:22px 0 30px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.hero h1{font-family:var(--f-display);font-weight:500;font-size:clamp(26px,4vw,36px);line-height:1.2;max-width:640px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{color:var(--muted);margin-top:10px;max-width:560px}
+
+/* ---------- filters ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chip{padding:6px 14px;border:1px solid var(--line);border-radius:99px;background:var(--card);font-size:13px;color:var(--muted);transition:all .15s}
+.chip:hover{border-color:var(--muted)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ---------- deal rows ---------- */
+.deal-row{display:grid;grid-template-columns:92px 1fr 170px;gap:20px;padding:20px 18px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;transition:border-color .15s,transform .15s;align-items:start}
+.deal-row:hover{border-color:var(--accent);transform:translateY(-1px)}
+.deal-date{padding-top:3px}
+.deal-title{font-family:var(--f-display);font-weight:500;font-size:19px;line-height:1.3}
+.deal-sub{color:var(--muted);font-size:13.5px;margin-top:5px}
+.deal-meta{text-align:right}
+.deal-sum{font-family:var(--f-mono);font-size:15px;font-weight:500}
+.deal-sum.na{color:var(--muted);font-weight:400}
+.tag{display:inline-block;margin-top:7px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:3px}
+.status{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.status.closed{border-color:var(--accent);color:var(--accent)}
+
+/* ---------- detail ---------- */
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13.5px;margin-bottom:22px}
+.back:hover{color:var(--ink)}
+.d-head{padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.d-head h1{font-family:var(--f-display);font-weight:500;font-size:clamp(24px,3.4vw,32px);line-height:1.25;margin:10px 0 12px}
+.d-parties{display:flex;flex-wrap:wrap;gap:8px 22px;color:var(--muted);font-size:14px}
+.d-parties b{color:var(--ink);font-weight:500}
+.d-parties a b{border-bottom:1px solid var(--line)}
+.d-parties a:hover b{border-color:var(--accent);color:var(--accent)}
+
+/* lens switcher — фирменный элемент */
+.lens{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);margin-bottom:24px}
+.lens button{padding:9px 20px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);transition:all .15s}
+.lens button:last-child{border-right:none}
+.lens button.on{background:var(--accent);color:#fff}
+.lens button:not(.on):hover{color:var(--ink);background:var(--paper)}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;animation:rise .25s ease}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.facts{animation:none}.deal-row:hover{transform:none}}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px}
+.fact .label{display:block;margin-bottom:7px}
+.fact .val{font-size:15px;line-height:1.45}
+.fact .val.big{font-family:var(--f-mono);font-size:19px;font-weight:500}
+.fact.wide{grid-column:1/-1}
+.src{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.src a{color:var(--accent);font-size:13.5px;display:inline-block;margin:4px 18px 0 0;border-bottom:1px solid var(--accent-soft)}
+
+/* ---------- advisors ---------- */
+.notice{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius);padding:15px 18px;margin-bottom:24px;color:var(--muted);font-size:13.5px;line-height:1.6}
+.tbl{width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);border-collapse:separate;border-spacing:0;overflow:hidden}
+.tbl th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:13px 18px;border-bottom:1px solid var(--line);font-weight:400}
+.tbl td{padding:15px 18px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .num{font-family:var(--f-mono);text-align:right}
+.firm-name{font-weight:500}
+.firm-focus{color:var(--muted);font-size:13px;margin-top:3px}
+
+/* ---------- companies ---------- */
+.co-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.co-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;transition:border-color .15s}
+.co-card:hover{border-color:var(--accent)}
+.co-card h3{font-family:var(--f-display);font-weight:500;font-size:18px;margin:8px 0 4px}
+.co-card .desc{color:var(--muted);font-size:13.5px;min-height:42px}
+.co-nums{display:flex;gap:26px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.co-nums .val{font-family:var(--f-mono);font-size:15px;font-weight:500;margin-top:2px}
+
+/* ---------- assistant ---------- */
+.chat{max-width:720px;margin:0 auto}
+.chat-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);min-height:340px;padding:22px;display:flex;flex-direction:column;gap:16px}
+.msg{max-width:85%;padding:12px 16px;border-radius:var(--radius);font-size:14.5px;line-height:1.6}
+.msg.user{align-self:flex-end;background:var(--accent);color:#fff}
+.msg.ai{align-self:flex-start;background:var(--paper);border:1px solid var(--line-soft)}
+.msg.ai a{color:var(--accent);border-bottom:1px solid var(--accent-soft)}
+.msg .label{display:block;margin-bottom:6px}
+.suggests{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.ask{display:flex;gap:10px;margin-top:14px}
+.ask input{flex:1;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);font:inherit;color:var(--ink)}
+.ask input:focus{outline:none;border-color:var(--accent)}
+.ask button{background:var(--ink);color:#fff;padding:0 22px;border-radius:var(--radius);font-weight:500;transition:background .15s}
+.ask button:hover{background:var(--accent-ink)}
+
+/* ---------- section head ---------- */
+.sec-head{margin-bottom:22px}
+.sec-head h1{font-family:var(--f-display);font-weight:500;font-size:28px}
+.sec-head p{color:var(--muted);margin-top:6px;max-width:620px}
+
+footer{border-top:1px solid var(--line);margin-top:60px}
+.foot-in{max-width:1080px;margin:0 auto;padding:26px 24px;color:var(--muted);font-size:12.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+@media(max-width:720px){
+  .deal-row{grid-template-columns:1fr;gap:10px}
+  .deal-meta{text-align:left;display:flex;gap:12px;align-items:center}
+  .top-in{gap:14px;overflow-x:auto}
+  nav a{white-space:nowrap;padding:7px 9px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a href="#/" class="wordmark">Реестр<span>.</span></a>
+    <nav id="nav">
+      <a href="#/" data-r="deals">Сделки</a>
+      <a href="#/companies" data-r="companies">Компании</a>
+      <a href="#/advisors" data-r="advisors">Консультанты</a>
+      <a href="#/assistant" data-r="assistant">Ассистент</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer>
+  <div class="foot-in">
+    <div>Реестр — сделки и компании российского рынка. Демонстрационная версия, данные вымышлены.</div>
+    <div class="mono">MVP 0.1</div>
+  </div>
+</footer>
+
+<script>
+/* ================= ДАННЫЕ (демо, вымышленные) ================= */
+const INDUSTRIES = ["Все","Уголь и ГМК","Энергетика","Ритейл","ИТ и телеком","Финансы"];
+
+const COMPANIES = {
+  vostug:{name:"Восточная угольная компания",ind:"Уголь и ГМК",desc:"Добыча энергетического угля, разрезы в Кузбассе и Хакасии. Экспорт в АТР через дальневосточные порты.",rev:"184 млрд ₽",ceo:"Кравцов А. П.",people:[["Генеральный директор","Кравцов А. П."],["Председатель СД","Мельников И. С."],["Бенефициар (по данным СМИ)","группа «Сибирский ресурс»"]]},
+  uglestar:{name:"Углестар",ind:"Уголь и ГМК",desc:"Коксующийся уголь премиальных марок, обогатительные фабрики в Кемеровской области.",rev:"96 млрд ₽",ceo:"Довженко П. Р.",people:[["Генеральный директор","Довженко П. Р."],["Финансовый директор","Ланская М. В."]]},
+  sibgen:{name:"СибГенерация",ind:"Энергетика",desc:"Тепловая генерация в Сибирском федеральном округе, 12 ГВт установленной мощности.",rev:"241 млрд ₽",ceo:"Орехов Д. Н.",people:[["Генеральный директор","Орехов Д. Н."],["Председатель СД","Багиров Т. А."]]},
+  retpol:{name:"Сеть «Полка»",ind:"Ритейл",desc:"Федеральная сеть магазинов у дома, 4 200 точек в 61 регионе.",rev:"512 млрд ₽",ceo:"Шумская Е. К.",people:[["Генеральный директор","Шумская Е. К."],["Директор по M&A","Гринёв С. О."]]},
+  dvport:{name:"Дальтранспорт",ind:"Уголь и ГМК",desc:"Стивидорные активы на Дальнем Востоке, перевалка угля и генеральных грузов.",rev:"38 млрд ₽",ceo:"Ким В. Л.",people:[["Генеральный директор","Ким В. Л."]]},
+  cloudt:{name:"Облако-Т",ind:"ИТ и телеком",desc:"Облачная инфраструктура и дата-центры, 6 площадок в европейской части России.",rev:"27 млрд ₽",ceo:"Ефимова А. Д.",people:[["Генеральный директор","Ефимова А. Д."],["Основатель","Тарасов Г. М."]]},
+  finkap:{name:"ФинКапитал Банк",ind:"Финансы",desc:"Универсальный банк, топ-30 по активам, фокус на корпоративном кредитовании.",rev:"акт. 1,9 трлн ₽",ceo:"Полозов М. А.",people:[["Председатель правления","Полозов М. А."]]},
+  agroin:{name:"АгроИнвест Юг",ind:"Ритейл",desc:"Вертикально интегрированный агрохолдинг: земля, переработка, собственная розница.",rev:"73 млрд ₽",ceo:"Стеценко Н. И.",people:[["Генеральный директор","Стеценко Н. И."]]},
+};
+
+const FIRMS = {
+  bp:{name:"Барщевский и партнёры",focus:"M&A, недропользование, стратегические инвестиции"},
+  lct:{name:"ЛЕКС Консалт",focus:"корпоративное право, СП, опционные структуры"},
+  vd:{name:"Верден",focus:"антимонопольное регулирование, сделки с ФАС"},
+  sq:{name:"Севергин Квадрат",focus:"банковское финансирование, залоги"},
+  mk:{name:"Мирон и Ко",focus:"ИТ-сделки, интеллектуальная собственность"},
+};
+
+const DEALS = [
+ {id:"d1",date:"2026-06-18",title:"«Восточная угольная компания» консолидирует «Дальтранспорт»",buyer:"vostug",target:"dvport",ind:"Уголь и ГМК",type:"M&A · вертикальная интеграция",status:"Согласование ФАС",
+  eco:{sum:"31,5 млрд ₽",share:"100% долей",mult:"EV/EBITDA ≈ 5,2×",fin:"Кредит «ФинКапитал Банка» + собственные средства",note:"Оценка включает контроль над двумя терминалами общей мощностью 14 млн т/год"},
+  law:{struct:"Купля-продажа 100% долей ООО, единая закрывающая дата",appr:"ФАС (ходатайство подано 22.06); проверка по 57-ФЗ не требуется — покупатель российский",adv:[["Покупатель","bp","парт. Хмелёв Д."],["Продавец","lct","парт. Розанова И."],["Банк","sq",""]],terms:"Заявления и гарантии по стандарту российского права (431.2 ГК); индемнити по налоговым рискам 3 года"},
+  src:["Пресс-релиз покупателя","Интерфакс, 18.06.2026"]},
+ {id:"d2",date:"2026-05-30",title:"Сеть «Полка» покупает розничное направление «АгроИнвест Юг»",buyer:"retpol",target:"agroin",ind:"Ритейл",type:"M&A · покупка бизнес-направления",status:"Закрыта",
+  eco:{sum:"18,2 млрд ₽",share:"Актив: 340 магазинов + 2 РЦ",mult:"≈ 0,4× выручки направления",fin:"Собственные средства",note:"Продавец сохраняет производство и переходит на долгосрочный контракт поставки"},
+  law:{struct:"Продажа через выделение направления в отдельное ООО с последующей продажей 100%",appr:"ФАС — согласовано 12.05, предписание по 4 локальным рынкам",adv:[["Покупатель","lct","парт. Розанова И."],["Продавец","vd",""]],terms:"Долгосрочный договор поставки как условие закрытия; заверения о состоянии арендного портфеля"},
+  src:["Совместный пресс-релиз сторон","Коммерсантъ, 31.05.2026"]},
+ {id:"d3",date:"2026-04-12",title:"«СибГенерация» и «Углестар»: СП по обеспечению топливом",buyer:"sibgen",target:"uglestar",ind:"Энергетика",type:"Совместное предприятие",status:"Закрыта",
+  eco:{sum:"Не раскрыта",share:"СП 51/49",mult:"—",fin:"Взносы активами: разрез (49%) и логистическая инфраструктура (51%)",note:"Гарантированный объём поставки 6 млн т/год на 10 лет"},
+  law:{struct:"Учреждение ООО, вклады имуществом, корпоративный договор",appr:"ФАС — согласовано; сделка внутри одного региона",adv:[["СибГенерация","bp","парт. Хмелёв Д."],["Углестар","lct",""]],terms:"Корпоративный договор: тупиковые ситуации через русскую рулетку, опцион call у мажоритария с 2029 г."},
+  src:["Пресс-релиз «СибГенерации»"]},
+ {id:"d4",date:"2026-03-27",title:"«ФинКапитал Банк» получает контроль в «Облако-Т»",buyer:"finkap",target:"cloudt",ind:"ИТ и телеком",type:"M&A · вход стратегического инвестора",status:"Закрыта",
+  eco:{sum:"12,8 млрд ₽",share:"60% долей",mult:"EV/EBITDA ≈ 9,1×",fin:"Собственные средства банка",note:"Основатель сохраняет 25% и операционную роль до 2028 г."},
+  law:{struct:"Купля-продажа долей двумя траншами (35% + 25%), второй транш — опцион put/call",appr:"ФАС — согласовано; уведомление ЦБ о непрофильном активе",adv:[["Покупатель","sq","парт. Агеев К."],["Продавцы","mk","парт. Лурье Я."]],terms:"Корпоративный договор: вето основателя по бюджету R&D; запрет конкуренции 3 года"},
+  src:["Раскрытие банка","РБК, 28.03.2026"]},
+ {id:"d5",date:"2026-02-14",title:"«Углестар» продаёт непрофильный разрез «Черемшанский»",buyer:"vostug",target:"uglestar",ind:"Уголь и ГМК",type:"M&A · продажа актива",status:"Закрыта",
+  eco:{sum:"7,4 млрд ₽",share:"Актив: лицензия + имущественный комплекс",mult:"≈ 310 ₽/т запасов",fin:"Рассрочка 18 месяцев под залог актива",note:"Запасы 24 млн т энергетического угля"},
+  law:{struct:"Продажа имущественного комплекса с переоформлением лицензии на недропользование",appr:"Роснедра — переоформление лицензии; ФАС не требуется по порогам",adv:[["Покупатель","bp",""],["Продавец","vd","парт. Северцева О."]],terms:"Залог продаваемого комплекса до полной оплаты; гарантии по горноотводной документации"},
+  src:["Интерфакс, 14.02.2026"]},
+ {id:"d6",date:"2026-01-22",title:"«Полка» привлекает синдицированный кредит на экспансию",buyer:"retpol",target:null,ind:"Ритейл",type:"Финансирование",status:"Закрыта",
+  eco:{sum:"45 млрд ₽",share:"Синдикат 4 банков, организатор — «ФинКапитал»",mult:"ЧД/EBITDA после сделки ≈ 2,1×",fin:"Срок 5 лет, ставка КС + 2,4%",note:"Средства — на открытие 800 магазинов и два распределительных центра"},
+  law:{struct:"Синдицированный кредит по 486-ФЗ, обеспечение — залог долей операционных компаний",appr:"Не требуются",adv:[["Заёмщик","lct",""],["Синдикат","sq","парт. Агеев К."]],terms:"Ковенанты: ЧД/EBITDA ≤ 3,0×; ограничение дивидендов при нарушении"},
+  src:["Пресс-релиз организатора"]},
+];
+
+/* ================= РОУТЕР ================= */
+const app = document.getElementById("app");
+const co = id => COMPANIES[id];
+const fmtDate = d => new Date(d).toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"}).replace(" г.","");
+
+function route(){
+  const h = location.hash.replace("#","") || "/";
+  const [_,page,arg] = h.split("/");
+  document.querySelectorAll("#nav a").forEach(a=>a.classList.remove("on"));
+  const mark = r => {const el=document.querySelector(`[data-r="${r}"]`); if(el) el.classList.add("on");};
+  if(page===""||page===undefined){renderDeals();mark("deals");}
+  else if(page==="deal"){renderDeal(arg);mark("deals");}
+  else if(page==="companies"&&arg){renderCompany(arg);mark("companies");}
+  else if(page==="companies"){renderCompanies();mark("companies");}
+  else if(page==="advisors"){renderAdvisors();mark("advisors");}
+  else if(page==="assistant"){renderAssistant();mark("assistant");}
+  else {renderDeals();mark("deals");}
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+
+/* ================= ЛЕНТА СДЕЛОК ================= */
+let filterInd = "Все";
+function renderDeals(){
+  const deals = DEALS.filter(d=>filterInd==="Все"||d.ind===filterInd);
+  app.innerHTML = `
+  <div class="hero">
+    <h1>Сделки российского рынка — <em>в одном месте</em>, со ссылками на первоисточники</h1>
+    <p>Каждая сделка — глазами экономиста и глазами юриста. Только то, что есть в публичном поле.</p>
+  </div>
+  <div class="filters">${INDUSTRIES.map(i=>`<button class="chip ${i===filterInd?"on":""}" data-ind="${i}">${i}</button>`).join("")}</div>
+  ${deals.map(d=>`
+  <a class="deal-row" href="#/deal/${d.id}">
+    <div class="deal-date"><span class="label">${fmtDate(d.date)}</span><br><span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span></div>
+    <div>
+      <div class="deal-title">${d.title}</div>
+      <div class="deal-sub">${d.type}${d.target?` · ${co(d.buyer).name} → ${co(d.target).name}`:""}</div>
+    </div>
+    <div class="deal-meta">
+      <div class="deal-sum ${d.eco.sum==="Не раскрыта"?"na":""}">${d.eco.sum}</div>
+      <span class="tag">${d.ind}</span>
+    </div>
+  </a>`).join("")}`;
+  app.querySelectorAll("[data-ind]").forEach(b=>b.onclick=()=>{filterInd=b.dataset.ind;renderDeals();});
+}
+
+/* ================= КАРТОЧКА СДЕЛКИ ================= */
+let lens = "overview";
+function renderDeal(id){
+  const d = DEALS.find(x=>x.id===id); if(!d){renderDeals();return;}
+  lens = "overview";
+  app.innerHTML = `
+  <a class="back" href="#/">← Все сделки</a>
+  <div class="d-head">
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <span class="label">${fmtDate(d.date)}</span>
+      <span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span>
+      <span class="tag">${d.ind}</span>
+    </div>
+    <h1>${d.title}</h1>
+    <div class="d-parties">
+      <span>Тип: <b>${d.type}</b></span>
+      <a href="#/companies/${d.buyer}"><b>${co(d.buyer).name}</b></a>
+      ${d.target?`<a href="#/companies/${d.target}"><b>${co(d.target).name}</b></a>`:""}
+    </div>
+  </div>
+  <div class="lens" role="tablist" aria-label="Линза просмотра">
+    <button data-l="overview" class="on">Обзор</button>
+    <button data-l="eco">Экономист</button>
+    <button data-l="law">Юрист</button>
+  </div>
+  <div id="facts"></div>
+  <div class="src"><span class="label">Источники</span><br>${d.src.map(s=>`<a href="#" onclick="return false">${s}</a>`).join("")}</div>`;
+  const paint = ()=>{
+    const f = document.getElementById("facts");
+    if(lens==="eco") f.innerHTML = `<div class="facts">
+      <div class="fact"><span class="label">Сумма сделки</span><div class="val big">${d.eco.sum}</div></div>
+      <div class="fact"><span class="label">Предмет / доля</span><div class="val">${d.eco.share}</div></div>
+      <div class="fact"><span class="label">Мультипликатор</span><div class="val big">${d.eco.mult}</div></div>
+      <div class="fact"><span class="label">Финансирование</span><div class="val">${d.eco.fin}</div></div>
+      <div class="fact wide"><span class="label">Комментарий</span><div class="val">${d.eco.note}</div></div>
+    </div>`;
+    else if(lens==="law") f.innerHTML = `<div class="facts">
+      <div class="fact wide"><span class="label">Структура</span><div class="val">${d.law.struct}</div></div>
+      <div class="fact wide"><span class="label">Согласования</span><div class="val">${d.law.appr}</div></div>
+      ${d.law.adv.map(a=>`<div class="fact"><span class="label">Консультант · ${a[0]}</span><div class="val"><b>${FIRMS[a[1]].name}</b>${a[2]?`<br><span style="color:var(--muted);font-size:13px">${a[2]}</span>`:""}</div></div>`).join("")}
+      <div class="fact wide"><span class="label">Договорные условия (из публичных данных)</span><div class="val">${d.law.terms}</div></div>
+    </div>`;
+    else f.innerHTML = `<div class="facts">
+      <div class="fact"><span class="label">Сумма</span><div class="val big">${d.eco.sum}</div></div>
+      <div class="fact"><span class="label">Предмет</span><div class="val">${d.eco.share}</div></div>
+      <div class="fact"><span class="label">Статус</span><div class="val">${d.status}</div></div>
+      <div class="fact wide"><span class="label">Суть</span><div class="val">${d.eco.note}. ${d.law.struct}.</div></div>
+    </div>`;
+  };
+  paint();
+  app.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{
+    lens=b.dataset.l;
+    app.querySelectorAll("[data-l]").forEach(x=>x.classList.toggle("on",x===b));
+    paint();
+  });
+}
+
+/* ================= КОМПАНИИ ================= */
+function renderCompanies(){
+  app.innerHTML = `
+  <div class="sec-head"><h1>Компании</h1><p>Профили участников сделок: показатели, ключевые лица, история сделок из публичных источников.</p></div>
+  <div class="co-grid">
+  ${Object.entries(COMPANIES).map(([id,c])=>`
+    <a class="co-card" href="#/companies/${id}">
+      <span class="tag">${c.ind}</span>
+      <h3>${c.name}</h3>
+      <div class="desc">${c.desc}</div>
+      <div class="co-nums">
+        <div><span class="label">Выручка</span><div class="val">${c.rev}</div></div>
+        <div><span class="label">Сделок в базе</span><div class="val">${DEALS.filter(d=>d.buyer===id||d.target===id).length}</div></div>
+      </div>
+    </a>`).join("")}
+  </div>`;
+}
+
+function renderCompany(id){
+  const c = co(id); if(!c){renderCompanies();return;}
+  const deals = DEALS.filter(d=>d.buyer===id||d.target===id);
+  app.innerHTML = `
+  <a class="back" href="#/companies">← Все компании</a>
+  <div class="d-head">
+    <span class="tag">${c.ind}</span>
+    <h1>${c.name}</h1>
+    <div class="d-parties"><span>${c.desc}</span></div>
+  </div>
+  <div class="facts" style="margin-bottom:34px">
+    <div class="fact"><span class="label">Выручка (последняя отчётность)</span><div class="val big">${c.rev}</div></div>
+    ${c.people.map(p=>`<div class="fact"><span class="label">${p[0]}</span><div class="val">${p[1]}</div></div>`).join("")}
+  </div>
+  <div class="sec-head"><h1 style="font-size:22px">Сделки компании</h1></div>
+  ${deals.map(d=>`
+  <a class="deal-row" href="#/deal/${d.id}">
+    <div class="deal-date"><span class="label">${fmtDate(d.date)}</span></div>
+    <div><div class="deal-title" style="font-size:17px">${d.title}</div><div class="deal-sub">${d.type}</div></div>
+    <div class="deal-meta"><div class="deal-sum ${d.eco.sum==="Не раскрыта"?"na":""}">${d.eco.sum}</div></div>
+  </a>`).join("") || "<p style='color:var(--muted)'>Сделок в базе пока нет.</p>"}`;
+}
+
+/* ================= КОНСУЛЬТАНТЫ ================= */
+function renderAdvisors(){
+  const rows = Object.entries(FIRMS).map(([id,f])=>{
+    const ds = DEALS.filter(d=>d.law.adv.some(a=>a[1]===id));
+    return {id,f,n:ds.length,inds:[...new Set(ds.map(d=>d.ind))]};
+  }).sort((a,b)=>b.n-a.n);
+  app.innerHTML = `
+  <div class="sec-head"><h1>Юридические консультанты</h1><p>Кто сопровождает сделки — по данным публичных источников.</p></div>
+  <div class="notice">
+    <div style="font-family:var(--f-mono);color:var(--accent)">ⓘ</div>
+    <div>Список отсортирован по числу сделок, известных из публичных источников. Это не рейтинг качества: фирмы раскрывают не все сделки, и картина заведомо неполная. Выводы — за вами.</div>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>Фирма</th><th>Индустрии в базе</th><th class="num">Известных сделок</th></tr></thead>
+    <tbody>
+    ${rows.map(r=>`<tr>
+      <td><div class="firm-name">${r.f.name}</div><div class="firm-focus">${r.f.focus}</div></td>
+      <td style="color:var(--muted);font-size:13.5px">${r.inds.join(" · ")||"—"}</td>
+      <td class="num">${r.n}</td>
+    </tr>`).join("")}
+    </tbody>
+  </table>`;
+}
+
+/* ================= АССИСТЕНТ (демо на локальной базе) ================= */
+const CANNED = [
+  {q:"Самая крупная сделка в базе",test:s=>/крупн|больш/i.test(s),
+   a:()=>{const d=[...DEALS].filter(x=>x.eco.sum!=="Не раскрыта").sort((a,b)=>parseFloat(b.eco.sum.replace(",","."))-parseFloat(a.eco.sum.replace(",",".")))[0];
+     return `Самая крупная сделка с раскрытой суммой — <a href="#/deal/${d.id}">${d.title}</a>: ${d.eco.sum}, статус «${d.status}». Учтите: суммы раскрыты не по всем сделкам.`;}},
+  {q:"Кто сопровождает сделки в угле",test:s=>/угл|угол|гмк/i.test(s),
+   a:()=>{const ds=DEALS.filter(d=>d.ind==="Уголь и ГМК");const firms={};ds.forEach(d=>d.law.adv.forEach(a=>{firms[a[1]]=(firms[a[1]]||0)+1}));
+     const top=Object.entries(firms).sort((a,b)=>b[1]-a[1]).map(([id,n])=>`${FIRMS[id].name} (${n})`).join(", ");
+     return `В сегменте «Уголь и ГМК» в базе ${ds.length} сделки. Консультанты по числу известных сделок: ${top}. Это данные из публичных источников, не рейтинг качества. Сами сделки: ${ds.map(d=>`<a href="#/deal/${d.id}">${fmtDate(d.date)}</a>`).join(", ")}.`;}},
+  {q:"Где есть корпоративный договор",test:s=>/корпоратив|акционерн|опцион|кд/i.test(s),
+   a:()=>{const ds=DEALS.filter(d=>/корпоративный договор|опцион/i.test(d.law.terms+d.law.struct));
+     return `Корпоративный договор или опционные механизмы упомянуты в ${ds.length} сделках: ${ds.map(d=>`<a href="#/deal/${d.id}">${d.title}</a>`).join("; ")}. Откройте линзу «Юрист» на карточке — там условия.`;}},
+];
+function renderAssistant(){
+  app.innerHTML = `
+  <div class="chat">
+    <div class="sec-head"><h1>Ассистент</h1><p>Отвечает только по базе платформы и всегда даёт ссылки на карточки. В демо — локальный поиск; в продакшене здесь будет ИИ поверх полной базы.</p></div>
+    <div class="chat-box" id="chatbox">
+      <div class="msg ai"><span class="label">Реестр</span>Задайте вопрос о сделках, компаниях или консультантах — отвечу по данным базы со ссылками на источники.</div>
+    </div>
+    <div class="suggests">${CANNED.map((c,i)=>`<button class="chip" data-q="${i}">${c.q}</button>`).join("")}</div>
+    <div class="ask">
+      <input id="q" placeholder="Например: кто сопровождает сделки в угле?" aria-label="Вопрос ассистенту">
+      <button id="send">Спросить</button>
+    </div>
+  </div>`;
+  const box=document.getElementById("chatbox");
+  const push=(cls,html)=>{const m=document.createElement("div");m.className="msg "+cls;m.innerHTML=(cls==="ai"?'<span class="label">Реестр</span>':"")+html;box.appendChild(m);box.scrollTop=box.scrollHeight;};
+  const answer=q=>{
+    push("user",q);
+    const hit=CANNED.find(c=>c.test(q));
+    setTimeout(()=>push("ai",hit?hit.a():"По этому вопросу в демо-базе данных пока нет. В полной версии ассистент ищет по всем сделкам, компаниям и консультантам."),350);
+  };
+  document.getElementById("send").onclick=()=>{const v=document.getElementById("q").value.trim();if(v){answer(v);document.getElementById("q").value="";}};
+  document.getElementById("q").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("send").click();});
+  app.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>answer(CANNED[b.dataset.q].q));
+}
+
+route();
+</script>
+</body>
+</html>
