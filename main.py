@@ -1,7 +1,9 @@
 """Реестр — MVP платформы о сделках и компаниях.
 
-Статика + /api/ask: если в переменных окружения задан ANTHROPIC_API_KEY,
-вопросы ассистенту уходят в Anthropic API; иначе фронтенд работает в демо-режиме.
+Статика + /api/ask с двумя режимами:
+- mode="base" — ответ строго по базе платформы;
+- mode="web"  — ИИ дополнительно ищет в интернете (web search tool Anthropic API).
+Требуется ANTHROPIC_API_KEY в переменных окружения; без ключа фронтенд работает в демо-режиме.
 """
 import json
 import os
@@ -19,19 +21,29 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-SYSTEM_PROMPT = """Ты — ассистент платформы «Реестр» о сделках и компаниях российского рынка.
-Отвечай ТОЛЬКО на основе базы данных, переданной в сообщении пользователя (JSON).
+SYSTEM_BASE = """Ты — ассистент платформы «Реестр» о сделках и компаниях российского рынка.
+Отвечай ТОЛЬКО на основе базы данных, переданной в сообщении (JSON).
 Правила:
-- Отвечай по-русски, кратко и по делу, как аналитик для юристов и банкиров.
-- Ссылайся на сделки в формате [название](#/deal/ID) — это внутренние ссылки платформы.
-- Никогда не выдумывай факты, суммы или консультантов, которых нет в базе. Если данных нет — так и скажи.
-- Данные собраны из публичных источников и могут быть неполными; упоминай это, когда уместно (особенно про консультантов и суммы).
-- Никаких рейтингов и оценочных суждений о качестве фирм: только факты «в базе N известных сделок»."""
+- По-русски, кратко, как аналитик для юристов и банкиров.
+- Ссылки на сделки платформы: [название](#/deal/ID).
+- Не выдумывай факты, суммы, консультантов. Нет данных — так и скажи.
+- Данные из публичных источников и могут быть неполными; упоминай это, когда уместно.
+- Никаких рейтингов качества фирм — только факты."""
+
+SYSTEM_WEB = """Ты — ассистент платформы «Реестр» о сделках и компаниях российского рынка.
+У тебя два источника: база платформы (JSON в сообщении) и веб-поиск.
+Правила:
+- Сначала проверь базу; если данных мало или вопрос шире — ищи в интернете (сайты юрфирм, финансовых консультантов, компаний, Интерфакс, Коммерсантъ, РБК, Ведомости, Forbes).
+- По-русски, кратко, как аналитик для юристов и банкиров.
+- Ссылки на сделки платформы: [название](#/deal/ID). Для веб-фактов ОБЯЗАТЕЛЬНО указывай источник ссылкой [название источника](URL).
+- Чётко различай, что из базы «Реестра», а что найдено в сети.
+- Не выдумывай факты; нет данных — так и скажи."""
 
 
 class AskRequest(BaseModel):
     question: str
-    context: str  # компактный JSON базы, передаётся с фронтенда
+    context: str
+    mode: str = "base"  # base | web
 
 
 @app.get("/health")
@@ -44,10 +56,11 @@ def ask(req: AskRequest):
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         return JSONResponse({"fallback": True})
+    web = req.mode == "web"
     payload = {
         "model": "claude-sonnet-4-6",
-        "max_tokens": 700,
-        "system": SYSTEM_PROMPT,
+        "max_tokens": 1400 if web else 700,
+        "system": SYSTEM_WEB if web else SYSTEM_BASE,
         "messages": [
             {
                 "role": "user",
@@ -55,6 +68,8 @@ def ask(req: AskRequest):
             }
         ],
     }
+    if web:
+        payload["tools"] = [{"type": "web_search_20250305", "name": "web_search"}]
     request = urllib.request.Request(
         "https://api.anthropic.com/v1/messages",
         data=json.dumps(payload).encode("utf-8"),
@@ -66,9 +81,9 @@ def ask(req: AskRequest):
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=30) as resp:
+        with urllib.request.urlopen(request, timeout=90 if web else 30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-        text = "".join(block.get("text", "") for block in data.get("content", []))
+        text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")
         return {"answer": text}
     except Exception:
         return JSONResponse({"fallback": True})
