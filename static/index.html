@@ -296,10 +296,14 @@ const COMPANIES = {
   inkab:{name:"Инкаб Холдинг",ind:"Телеком",desc:"Крупнейший производитель оптического кабеля в России и СНГ; провёл IPO на Московской бирже в июне 2026 г. (тикер INCB).",kpi:["Основной акционер","Александр Смильгевич"]},
   bik:{name:"Башенная инфраструктурная компания (БИК)",ind:"Телеком",desc:"Третий по величине башенный оператор России: свыше 24,7 тыс. антенно-мачтовых сооружений. До сделки — актив группы МТС.",kpi:["Место на рынке","№3 среди башенных операторов РФ"]},
   invest18:{name:"ЗПИФ «Инвестиции 18» (УК «Доверительная»)",ind:"Инвестиции и рынок ЦБ",desc:"Закрытый паевой инвестиционный фонд, купивший 49,9% башенного бизнеса МТС.",kpi:["Управляющая компания","«Доверительная»"]},
+  canc:{name:"ОАО «ЦАНЦ»",ind:"Страхование",desc:"Компания-покупатель 100% «Абсолют Страхование»; существует с 1995 года, состав акционеров не раскрывается.",kpi:["Уставный капитал","~138 тыс. ₽"]},
+  absolutstrah:{name:"Абсолют Страхование",ind:"Страхование",desc:"Универсальный страховщик, 30-е место на рынке РФ по премиям (11,8 млрд ₽ за 2025 г.). До сделки — актив группы «Абсолют» Александра Светакова.",kpi:["Рейтинг «Эксперт РА»","А+ (март 2026)"]},
+  mid:{name:"«Мать и дитя» (МД Медикал Груп)",ind:"Фарма и медицина",desc:"Крупнейшая частная сеть медицинских клиник в России после покупки Ильинской больницы (по коечному фонду).",kpi:["Финансовый директор","Ия Лукьянова"]},
+  ilyinskaya:{name:"Ильинская больница",ind:"Фарма и медицина",desc:"Частный госпиталь площадью 14 088 м² в Подмосковье; до сделки принадлежала структурам Тимура Кулибаева.",kpi:["Площадь участка","1,44 га (под расширение)"]},
 };
 
 /* ================= ПОЛНЫЕ КАРТОЧКИ СДЕЛОК ================= */
-const DEALS = [
+let DEALS = [
  {id:"citibank",date:"2026-02-18",title:"«Ренессанс Капитал» покупает российский Ситибанк у Citigroup",buyer:"rencap",target:"citibank",ind:"Банки",type:"Выкуп у иностранного владельца",status:"Закрыта",sum:"Не раскрыта",
   eco:{sum:"Не раскрыта официально",share:"100% акций АО КБ «Ситибанк»",val:"Citi в отчёте 8-K оценивала поступления ≈ $0,2 млрд; «Известия» — не более 40 млрд ₽; убыток Citigroup от выхода ≈ $1,1 млрд",target_fin:"Активы ≈ 1,1 трлн ₽, капитал ≈ 133 млрд ₽ (топ-20 банков РФ)",fin:"Денежная сделка, покупатель — ООО «Ренессанс Капитал — Финансовый консультант»",rationale:"Крупнейший в России кастоди-бизнес, комплементарный инвестиционному профилю группы; сохранение обслуживания иностранных фондов и банков",context:"Citi пыталась выйти из России с 2021 года: розничный портфель продан «Уралсибу» ещё в 2022-м, три претендента отказались из-за невозможности получить ИТ-системы под санкциями США",finadv:"Не раскрывался"},
   law:{struct:"Купля-продажа 100% акций у Citigroup Netherlands B.V.; после закрытия — переименование в АО «РенКап Банк»",appr:"Распоряжение Президента РФ от 12.11.2025 (банк в перечне, где сделки с «недружественными» иностранцами запрещены указом); одобрения в России и за рубежом",
@@ -377,7 +381,7 @@ const DEALS = [
    terms:"Сделка закрывалась параллельно с активным корпоративным спором об истории владения долями группы — редкий случай M&A на фоне незавершённого судебного конфликта"},
   src:[["BIRCH — о сделке","https://www.birchlegal.ru/news/3141/"],["Sostav.ru","https://www.sostav.ru/publication/gruppa-adv-obyavila-ob-izmeneniyakh-v-aktsionernom-konture-76401.html"],["ADPASS — о судебном споре","https://adpass.ru/pochemu-sud-vernul-dmitriyu-korobkovu-doli-v-kompaniyah-adv/"]]},
 
- {id:"selectel-itmo",date:"2026-07-06",title:"Selectel и НИУ ИТМО создают совместное предприятие по AI-агентам",buyer:"selectel",target:"itmo",ind:"ИТ и интернет",type:"M&A · создание СП",status:"Закрыта",sum:"1+ млрд ₽ (инвестиции Selectel)",
+ {id:"selectel-itmo",date:"2026-07-06",title:"Selectel и НИУ ИТМО создают совместное предприятие по AI-агентам",buyer:"selectel",target:"itmo",ind:"ИТ и интернет",type:"M&A · создание СП",status:"Закрыта",sum:"1+ млрд ₽",
   eco:{sum:"Более 1 млрд ₽ — заявленные инвестиции Selectel в СП",share:"Selectel — ⅔ долей, НИУ ИТМО — ⅓ в ООО «Эмерджентные мультиагентные системы» (ЭМС)",val:"СП зарегистрировано 4 мая 2026 г.; публичное объявление — 6 июля 2026 г.",target_fin:"Selectel дополнительно планирует инвестировать 10 млрд ₽ в развитие ИИ-инфраструктуры за 5 лет",fin:"Вклад долями в новое юрлицо, а не покупка готового бизнеса",rationale:"Создание продуктовой платформы для промышленной эксплуатации мультиагентных систем на базе LLM с моделью оплаты pay-per-use",context:"Гендиректор ЭМС — Роман Венедиктов, ранее директор направления дата-центров Selectel; на момент объявления изменения ещё регистрировались в ЕГРЮЛ",finadv:"Не привлекался"},
   law:{struct:"Учреждение нового ООО с распределением долей ⅔/⅓, включая проработку вопросов интеллектуальной собственности для СП",appr:"Публично не сообщалось",
    adv:[["Selectel","O2 Consulting","Партнёр Наталья Кузнецова, советник Софья Смирнова, консультант Бесханум Мамедова; полное юридическое сопровождение, документация по ИС, переговоры и закрытие (по данным сайта фирмы)"]],
@@ -404,6 +408,20 @@ const DEALS = [
    adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
    terms:"Опцион МТС на обратный выкуп доли при оговорённых условиях; долгосрочный договор аренды инфраструктуры БИК на рыночных условиях как часть структуры сделки"},
   src:[["Коммерсантъ","https://www.kommersant.ru/doc/8765262"],["Ведомости","https://www.vedomosti.ru/investments/news/2026/06/25/1208943-mts-bashennogo-biznesa"],["CNews","https://www.cnews.ru/news/top/2026-06-26_mts_lishilsya_pochti_poloviny"],["Mergers.ru","https://mergers.ru/news/MTS-prodala-499-v-svoej-bashennoj-kompanii-87113"]]},
+
+ {id:"absolut-strah",date:"2026-06-26",title:"ОАО «ЦАНЦ» покупает 100% «Абсолют Страхование» у группы «Абсолют»",buyer:"canc",target:"absolutstrah",ind:"Страхование",type:"M&A · выход основателя",status:"Закрыта",sum:"~10 млрд ₽",
+  eco:{sum:"~10 млрд ₽ (оценка на этапе переговоров по данным Ъ и «Банковского обозрения»; окончательная цена не раскрывалась)",share:"100% долей ООО «Абсолют Страхование»",val:"После закрытия ЦАНЦ заложило приобретённый актив в пользу УК «Абсолют Эссет Менеджмент» — аналитики расценивают это как элемент структурирования сделки",target_fin:"30-е место на страховом рынке РФ (премии 11,8 млрд ₽ за 2025 г.), активы 12,4 млрд ₽, капитал 5,8 млрд ₽; рейтинг «Эксперт РА» — А+ (март 2026)",fin:"Покупатель — ОАО «ЦАНЦ» (компания с 1995 года, уставный капитал ~138 тыс. ₽, состав акционеров не раскрывается)",rationale:"Выход основателя Александра Светакова (группа «Абсолют») из страхового бизнеса; компания сохраняет название, офисы и команду",context:"Актив был выставлен на продажу ещё в июне 2024 года; ранее в претендентах числились Совкомбанк, «Югория» и группа МТС — Совкомбанк впоследствии опроверг участие в итоговой сделке",finadv:"Не привлекался"},
+  law:{struct:"Купля-продажа 100% долей ООО с последующим залогом актива покупателем в пользу управляющей компании продавца",appr:"Публично не сообщалось",
+   adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
+   terms:"Залог купленного актива в пользу УК бывшего владельца сразу после закрытия — нетипичная деталь структурирования, требующая отдельного анализа мотивов сторон"},
+  src:[["РБК (первоисточник)","https://www.rbc.ru/finances/02/07/2026/6a4557699a794761c07c3b7b"],["Коммерсантъ","https://www.kommersant.ru/doc/8781568"],["Эксперт","https://expert.ru/news/gruppa-absolyut-prodala-svoyu-strakhovuyu-kompaniyu"],["Банковское обозрение","https://bosfera.ru/press-release/investgruppa-absolyut-prodala-100-kompanii-absolyut-strahovanie"]]},
+
+ {id:"mid-ilyinskaya",date:"2026-06-23",title:"«Мать и дитя» покупает Ильинскую больницу у Тимура Кулибаева",buyer:"mid",target:"ilyinskaya",ind:"Фарма и медицина",type:"M&A · консолидация частной медицины",status:"Закрыта",sum:"8,5 млрд ₽",
+  eco:{sum:"8,5 млрд ₽ (включая 1,1 млрд ₽ долга на балансе приобретаемого актива)",share:"100% акций АО «Ильинская больница» + 100% долей ООО «Клиник менеджмент груп», через ООО «Хавен»",val:"Мультипликатор P/E ~17,7× (выручка «Ильинской больницы» по РСБУ 2025 — 3,89 млрд ₽, чистая прибыль 690 млн ₽ по данным «Ведомостей»)",target_fin:"Здание госпиталя 14 088 м² (включая роботизированную систему Da Vinci) и участок 1,44 га под расширение; загрузка мощностей менее 50% до сделки",fin:"Кредитная линия Сбербанка на 6 млрд ₽ на 4,5 года — первый случай заёмного финансирования для крупной M&A-сделки группы «Мать и дитя»",rationale:"После интеграции «Мать и дитя» становится крупнейшей частной сетью по коечному фонду в России; цель — довести загрузку до ~70% и рентабельность EBITDA актива с ~13% до целевых 30% группы",context:"Продавцы — ТОО «Emdeu Medline» (92,11%) и ООО «Раф-Мед» (7,88%), доли которых находились в залоге у Сбербанка; финдиректор группы Ия Лукьянова повысила прогноз роста выручки на 2026 г. до 24–25%",finadv:"Не привлекался напрямую; финансирование — кредитная линия Сбербанка"},
+  law:{struct:"Приобретение через SPV (ООО «Хавен») 100% акций и 100% долей двух юрлиц единым периметром; доли продавцов ранее находились в залоге у Сбербанка",appr:"Одобрено ФАС России",
+   adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
+   terms:"Снятие залога Сбербанка с долей продавцов как отлагательное условие закрытия; впервые в истории группы M&A-сделка частично профинансирована заёмными средствами"},
+  src:[["Коммерсантъ","https://www.kommersant.ru/doc/8764183"],["Ведомости","https://www.vedomosti.ru/society/news/2026/06/24/1208598-mat-ditya-ilinskuyu-bolnitsu"],["Vademecum","https://www.vademec.ru/news/2026/06/24/gk-mat-i-ditya-za-8-5-mlrd-rubley-pokupaet-ilinskuyu-bolnitsu/"],["AKM.ru","https://www.akm.ru/news/gk_md_medikal_priobretaet_ilinskuyu_bolnitsu/"]]},
 ];
 
 /* ================= КОМПАКТНЫЕ ЗАПИСИ СДЕЛОК (с сайтов фирм и СМИ) ================= */
@@ -527,6 +545,48 @@ const co = id => COMPANIES[id];
 const fmtDate = d => d==="unknown" ? "Дата уточняется" : new Date(d).toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"}).replace(" г.","");
 const esc = s => s.replace(/</g,"&lt;");
 const ALL_FIRM = id => FIRMS.find(f=>f.id===id)||INV_FIRMS.find(f=>f.id===id);
+
+/* ================= КЛЮЧИ ПОИСКА КОМПАНИЙ ПО ВСЕЙ БАЗЕ (не только по buyer/target) ================= */
+const MATCH_KEYS = {
+  rencap:["ренессанс капитал"], citibank:["ситибанк","ренкап банк"], carlsberg:["carlsberg"],
+  baltika:["балтика"], vginvest:["вг инвест"], rosatom:["росатом","uranium one"], yandex:["яндекс"],
+  berizaryad:["бери заряд"], hugoboss:["hugo boss","хьюго босс"], stockmann:["стокманн"],
+  delo:["«дело»"], cargill:["cargill"], avtodom:["автодом"], mercedes:["mercedes-benz","мерседес"],
+  varton:["вартон"], technored:["технорэд","technored"], kompsystem:["композит систем"],
+  ektos:["эктосинтез","эктос"], tokk:["токк"], metarus:["метарус"], erlan:["эрлан"],
+  adv:["группа адв","группы адв"], selectel:["selectel"], itmo:["итмо"], sheremetyevo:["шереметьево"],
+  domodedovo:["домодедово"], inkab:["инкаб"], bik:["бик"], invest18:["инвестиции 18"],
+  canc:["цанц"], absolutstrah:["абсолют страхование"], mid:["мать и дитя","мд медикал"],
+  ilyinskaya:["ильинская больница"],
+};
+function containsKey(text, key){
+  const t = (text||"").toLowerCase(); const k = key.toLowerCase();
+  if(k.length > 4) return t.includes(k);
+  const isWordChar = c => /[a-zа-яё0-9]/i.test(c||"");
+  let idx = 0;
+  while(true){
+    const i = t.indexOf(k, idx);
+    if(i === -1) return false;
+    if(!isWordChar(t[i-1]) && !isWordChar(t[i+k.length])) return true;
+    idx = i+1;
+  }
+}
+function matchesCompany(text, id){
+  const keys = MATCH_KEYS[id]; if(!keys) return false;
+  return keys.some(k=>containsKey(text, k));
+}
+function companyDeals(id){
+  const structured = DEALS.filter(d=>d.buyer===id||d.target===id);
+  const structuredIds = new Set(structured.map(d=>d.id));
+  const mentions = [];
+  DEALS.forEach(d=>{ if(!structuredIds.has(d.id) && matchesCompany(d.title, id)) mentions.push({date:d.date,title:d.title,url:"#/deal/"+d.id,source:"Карточка «Реестра»"}); });
+  MINI_DEALS.forEach(m=>{ if(matchesCompany(m.title, id)) mentions.push({date:m.date,title:m.title,url:m.src[1],source:m.src[0]}); });
+  CHANNEL_DEALS.forEach(c=>{ if(matchesCompany(c.title, id)) mentions.push({date:c.date,title:c.title,url:c.src[1],source:c.src[0]}); });
+  BULK_DEALS.forEach(b=>{ if(matchesCompany(b.title, id)) mentions.push({date:b.date,title:b.title,url:(b.src&&b.src[1])||"#",source:(b.src&&b.src[0])||"?"}); });
+  return {structured, mentions};
+}
+const companyTotal = id => { const {structured,mentions} = companyDeals(id); return structured.length+mentions.length; };
+
 function firmDeals(id){
   const rx = FIRM_MATCH[id];
   if(!rx) return {full:[],mini:[],bulk:[]};
@@ -548,7 +608,17 @@ async function loadBulkDeals(){
     const r = await fetch("static/data/bulk_deals.json");
     if(r.ok){ BULK_DEALS = await r.json(); }
   }catch(e){ console.warn("bulk_deals.json недоступен:", e); }
+  try{
+    const r2 = await fetch("static/data/deals_2026.json");
+    if(r2.ok){
+      const j = await r2.json();
+      DEALS.push(...(j.deals||[]));
+      Object.assign(COMPANIES, j.companies||{});
+      Object.assign(MATCH_KEYS, j.match_keys||{});
+    }
+  }catch(e){ console.warn("deals_2026.json недоступен:", e); }
   bulkLoaded = true;
+  AI_CONTEXT = buildContext();
   route(); // перерисовать текущую страницу с уже загруженными данными
 }
 loadBulkDeals();
@@ -574,13 +644,16 @@ const rerun = ()=>requestAnimationFrame(()=>document.querySelectorAll(".reveal")
 
 /* ================= ИИ ================= */
 let aiMode = "base";
-const AI_CONTEXT = JSON.stringify({
+function buildContext(){
+  return JSON.stringify({
   full_deals:DEALS.map(d=>({id:d.id,date:d.date,title:d.title,industry:d.ind,type:d.type,status:d.status,economist:d.eco,lawyer:d.law,sources:d.src})),
   compact_deals:MINI_DEALS.map(m=>({date:m.date,title:m.title,industry:m.ind,advisor:ALL_FIRM(m.firm)?ALL_FIRM(m.firm).n:m.firm,role:m.role,source:m.src})),
   channel_deals:CHANNEL_DEALS.map(c=>({date:c.date,title:c.title,industry:c.ind,note:c.note,found_via:c.channel,source:c.src})),
   firms_catalog:FIRMS.map(f=>f.n),
   investment_advisors:INV_FIRMS.map(f=>f.n)
-});
+  });
+}
+let AI_CONTEXT = buildContext();
 
 function localAnswer(q){
   const s = q.toLowerCase();
@@ -790,28 +863,30 @@ function renderDeal(id){
   ${miniAIHtml("Уточните детали этой сделки…")}`;
   const paint = ()=>{
     const f = document.getElementById("facts");
+    const F = (label,val,cls="",wide=false)=> (!val||val==="—") ? "" :
+      `<div class="fact${wide?" wide":""}"><span class="label">${label}</span><div class="val ${cls}">${val}</div></div>`;
     if(lens==="eco") f.innerHTML = `<div class="facts">
-      <div class="fact wide"><span class="label">Сумма сделки</span><div class="val big num">${d.eco.sum}</div></div>
-      <div class="fact"><span class="label">Предмет / доля</span><div class="val">${d.eco.share}</div></div>
-      <div class="fact"><span class="label">Оценка и дисконт</span><div class="val num">${d.eco.val}</div></div>
-      <div class="fact"><span class="label">Показатели таргета</span><div class="val num">${d.eco.target_fin}</div></div>
-      <div class="fact"><span class="label">Форма расчётов</span><div class="val">${d.eco.fin}</div></div>
-      <div class="fact"><span class="label">Финансовый консультант</span><div class="val">${d.eco.finadv}</div></div>
-      <div class="fact wide"><span class="label">Цель сделки</span><div class="val">${d.eco.rationale}</div></div>
-      <div class="fact wide"><span class="label">Контекст</span><div class="val">${d.eco.context}</div></div>
+      ${F("Сумма сделки",d.eco.sum,"big num",true)}
+      ${F("Предмет / доля",d.eco.share)}
+      ${F("Оценка и дисконт",d.eco.val,"num")}
+      ${F("Показатели таргета",d.eco.target_fin,"num")}
+      ${F("Форма расчётов",d.eco.fin)}
+      ${F("Финансовый консультант",d.eco.finadv)}
+      ${F("Цель сделки",d.eco.rationale,"",true)}
+      ${F("Контекст",d.eco.context,"",true)}
     </div>`;
     else if(lens==="law") f.innerHTML = `<div class="facts">
-      <div class="fact wide"><span class="label">Структура</span><div class="val">${d.law.struct}</div></div>
-      <div class="fact wide"><span class="label">Согласования</span><div class="val">${d.law.appr}</div></div>
+      ${F("Структура",d.law.struct,"",true)}
+      ${F("Согласования",d.law.appr,"",true)}
       ${d.law.adv.map(a=>`<div class="fact"><span class="label">${a[0]}</span><div class="val"><b>${a[1]}</b>${a[2]?`<br><span style="color:var(--muted);font-size:13px">${a[2]}</span>`:""}</div></div>`).join("")}
-      <div class="fact wide"><span class="label">Условия и особенности (из публичных данных)</span><div class="val">${d.law.terms}</div></div>
+      ${F("Условия и особенности (из публичных данных)",d.law.terms,"",true)}
     </div>`;
     else f.innerHTML = `<div class="facts">
-      <div class="fact"><span class="label">Сумма</span><div class="val big num">${d.sum}</div></div>
-      <div class="fact"><span class="label">Предмет</span><div class="val">${d.eco.share}</div></div>
-      <div class="fact"><span class="label">Статус</span><div class="val">${d.status}</div></div>
-      <div class="fact wide"><span class="label">Суть</span><div class="val">${d.eco.rationale}</div></div>
-      <div class="fact wide"><span class="label">Контекст</span><div class="val">${d.eco.context}</div></div>
+      ${F("Сумма",d.sum,"big num")}
+      ${F("Предмет",d.eco.share)}
+      ${F("Статус",d.status)}
+      ${F("Суть",d.eco.rationale,"",true)}
+      ${F("Контекст",d.eco.context,"",true)}
     </div>`;
   };
   paint();
@@ -835,7 +910,7 @@ function renderCompanies(){
       <div class="desc">${c.desc}</div>
       <div class="co-nums">
         <div><span class="label">${c.kpi[0]}</span><div class="val num">${c.kpi[1]}</div></div>
-        <div><span class="label">Сделок в базе</span><div class="val num">${DEALS.filter(d=>d.buyer===id||d.target===id).length}</div></div>
+        <div><span class="label">Сделок в базе</span><div class="val num">${companyTotal(id)}</div></div>
       </div>
     </a>`).join("")}
   </div>`;
@@ -843,7 +918,8 @@ function renderCompanies(){
 
 function renderCompany(id){
   const c = co(id); if(!c){renderCompanies();return;}
-  const deals = DEALS.filter(d=>d.buyer===id||d.target===id);
+  const {structured, mentions} = companyDeals(id);
+  mentions.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   app.innerHTML = `
   <a class="back reveal" href="#/companies">← Все компании</a>
   <div class="d-head reveal">
@@ -853,15 +929,24 @@ function renderCompany(id){
   </div>
   <div class="facts reveal" style="margin-bottom:36px">
     <div class="fact"><span class="label">${c.kpi[0]}</span><div class="val big num" style="font-size:17px">${c.kpi[1]}</div></div>
-    <div class="fact"><span class="label">Сделок в базе</span><div class="val big num">${deals.length}</div></div>
+    <div class="fact"><span class="label">Сделок в базе</span><div class="val big num">${structured.length+mentions.length}</div></div>
   </div>
-  <div class="sec-head reveal" style="margin-top:0"><h1 style="font-size:23px">Сделки компании</h1></div>
-  ${deals.map(d=>`
+  ${structured.length?`
+  <div class="sec-head reveal" style="margin-top:0"><h1 style="font-size:23px">Подробные карточки</h1></div>
+  ${structured.map(d=>`
   <a class="deal-row reveal" href="#/deal/${d.id}">
     <div><span class="label num">${fmtDate(d.date)}</span></div>
     <div><div class="deal-title" style="font-size:17px">${d.title}</div><div class="deal-sub">${d.type}</div></div>
     <div class="deal-meta"><div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div></div>
-  </a>`).join("") || "<p class='reveal' style='color:var(--muted)'>Сделок в базе пока нет.</p>"}
+  </a>`).join("")}`:""}
+  ${mentions.length?`
+  <div class="sec-head reveal" style="margin-top:${structured.length?'46px':'0'}"><h1 style="font-size:23px">Также упоминается</h1><p style="margin-top:6px">Найдено автоматическим поиском по названию компании во всей базе. Может быть неточным — сверяйтесь с первоисточником по ссылке.</p></div>
+  ${mentions.map(m=>`
+  <a class="deal-row mini reveal" href="${m.url}" ${m.url.startsWith('#')?'':'target="_blank" rel="noopener"'}>
+    <div><span class="label num">${fmtDate(m.date)}</span></div>
+    <div><div class="deal-title" style="font-size:16px">${m.title}</div><div class="deal-sub">Источник: ${m.source}${m.url.startsWith('#')?'':' ↗'}</div></div>
+  </a>`).join("")}`:""}
+  ${(structured.length+mentions.length)?"":"<p class='reveal' style='color:var(--muted)'>Сделок в базе пока нет.</p>"}
   ${miniAIHtml("Спросите об этой компании…")}`;
   mountMiniAI(c.name);
 }
