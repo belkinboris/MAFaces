@@ -309,6 +309,7 @@ const COMPANIES = {
   ilyinskaya:{name:"Ильинская больница",ind:"Фарма и медицина",desc:"Частный госпиталь площадью 14 088 м² в Подмосковье; до сделки принадлежала структурам Тимура Кулибаева.",kpi:["Площадь участка","1,44 га (под расширение)"]},
   slhgroup:{name:"SLH Group Limited",ind:"Потребительские товары",desc:"Гонконгский покупатель ювелирного производства и сети «Адамас».",kpi:["Юрисдикция","Гонконг"]},
   adamas:{name:"Адамас (ООО «АДАМАС АЙПИ»)",ind:"Потребительские товары",desc:"Ювелирное производство и розничная сеть с дочерними компаниями в России, Киргизии и Казахстане. До сделки — актив АО «Форум Капитал».",kpi:["География","Россия · Киргизия · Казахстан"]},
+  agrostroy:{name:"ООО «Агрострой»",ind:"Недвижимость",desc:"Продавец земельного массива в Новой Москве; покупатель в публичных источниках не назван.",kpi:["Роль в сделке","Продавец"]},
 };
 
 /* ================= ПОЛНЫЕ КАРТОЧКИ СДЕЛОК ================= */
@@ -438,6 +439,13 @@ let DEALS = [
    adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
    terms:"Данные по этой сделке заметно скромнее остальных карточек — источник не раскрывал деталей структуры и согласований; честно показываем только подтверждённое"},
   src:[["@dealsma (Telegram)","https://t.me/dealsma/6779"]]},
+
+ {id:"agrostroy-zemlya",date:"2026-07-08",title:"ООО «Агрострой» продаёт земельный массив в Новой Москве",buyer:null,target:"agrostroy",ind:"Недвижимость",type:"M&A · продажа земельного актива",status:"Закрыта",sum:"Не раскрыта",
+  eco:{sum:"Не раскрыта",share:"Земельный массив в Новой Москве (площадь и точная локация не раскрывались)",val:"—",target_fin:"—",fin:"—",rationale:"Продажа земельного актива продавцом — ООО «Агрострой»; сделка описана как сложная многосторонняя структура",context:"—",finadv:"Не привлекался"},
+  law:{struct:"Сложная многосторонняя сделка по продаже земельного массива",appr:"Публично не сообщалось",
+   adv:[["Продавец — ООО «Агрострой»","АБ ЕПАМ","Партнёр и руководитель практики недвижимости Екатерина Верле; команда — советник Анна Родыгина, старший юрист Анастасия Карепова, юристы Сабина Идрисова и Анастасия Норкина, младший юрист Анна Щербакова. Сопровождение переговоров и подготовка документации (по данным сайта фирмы)"]],
+   terms:"Покупатель в публичном источнике не назван"},
+  src:[["ЕПАМ — о сделке","https://epam.ru/ru/news/view/komanda-ab-epam-okazala-kompleksnuyu-pravovuyu-podderzhku-ooo-agrostroj-v-hode-prodazhi-zemelnogo-massiva-v-novoj-moskve"]]},
 ];
 
 /* ================= КОМПАКТНЫЕ ЗАПИСИ СДЕЛОК (с сайтов фирм и СМИ) ================= */
@@ -573,7 +581,7 @@ const MATCH_KEYS = {
   adv:["группа адв","группы адв"], selectel:["selectel"], itmo:["итмо"], sheremetyevo:["шереметьево"],
   domodedovo:["домодедово"], inkab:["инкаб"], bik:["бик"], invest18:["инвестиции 18"],
   canc:["цанц"], absolutstrah:["абсолют страхование"], mid:["мать и дитя","мд медикал"],
-  ilyinskaya:["ильинская больница"], slhgroup:["slh group"], adamas:["адамас"],
+  ilyinskaya:["ильинская больница"], slhgroup:["slh group"], adamas:["адамас"], agrostroy:["агрострой"],
 };
 function containsKey(text, key){
   const t = (text||"").toLowerCase(); const k = key.toLowerCase();
@@ -854,8 +862,8 @@ let lens = "overview";
 function renderDeal(id){
   const d = DEALS.find(x=>x.id===id); if(!d){renderDeals();return;}
   lens = "overview";
-  const buyerName = co(d.buyer)?co(d.buyer).name:d.buyer;
-  const targetName = d.target?(co(d.target)?co(d.target).name:d.target):null;
+  const buyerName = d.buyer && co(d.buyer) ? co(d.buyer).name : null;
+  const targetName = d.target && co(d.target) ? co(d.target).name : null;
   app.innerHTML = `
   <a class="back reveal" href="#/">← Все сделки</a>
   <div class="d-head reveal">
@@ -865,7 +873,7 @@ function renderDeal(id){
       <span class="tag">${d.ind}</span>
     </div>
     <div class="deal-parties-strong reveal">
-      <a href="#/companies/${d.buyer}">${buyerName}</a>
+      ${d.buyer&&buyerName?`<a href="#/companies/${d.buyer}">${buyerName}</a>`:`<span style="color:var(--muted)">Покупатель не раскрыт</span>`}
       ${targetName?`<span class="arrow">→</span><a href="#/companies/${d.target}">${targetName}</a>`:""}
     </div>
     <h1>${d.title}</h1>
