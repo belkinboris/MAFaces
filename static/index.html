@@ -120,6 +120,13 @@ nav a.on::after,nav a:hover::after{width:100%}
 .d-parties b{color:var(--ink);font-weight:500}
 .d-parties a b{border-bottom:1px solid var(--line);transition:all .2s}
 .d-parties a:hover b{border-color:var(--accent);color:var(--accent)}
+.deal-parties-strong{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px;font-family:var(--f-display);font-size:clamp(19px,2.4vw,25px)}
+.deal-parties-strong a{color:var(--ink);text-decoration:none;border-bottom:2px solid var(--accent);padding-bottom:1px}
+.deal-parties-strong a:hover{color:var(--accent)}
+.deal-parties-strong .arrow{color:var(--bronze,#A3814E);font-size:20px}
+.extra-info{margin:28px 0;padding:20px 22px;background:var(--paper2,#F0EFEA);border-radius:10px;border:1px solid var(--line)}
+.extra-info .label{display:block;margin-bottom:10px}
+.extra-info p{font-size:14.5px;line-height:1.65;color:var(--ink);margin:0}
 .lens{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);margin-bottom:26px}
 .lens button{padding:11px 24px;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);transition:all .25s var(--ease)}
 .lens button:last-child{border-right:none}
@@ -300,6 +307,8 @@ const COMPANIES = {
   absolutstrah:{name:"Абсолют Страхование",ind:"Страхование",desc:"Универсальный страховщик, 30-е место на рынке РФ по премиям (11,8 млрд ₽ за 2025 г.). До сделки — актив группы «Абсолют» Александра Светакова.",kpi:["Рейтинг «Эксперт РА»","А+ (март 2026)"]},
   mid:{name:"«Мать и дитя» (МД Медикал Груп)",ind:"Фарма и медицина",desc:"Крупнейшая частная сеть медицинских клиник в России после покупки Ильинской больницы (по коечному фонду).",kpi:["Финансовый директор","Ия Лукьянова"]},
   ilyinskaya:{name:"Ильинская больница",ind:"Фарма и медицина",desc:"Частный госпиталь площадью 14 088 м² в Подмосковье; до сделки принадлежала структурам Тимура Кулибаева.",kpi:["Площадь участка","1,44 га (под расширение)"]},
+  slhgroup:{name:"SLH Group Limited",ind:"Потребительские товары",desc:"Гонконгский покупатель ювелирного производства и сети «Адамас».",kpi:["Юрисдикция","Гонконг"]},
+  adamas:{name:"Адамас (ООО «АДАМАС АЙПИ»)",ind:"Потребительские товары",desc:"Ювелирное производство и розничная сеть с дочерними компаниями в России, Киргизии и Казахстане. До сделки — актив АО «Форум Капитал».",kpi:["География","Россия · Киргизия · Казахстан"]},
 };
 
 /* ================= ПОЛНЫЕ КАРТОЧКИ СДЕЛОК ================= */
@@ -422,6 +431,13 @@ let DEALS = [
    adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
    terms:"Снятие залога Сбербанка с долей продавцов как отлагательное условие закрытия; впервые в истории группы M&A-сделка частично профинансирована заёмными средствами"},
   src:[["Коммерсантъ","https://www.kommersant.ru/doc/8764183"],["Ведомости","https://www.vedomosti.ru/society/news/2026/06/24/1208598-mat-ditya-ilinskuyu-bolnitsu"],["Vademecum","https://www.vademec.ru/news/2026/06/24/gk-mat-i-ditya-za-8-5-mlrd-rubley-pokupaet-ilinskuyu-bolnitsu/"],["AKM.ru","https://www.akm.ru/news/gk_md_medikal_priobretaet_ilinskuyu_bolnitsu/"]]},
+
+ {id:"adamas-slh",date:"2026-01-26",title:"Гонконгская SLH Group Limited покупает ювелирное производство и сеть «Адамас»",buyer:"slhgroup",target:"adamas",ind:"Потребительские товары",type:"M&A · выход иностранного покупателя",status:"Закрыта",sum:"6,5–10 млрд ₽",
+  eco:{sum:"6,5–10 млрд ₽ (экспертная оценка; точная сумма не раскрывалась)",share:"—",val:"—",target_fin:"—",fin:"—",rationale:"Публичных комментариев сторон о мотивах сделки не найдено — информация носит информационно-аналитический характер",context:"—",finadv:"Не привлекался"},
+  law:{struct:"Продавец — АО «Форум Капитал» (связано с М. Несветайло и партнёрами); в периметр сделки входит ООО «АДАМАС АЙПИ» с дочерними компаниями в России, Киргизии и Казахстане",appr:"Публично не сообщалось",
+   adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
+   terms:"Данные по этой сделке заметно скромнее остальных карточек — источник не раскрывал деталей структуры и согласований; честно показываем только подтверждённое"},
+  src:[["@dealsma (Telegram)","https://t.me/dealsma/6779"]]},
 ];
 
 /* ================= КОМПАКТНЫЕ ЗАПИСИ СДЕЛОК (с сайтов фирм и СМИ) ================= */
@@ -557,7 +573,7 @@ const MATCH_KEYS = {
   adv:["группа адв","группы адв"], selectel:["selectel"], itmo:["итмо"], sheremetyevo:["шереметьево"],
   domodedovo:["домодедово"], inkab:["инкаб"], bik:["бик"], invest18:["инвестиции 18"],
   canc:["цанц"], absolutstrah:["абсолют страхование"], mid:["мать и дитя","мд медикал"],
-  ilyinskaya:["ильинская больница"],
+  ilyinskaya:["ильинская больница"], slhgroup:["slh group"], adamas:["адамас"],
 };
 function containsKey(text, key){
   const t = (text||"").toLowerCase(); const k = key.toLowerCase();
@@ -838,6 +854,8 @@ let lens = "overview";
 function renderDeal(id){
   const d = DEALS.find(x=>x.id===id); if(!d){renderDeals();return;}
   lens = "overview";
+  const buyerName = co(d.buyer)?co(d.buyer).name:d.buyer;
+  const targetName = d.target?(co(d.target)?co(d.target).name:d.target):null;
   app.innerHTML = `
   <a class="back reveal" href="#/">← Все сделки</a>
   <div class="d-head reveal">
@@ -846,12 +864,12 @@ function renderDeal(id){
       <span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span>
       <span class="tag">${d.ind}</span>
     </div>
-    <h1>${d.title}</h1>
-    <div class="d-parties">
-      <span>Тип: <b>${d.type}</b></span>
-      <a href="#/companies/${d.buyer}"><b>${co(d.buyer).name}</b></a>
-      ${d.target?`<a href="#/companies/${d.target}"><b>${co(d.target).name}</b></a>`:""}
+    <div class="deal-parties-strong reveal">
+      <a href="#/companies/${d.buyer}">${buyerName}</a>
+      ${targetName?`<span class="arrow">→</span><a href="#/companies/${d.target}">${targetName}</a>`:""}
     </div>
+    <h1>${d.title}</h1>
+    <div class="d-parties"><span>Тип: <b>${d.type}</b></span></div>
   </div>
   <div class="lens reveal" role="tablist" aria-label="Линза просмотра">
     <button data-l="overview" class="on">Обзор</button>
@@ -859,6 +877,7 @@ function renderDeal(id){
     <button data-l="law">Юрист</button>
   </div>
   <div id="facts" class="reveal"></div>
+  ${d.extra?`<div class="extra-info reveal"><span class="label">Дополнительная информация</span><p>${d.extra}</p></div>`:""}
   <div class="src reveal"><span class="label">Источники</span><br>${d.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join("")}</div>
   ${miniAIHtml("Уточните детали этой сделки…")}`;
   const paint = ()=>{
@@ -885,8 +904,7 @@ function renderDeal(id){
       ${F("Сумма",d.sum,"big num")}
       ${F("Предмет",d.eco.share)}
       ${F("Статус",d.status)}
-      ${F("Суть",d.eco.rationale,"",true)}
-      ${F("Контекст",d.eco.context,"",true)}
+      ${F("Согласования",d.law.appr!=="Публично не сообщалось"?d.law.appr:"")}
     </div>`;
   };
   paint();

@@ -61,6 +61,18 @@ EXISTING_KEYS = {
 
 GENERIC_PARTIES = re.compile(r"физическ|не указан|неизвестн|не раскрыв|инвестор[ыа]?$|акционер|основател|менеджмент|консорциум|частн", re.I)
 
+FIN_HINTS = re.compile(r"[^.]*(?:финансирован\w+|кредитн\w+ лини\w+|заёмны[хе] средств|собственных средств|обеспечит\s+финанс|предоставит\s+финанс|кредит[а-я]* (?:сбербанк|банк))[^.]*\.", re.I)
+SHARE_HINTS = re.compile(r"[^.]*\b\d{1,3}(?:[.,]\d+)?\s?%[^.]*\.", re.I)
+TARGET_FIN_HINTS = re.compile(r"[^.]*(?:выручк\w+|ebitda|чистая прибыль|мультипликатор|p/e\b)[^.]*\.", re.I)
+
+
+def extract_first(pattern, *texts):
+    for t in texts:
+        if not t: continue
+        m = pattern.search(t)
+        if m: return m.group(0).strip()
+    return None
+
 
 def norm_date(d):
     d = (d or "").strip()
@@ -181,6 +193,10 @@ def main():
         if not sources and r.get("source_url"):
             sources = [[r.get("source_name", "Источник"), r["source_url"]]]
 
+        fin_hint = extract_first(FIN_HINTS, extra, role)
+        share_hint = extract_first(SHARE_HINTS, extra, role)
+        target_fin_hint = extract_first(TARGET_FIN_HINTS, extra, role)
+
         deals.append({
             "id": slug(r.get("source_url") or r.get("title", "")),
             "date": norm_date(r.get("date", "")),
@@ -192,10 +208,12 @@ def main():
             "sum": short_sum(r.get("sum")),
             "eco": {
                 "sum": r.get("sum") or "Не раскрыта",
-                "share": "—", "val": "—", "target_fin": "—", "fin": "—",
+                "share": share_hint or "—", "val": "—",
+                "target_fin": target_fin_hint or "—",
+                "fin": fin_hint or "—",
                 "rationale": role or "—",
-                "context": extra or "—",
-                "finadv": "; ".join(fin_advs) if fin_advs else "Не раскрывался",
+                "context": "—",
+                "finadv": "; ".join(fin_advs) if fin_advs else "Не привлекался",
             },
             "law": {
                 "struct": "—",
@@ -204,6 +222,7 @@ def main():
                 "terms": "—",
             },
             "src": sources,
+            "extra": extra or None,
             "auto": True,
         })
         consumed.append(r["source_url"])
