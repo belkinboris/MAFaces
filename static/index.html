@@ -462,19 +462,34 @@ const FIRM_MATCH = {orion:/orion|орион/i, level:/level/i, aspring:/aspring/
 /* ================= РОУТЕР ================= */
 const app = document.getElementById("app");
 const co = id => COMPANIES[id];
-const fmtDate = d => new Date(d).toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"}).replace(" г.","");
+const fmtDate = d => d==="unknown" ? "Дата уточняется" : new Date(d).toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"}).replace(" г.","");
 const esc = s => s.replace(/</g,"&lt;");
 const ALL_FIRM = id => FIRMS.find(f=>f.id===id)||INV_FIRMS.find(f=>f.id===id);
 function firmDeals(id){
   const rx = FIRM_MATCH[id];
-  if(!rx) return {full:[],mini:[]};
+  if(!rx) return {full:[],mini:[],bulk:[]};
   return {
     full: DEALS.filter(d=>d.law.adv.some(a=>rx.test(a[1]))||rx.test(d.eco.finadv||"")),
-    mini: MINI_DEALS.filter(m=>m.firm===id)
+    mini: MINI_DEALS.filter(m=>m.firm===id),
+    bulk: BULK_DEALS.filter(b=>b.firm===id)
   };
 }
-const firmCount = id => {const x=firmDeals(id);return x.full.length+x.mini.length;};
-const TOTAL_DEALS = DEALS.length + MINI_DEALS.length + CHANNEL_DEALS.length;
+const firmCount = id => {const x=firmDeals(id);return x.full.length+x.mini.length+x.bulk.length;};
+const TOTAL_DEALS = () => DEALS.length + MINI_DEALS.length + CHANNEL_DEALS.length + BULK_DEALS.length;
+
+/* ================= МАССОВАЯ БАЗА (загружается отдельным JSON, не хранится в HTML) ================= */
+let BULK_DEALS = [];
+let bulkLoaded = false;
+async function loadBulkDeals(){
+  if(bulkLoaded) return;
+  try{
+    const r = await fetch("static/data/bulk_deals.json");
+    if(r.ok){ BULK_DEALS = await r.json(); }
+  }catch(e){ console.warn("bulk_deals.json недоступен:", e); }
+  bulkLoaded = true;
+  route(); // перерисовать текущую страницу с уже загруженными данными
+}
+loadBulkDeals();
 
 function route(){
   const h = location.hash.replace("#","") || "/";
@@ -516,7 +531,7 @@ function localAnswer(q){
     return `Сделок выхода иностранцев среди полных карточек ${ds.length}: ${ds.map(link).join("; ")}. Плюс компактные: Freedom Holding ($140 млн) и Fortenova. Общие черты: правкомиссия, дисконт, опционы обратного выкупа.`;
   }
   if(/консультант|юрист|фирм|сопровожда|orion|орион|level|алруд/.test(s)){
-    return `В базе ${TOTAL_DEALS} сделок. По публикациям фирм: <a href="#/advisors/orion">Orion — ${firmCount("orion")} сделок</a>, <a href="#/advisors/level">LEVEL Legal Services — ${firmCount("level")}</a>, инвестиционный консультант <a href="#/advisors/aspring">Aspring Capital — ${firmCount("aspring")}</a>, по «Технорэду» — ASB Consulting Group. Полный каталог — в разделе <a href="#/advisors">Консультанты</a>. Это публичные данные, не рейтинг.`;
+    return `В базе ${TOTAL_DEALS()} сделок. По публикациям фирм: <a href="#/advisors/orion">Orion — ${firmCount("orion")} сделок</a>, <a href="#/advisors/level">LEVEL Legal Services — ${firmCount("level")}</a>, инвестиционный консультант <a href="#/advisors/aspring">Aspring Capital — ${firmCount("aspring")}</a>, по «Технорэду» — ASB Consulting Group. Полный каталог — в разделе <a href="#/advisors">Консультанты</a>. Это публичные данные, не рейтинг.`;
   }
   if(/правкомисс|согласован|одобрен|указ/.test(s)){
     const ds = DEALS.filter(d=>/правкомисс|Президент/i.test(d.law.appr));
@@ -528,7 +543,7 @@ function localAnswer(q){
   }
   const hit = DEALS.find(d=>(d.title+" "+d.ind+" "+d.type).toLowerCase().split(/[^а-яa-zё0-9]+/).some(w=>w.length>3&&s.includes(w)));
   if(hit) return `Похоже, вы про ${link(hit)} (${hit.ind}, ${fmtDate(hit.date)}).`;
-  return `В демо-базе ${TOTAL_DEALS} сделок — точного совпадения нет. Попробуйте: «самая крупная сделка», «кто сопровождал сделки», «выходы иностранцев». С ключом ANTHROPIC_API_KEY доступен полноценный ИИ и режим «По всему интернету».`;
+  return `В демо-базе ${TOTAL_DEALS()} сделок — точного совпадения нет. Попробуйте: «самая крупная сделка», «кто сопровождал сделки», «выходы иностранцев». С ключом ANTHROPIC_API_KEY доступен полноценный ИИ и режим «По всему интернету».`;
 }
 
 async function aiAnswer(q, mode){
@@ -574,10 +589,54 @@ const HERO_SVG = `<svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slic
 </svg>`;
 
 let filterInd = "Все";
+let feedPage = 1;
+const PAGE_SIZE = 40;
+
+function unifiedFeed(){
+  const rowHtml = {
+    full: d => `
+    <a class="deal-row reveal" href="#/deal/${d.id}">
+      <div><span class="label num">${fmtDate(d.date)}</span><br><span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span></div>
+      <div><div class="deal-title">${d.title}</div><div class="deal-sub">${d.type}</div></div>
+      <div class="deal-meta"><div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div><span class="tag">${d.ind}</span></div>
+    </a>`,
+    mini: m => `
+    <a class="deal-row mini reveal" href="${m.src[1]}" target="_blank" rel="noopener">
+      <div><span class="label num">${fmtDate(m.date)}</span><br><span class="status">Кратко</span></div>
+      <div><div class="deal-title" style="font-size:17px">${m.title}</div><div class="deal-sub">${ALL_FIRM(m.firm)?ALL_FIRM(m.firm).n:""} · ${m.role} · источник: ${m.src[0]} ↗</div></div>
+      <div class="deal-meta"><span class="tag steel">${m.ind}</span></div>
+    </a>`,
+    chan: c => `
+    <a class="deal-row mini reveal" href="${c.src[1]}" target="_blank" rel="noopener">
+      <div><span class="label num">${fmtDate(c.date)}</span><br><span class="status">Из канала</span></div>
+      <div><div class="deal-title" style="font-size:17px">${c.title}</div><div class="deal-sub">${c.note} · найдено: ${c.channel} · источник: ${c.src[0]} ↗</div></div>
+      <div class="deal-meta"><span class="tag bronze">${c.ind}</span></div>
+    </a>`,
+    bulk: b => `
+    <a class="deal-row mini reveal" href="${(b.src&&b.src[1])||'#'}" target="_blank" rel="noopener">
+      <div><span class="label num">${fmtDate(b.date)}</span><br><span class="status">Кратко</span></div>
+      <div><div class="deal-title" style="font-size:16.5px">${b.title}</div><div class="deal-sub">${b.role||""}${b.src?` · источник: ${b.src[0]} ↗`:""}</div></div>
+      <div class="deal-meta"><span class="tag bronze">${b.ind}</span></div>
+    </a>`,
+  };
+  const items = [
+    ...DEALS.map(d=>({kind:"full",date:d.date,ind:d.ind,rec:d})),
+    ...MINI_DEALS.map(m=>({kind:"mini",date:m.date,ind:m.ind,rec:m})),
+    ...CHANNEL_DEALS.map(c=>({kind:"chan",date:c.date,ind:c.ind,rec:c})),
+    ...BULK_DEALS.map(b=>({kind:"bulk",date:b.date,ind:b.ind,rec:b})),
+  ];
+  const filtered = items.filter(it=>filterInd==="Все"||it.ind===filterInd);
+  filtered.sort((a,b)=>{
+    if(a.date==="unknown") return 1;
+    if(b.date==="unknown") return -1;
+    return b.date.localeCompare(a.date);
+  });
+  return filtered.map(it=>rowHtml[it.kind](it.rec));
+}
+
 function renderDeals(){
-  const deals = DEALS.filter(d=>filterInd==="Все"||d.ind===filterInd);
-  const minis = MINI_DEALS.filter(m=>filterInd==="Все"||m.ind===filterInd);
-  const chans = CHANNEL_DEALS.filter(c=>filterInd==="Все"||c.ind===filterInd);
+  const allRows = unifiedFeed();
+  const shown = allRows.slice(0, feedPage*PAGE_SIZE);
   app.innerHTML = `
   <div class="hero reveal">${HERO_SVG}
     <div class="hero-in">
@@ -590,41 +649,13 @@ function renderDeals(){
       </div>
       ${modeToggleHtml(false)}
       <div class="hero-rule"></div>
-      <div class="hero-note num">${TOTAL_DEALS} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300 · ${INV_FIRMS.length} инвестиционный консультант</div>
+      <div class="hero-note num">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300 · ${INV_FIRMS.length} инвестиционный консультант${bulkLoaded?"":" · догружаем базу…"}</div>
     </div>
   </div>
   <div class="filters reveal">${INDUSTRIES.map(i=>`<button class="chip ${i===filterInd?"on":""}" data-ind="${i}">${i}</button>`).join("")}</div>
-  ${deals.map(d=>`
-  <a class="deal-row reveal" href="#/deal/${d.id}">
-    <div><span class="label num">${fmtDate(d.date)}</span><br><span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span></div>
-    <div>
-      <div class="deal-title">${d.title}</div>
-      <div class="deal-sub">${d.type}</div>
-    </div>
-    <div class="deal-meta">
-      <div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div>
-      <span class="tag">${d.ind}</span>
-    </div>
-  </a>`).join("")}
-  ${minis.map(m=>`
-  <a class="deal-row mini reveal" href="${m.src[1]}" target="_blank" rel="noopener">
-    <div><span class="label num">${fmtDate(m.date)}</span><br><span class="status">Кратко</span></div>
-    <div>
-      <div class="deal-title" style="font-size:17px">${m.title}</div>
-      <div class="deal-sub">${ALL_FIRM(m.firm)?ALL_FIRM(m.firm).n:""} · ${m.role} · источник: ${m.src[0]} ↗</div>
-    </div>
-    <div class="deal-meta"><span class="tag steel">${m.ind}</span></div>
-  </a>`).join("")}
-  ${chans.map(c=>`
-  <a class="deal-row mini reveal" href="${c.src[1]}" target="_blank" rel="noopener">
-    <div><span class="label num">${fmtDate(c.date)}</span><br><span class="status">Из канала</span></div>
-    <div>
-      <div class="deal-title" style="font-size:17px">${c.title}</div>
-      <div class="deal-sub">${c.note} · найдено: ${c.channel} · источник: ${c.src[0]} ↗</div>
-    </div>
-    <div class="deal-meta"><span class="tag bronze">${c.ind}</span></div>
-  </a>`).join("")}
-  ${(deals.length+minis.length+chans.length)?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
+  ${shown.join("")}
+  ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
+  ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}
   <div class="cta reveal">
     <div>
       <h3>Не нашли сделку в базе?</h3>
@@ -632,7 +663,9 @@ function renderDeals(){
     </div>
     <a href="#/assistant">Спросить ИИ</a>
   </div>`;
-  app.querySelectorAll("[data-ind]").forEach(b=>b.onclick=()=>{filterInd=b.dataset.ind;renderDeals();rerun();});
+  const lm = document.getElementById("loadmore");
+  if(lm) lm.onclick = ()=>{feedPage++;renderDeals();rerun();};
+  app.querySelectorAll("[data-ind]").forEach(b=>b.onclick=()=>{filterInd=b.dataset.ind;feedPage=1;renderDeals();rerun();});
   const go=()=>{const v=document.getElementById("heroq").value.trim();if(v){sessionStorage.setItem("pendingQ",v);location.hash="#/assistant";}};
   document.getElementById("herogo").onclick=go;
   document.getElementById("heroq").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
@@ -828,7 +861,7 @@ function renderAdvisors(){
 function renderFirm(id){
   const f = ALL_FIRM(id); if(!f){renderAdvisors();return;}
   const isLegal = !!FIRMS.find(x=>x.id===id);
-  const {full,mini} = firmDeals(id);
+  const {full,mini,bulk} = firmDeals(id);
   app.innerHTML = `
   <a class="back reveal" href="#/advisors">← Все консультанты</a>
   <div class="d-head reveal">
@@ -840,7 +873,7 @@ function renderFirm(id){
     </div>
   </div>
   <div class="facts reveal" style="margin-bottom:30px">
-    <div class="fact"><span class="label">Сделок в базе «Реестра»</span><div class="val big num">${full.length+mini.length}</div></div>
+    <div class="fact"><span class="label">Сделок в базе «Реестра»</span><div class="val big num">${full.length+mini.length+bulk.length}</div></div>
     <div class="fact wide" style="display:flex;align-items:center"><span style="color:var(--muted);font-size:13px">Только сделки, известные из публичных источников (прежде всего — публикаций самой фирмы). Фирмы раскрывают не все проекты: список заведомо неполный и не отражает объём практики.</span></div>
   </div>
   ${full.map(d=>{
@@ -864,7 +897,16 @@ function renderFirm(id){
     </div>
     <div class="deal-meta"><span class="tag steel">${m.ind}</span></div>
   </a>`).join("")}
-  ${(full.length+mini.length)?"":`<p class="reveal" style="color:var(--muted)">Публично подтверждённых сделок этой фирмы в базе пока нет. Наполнение продолжается.</p>`}
+  ${bulk.map(b=>`
+  <a class="deal-row mini reveal" href="${(b.src&&b.src[1])||'#'}" target="_blank" rel="noopener">
+    <div><span class="label num">${fmtDate(b.date)}</span><br><span class="status">Кратко</span></div>
+    <div>
+      <div class="deal-title" style="font-size:16.5px">${b.title}</div>
+      <div class="deal-sub">${b.role||""}${b.src?` · источник: ${b.src[0]} ↗`:""}</div>
+    </div>
+    <div class="deal-meta"><span class="tag bronze">${b.ind}</span></div>
+  </a>`).join("")}
+  ${(full.length+mini.length+bulk.length)?"":`<p class="reveal" style="color:var(--muted)">Публично подтверждённых сделок этой фирмы в базе пока нет. Наполнение продолжается.</p>`}
   ${miniAIHtml("Спросите о сделках этого консультанта…")}`;
   mountMiniAI(f.n);
 }
