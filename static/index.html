@@ -350,6 +350,25 @@ const MINI_DEALS = [
  {date:"2025-12-26",title:"«Ростелеком» инвестирует в сервис платформенной занятости «Рабочие Руки»",ind:"ИТ и интернет",firm:"orion",role:"За «Ростелеком» — партнёр Константин Олефир, практика венчурного инвестирования; выкуп долей ранних инвесторов, включая частичный выход ФРИИ",src:["Orion","https://orion-law.com/news/komanda-orion-vystupila-konsultantom-rostelekom-v-sdelke-po-investirovaniyu-v-servis-platformennoj-zanyatosti-rabochie-ruki"]},
  {date:"2025-03-10",title:"«Сбербанк Инвестиции»: покупка 100% «СДМ ТК-2» (склад 82 тыс. м²) и продажа 50% «Логопарк 7»",ind:"Недвижимость",firm:"orion",role:"За «Сбербанк Инвестиции» — сопровождение обеих сделок (по данным сайта фирмы)",src:["Orion","https://orion-law.com/news"]},
  {date:"2023-11-09",title:"«Магнит» покупает 100% маркетплейса KazanExpress",ind:"E-commerce",firm:"orion",role:"За «Магнит» — основной юридический консультант, партнёр Евгений Зеленский; одна из крупнейших e-commerce сделок вне Russian-exit, одобрена ФАС, экспертные оценки ~10 млрд ₽",src:["Orion","https://orion-law.com/news/orion-partners-vystupila-konsultantom-gruppy-kompanij-magnit-pri-priobretenii-marketplejsa-kazanexpress"]},
+ {date:"2022-03-25",title:"ГК «Аквариус» покупает производственно-логистический комплекс в Твери",ind:"Машиностроение",firm:"tomashevskaya",role:"Юристы M&A практики Tomashevskaya & Partners под руководством Светланы Емельяновой; инвестиции в проект — 5 млрд ₽ (по публикации в тг-канале «Рульфы, Ильфы и Инхаусы»)",src:["РУЛЬФЫ, ИЛЬФЫ И ИНХАУСЫ (t.me/LawFirms)","https://t.me/LawFirms/4205"]},
+];
+
+/* ================= СДЕЛКИ ИЗ ТЕЛЕГРАМ-КАНАЛОВ (без привязки к консультанту) ================= */
+const CHANNEL_DEALS = [
+ {date:"2022-07-27",title:"OBI закрывает сделку по продаже российского бизнеса за 1 евро",ind:"Ритейл",note:"28 гипермаркетов DIY; 60% долей — Йозеф Лиокумович (Supernova Group), 40% — ГК MAX; продавец — Tengelmann (Германия). Выручка 2021 — 41,8 млрд ₽, чистый убыток — 2,5 млрд ₽.",channel:"M&A Новости (t.me/dealsma)",src:["Ведомости","https://www.vedomosti.ru/business/articles/2022/07/30/933793-obi-zakrila-sdelku-prodazhe"]},
+ {date:"2022-07-28",title:"УГМК выкупает более 80% «Сусуманзолота» у наследников основателя",ind:"ГМК и добыча",note:"Топ-10 золотодобытчиков России, добыча 7,3 т золота в 2021-м на Колыме. Выручка 2021 — 30,1 млрд ₽, EBITDA — 6,2 млрд ₽. Первый актив УГМК в золотодобыче.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5481062"]},
+ {date:"2022-08-05",title:"X5 Group приобретает контроль в сибирских ритейлерах «Красный Яр» и «Слата»",ind:"Ритейл",note:"70% в каждой группе; 226+ магазинов в Красноярском крае, Хакасии, Туве, Иркутской области, Бурятии. Аналитики оценивали доли в 1,8–2,6 млрд ₽ и 2–3 млрд ₽ соответственно; сделка ожидала одобрения ФАС.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5492045"]},
+ {date:"2022-08-05",title:"«Магнит» покупает тепличный комплекс Абрамовича-младшего в Белгородской области",ind:"Агро",note:"100% ООО «Гринхаус», томатный комплекс 24,5 га, мощность ~20 тыс. т/год. Инвестиции в проект — 5 млрд ₽; эксперты оценивали сделку в 3–4 млрд ₽. Продавец — Аркадий Абрамович.",channel:"M&A Новости (t.me/dealsma)",src:["bel.ru","https://bel.ru/news/2022-08-08/vladeltsy-seti-magnit-priobreli-belgorodskie-teplitsy-abramovicha-mladshego-1074021"]},
+ {date:"2022-08-05",title:"Группа СОГАЗ продаёт сеть медклиник владельцам компании-партнёра «Номеко»",ind:"Фарма и медицина",note:"ММЦ «СОГАЗ»: клиники в Петербурге, Геленджике, Татарстане, Тобольске плюс строящийся медкомплекс на 30 млрд ₽ инвестиций. Причина продажи — вывод медицинского направления из-под санкций против СОГАЗа.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5503177"]},
+ {date:"2022-08-08",title:"Softline покупает контроль в разработчике ПО «Ваш платежный проводник»",ind:"ИТ и интернет",note:"Программное обеспечение для платёжных терминалов и процессинга; команда 49 человек, большинство — разработчики. Сумма сделки не раскрывалась.",channel:"M&A Новости (t.me/dealsma)",src:["ComNews","https://www.comnews.ru/content/221438/2022-08-01/2022-w31/softline-obrel-kontrol-nad-kompaniey-vash-platezhnyy-provodnik"]},
+ {date:"2022-08-08",title:"«ЭР-Телеком» покупает 51% разработчика систем виртуализации «Шаркс датацентр»",ind:"ИТ и интернет",note:"Продукты SharxBase/SharxDesk для замены VMware в дата-центрах, внесены в реестр российского ПО Минцифры. Выручка 2021 — 74,6 млн ₽.",channel:"M&A Новости (t.me/dealsma)",src:["CNews","https://www.cnews.ru/news/top/2022-08-09_er-telekom_priobrel_rossijskogo"]},
+ {date:"2022-08-09",title:"Baker Hughes продаёт буровой сегмент российского бизнеса местному менеджменту",ind:"Нефть и газ",note:"Буровой сегмент нефтесервиса; остальные направления закрываются. Выручка Baker Hughes 2021 — $20,5 млрд, доля компании на рынке нефтесервиса РФ — 2–3%.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5491442"]},
+ {date:"2022-08-09",title:"«Росатом» увеличивает долю в ГК «Дело» до 49%, реализовав опцион",ind:"Порты и инфраструктура",note:"После сделки: Сергей Шишкарёв — 51%, АО «Атомэнергопром» (Росатом) — 49% в ООО «УК Дело» — головной компании транспортно-логистического холдинга.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5503749"]},
+ {date:"2022-07-19",title:"Alshaya Group ищет покупателя на сеть Mothercare в России",ind:"Ритейл",note:"100% ООО «Монэкс трейдинг», 118 магазинов в 30 регионах. Статус: поиск покупателя, продажа рассматривается по закупочной цене товарных запасов; не исключено полное закрытие сети.",channel:"M&A Новости (t.me/dealsma)",src:["Forbes","https://www.forbes.ru/biznes/472049-britanskij-brend-detskih-tovarov-i-odezdy-mothercare-mozet-ujti-iz-rossii"]},
+ {date:"2022-07-31",title:"Tetra Pak передаёт российский бизнес местному менеджменту",ind:"Пищепром и напитки",note:"100% акций АО «Тетра Пак», завод в Лобне (более 500 линий упаковки), клиенты — PepsiCo, Coca-Cola HBC, Danone. Выручка 2021 — 49,4 млрд ₽, EBITDA — 5,4 млрд ₽. Статус на момент публикации: в процессе закрытия.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5480835"]},
+ {date:"2022-08-05",title:"Enel и Fortum замораживают продажу российских активов",ind:"Энергетика",note:"Приостановка выхода иностранных акционеров из электроэнергетики РФ связана с указом Президента №520 о временном порядке сделок с недружественными инвесторами.",channel:"M&A Новости (t.me/dealsma)",src:["Neftegaz.ru","https://neftegaz.ru/news/companies/746492-sdelki-po-prodazhe-enel-i-fortum-rossiyskikh-aktivov-zamorozheny-na-neopredelennyy-srok/"]},
+ {date:"2022-08-04",title:"Equifax выходит из состава участников БКИ «Эквифакс»",ind:"Инвестиции и рынок ЦБ",note:"50% долей продано новым владельцам банка «Хоум Кредит» (Ибрагим Загидулин, Виолетта Чайка); ещё 25% ранее перешли экс-главе РТС Ивану Тырышкину. Крупнейшее кредитное бюро — база 513 млн кредитных историй физлиц.",channel:"M&A Новости (t.me/dealsma)",src:["dp.ru","https://www.dp.ru/a/2022/08/08/Bjuro_kreditnih_istorij_Eq"]},
+ {date:"2022-08-11",title:"Evraz объявляет о намерении продать североамериканский дивизион",ind:"ГМК и добыча",note:"Электросталеплавильные производства, прокат и трубные заводы в Северной Америке. Компания и совладелец Роман Абрамович находятся под британскими санкциями с весны 2022 года.",channel:"M&A Новости (t.me/dealsma)",src:["Forbes","https://www.forbes.ru/biznes/474067-evraz-ob-avil-o-namerenii-prodat-svoj-severoamerikanskij-divizion"]},
 ];
 
 /* ================= КОНСУЛЬТАНТЫ ================= */
@@ -418,7 +437,7 @@ const INV_FIRMS = [
  {id:"aspring",n:"Aspring Capital",g:["Инвестиционный банк"],desc:"Независимый инвестиционный банк, M&A-консультирование."},
 ];
 const GROUP_LABEL = {"С-hi":"Сделки и M&A · high market","К-hi":"Консультирование · high market","mid":"Mid market"};
-const FIRM_MATCH = {orion:/orion|орион/i, level:/level/i, aspring:/aspring/i};
+const FIRM_MATCH = {orion:/orion|орион/i, level:/level/i, aspring:/aspring/i, tomashevskaya:/tomashevskaya/i};
 
 /* ================= РОУТЕР ================= */
 const app = document.getElementById("app");
@@ -435,7 +454,7 @@ function firmDeals(id){
   };
 }
 const firmCount = id => {const x=firmDeals(id);return x.full.length+x.mini.length;};
-const TOTAL_DEALS = DEALS.length + MINI_DEALS.length;
+const TOTAL_DEALS = DEALS.length + MINI_DEALS.length + CHANNEL_DEALS.length;
 
 function route(){
   const h = location.hash.replace("#","") || "/";
@@ -461,6 +480,7 @@ let aiMode = "base";
 const AI_CONTEXT = JSON.stringify({
   full_deals:DEALS.map(d=>({id:d.id,date:d.date,title:d.title,industry:d.ind,type:d.type,status:d.status,economist:d.eco,lawyer:d.law,sources:d.src})),
   compact_deals:MINI_DEALS.map(m=>({date:m.date,title:m.title,industry:m.ind,advisor:ALL_FIRM(m.firm)?ALL_FIRM(m.firm).n:m.firm,role:m.role,source:m.src})),
+  channel_deals:CHANNEL_DEALS.map(c=>({date:c.date,title:c.title,industry:c.ind,note:c.note,found_via:c.channel,source:c.src})),
   firms_catalog:FIRMS.map(f=>f.n),
   investment_advisors:INV_FIRMS.map(f=>f.n)
 });
@@ -469,7 +489,7 @@ function localAnswer(q){
   const s = q.toLowerCase();
   const link = d => `<a href="#/deal/${d.id}">${d.title}</a>`;
   if(/крупн|больш|дорог/.test(s)){
-    return `Крупнейшие по известным цифрам: структурная сделка <a href="#/advisors/orion">ВТБ — АФК «Система»</a> на 320+ млрд ₽ (компактная запись) и <a href="#/deal/baltika">«Балтика»</a> — 34 млрд ₽ по данным Reuters. Суммы известны не по всем сделкам.`;
+    return `Крупнейшие по известным цифрам: структурная сделка <a href="#/advisors/orion">ВТБ — АФК «Система»</a> на 320 млрд ₽ и <a href="#/deal/baltika">«Балтика»</a> — 34 млрд ₽ по данным Reuters. Из архива канала M&A Новости — сделка X5 с сибирскими ритейлерами (аналитики оценивали доли в 2–3 млрд ₽ каждая) и УГМК–«Сусуманзолото». Суммы известны не по всем сделкам.`;
   }
   if(/иностран|уход|выход|exit|санкц|опцион/.test(s)){
     const ds = DEALS.filter(d=>/иностран|MBO|Выход|опцион/i.test(d.type));
@@ -537,6 +557,7 @@ let filterInd = "Все";
 function renderDeals(){
   const deals = DEALS.filter(d=>filterInd==="Все"||d.ind===filterInd);
   const minis = MINI_DEALS.filter(m=>filterInd==="Все"||m.ind===filterInd);
+  const chans = CHANNEL_DEALS.filter(c=>filterInd==="Все"||c.ind===filterInd);
   app.innerHTML = `
   <div class="hero reveal">${HERO_SVG}
     <div class="hero-in">
@@ -574,7 +595,16 @@ function renderDeals(){
     </div>
     <div class="deal-meta"><span class="tag steel">${m.ind}</span></div>
   </a>`).join("")}
-  ${(deals.length+minis.length)?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
+  ${chans.map(c=>`
+  <a class="deal-row mini reveal" href="${c.src[1]}" target="_blank" rel="noopener">
+    <div><span class="label num">${fmtDate(c.date)}</span><br><span class="status">Из канала</span></div>
+    <div>
+      <div class="deal-title" style="font-size:17px">${c.title}</div>
+      <div class="deal-sub">${c.note} · найдено: ${c.channel} · источник: ${c.src[0]} ↗</div>
+    </div>
+    <div class="deal-meta"><span class="tag bronze">${c.ind}</span></div>
+  </a>`).join("")}
+  ${(deals.length+minis.length+chans.length)?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
   <div class="cta reveal">
     <div>
       <h3>Не нашли сделку в базе?</h3>
