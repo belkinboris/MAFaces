@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Реестр — сделки и компании российского рынка</title>
+<meta name="description" content="База сделок M&A российского рынка: 1300+ сделок со ссылками на первоисточники, профили компаний, каталог юридических и инвестиционных консультантов. Каждая сделка — глазами экономиста и юриста.">
+<meta property="og:title" content="Реестр — сделки российского рынка M&A">
+<meta property="og:description" content="1300+ сделок с первоисточниками, профили компаний, консультанты Право-300. Двойная линза: экономист и юрист.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,300;7..72,400;7..72,500;7..72,600&family=IBM+Plex+Sans:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
@@ -127,6 +132,26 @@ nav a.on::after,nav a:hover::after{width:100%}
 .extra-info{margin:28px 0;padding:20px 22px;background:var(--paper2,#F0EFEA);border-radius:10px;border:1px solid var(--line)}
 .extra-info .label{display:block;margin-bottom:10px}
 .extra-info p{font-size:14.5px;line-height:1.65;color:var(--ink);margin:0}
+.feed-search{margin:26px 0 4px;display:flex;gap:10px;align-items:stretch}
+.feed-search input{flex:1;padding:13px 18px;font-size:15px;font-family:var(--f-sans);border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none;transition:border-color .2s}
+.feed-search input:focus{border-color:var(--accent)}
+.feed-search .chip{white-space:nowrap}
+.an-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;margin-top:26px}
+.an-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px}
+.an-card>.label{display:block;margin-bottom:16px}
+.an-row{display:grid;grid-template-columns:minmax(70px,150px) 1fr 44px;gap:10px;align-items:center;margin:7px 0;font-size:13.5px}
+.an-key{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.an-bar{height:9px;background:var(--paper2,#F0EFEA);border-radius:5px;overflow:hidden}
+.an-bar div{height:100%;background:linear-gradient(90deg,var(--accent),#33556B);border-radius:5px;min-width:3px}
+.an-val{text-align:right;color:var(--muted)}
+.an-deal{display:flex;gap:8px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink);text-decoration:none}
+.an-deal:last-of-type{border-bottom:none}
+.an-deal:hover .an-deal-t{color:var(--accent)}
+.an-deal-t{flex:1;line-height:1.4}
+.an-deal-s{white-space:nowrap;color:var(--muted);font-size:13px}
+.firm-inds{margin-top:6px;display:flex;gap:5px;flex-wrap:wrap}
+.related{margin:28px 0;padding:20px 22px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.related>.label{display:block;margin-bottom:8px}
 .lens{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);margin-bottom:26px}
 .lens button{padding:11px 24px;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);transition:all .25s var(--ease)}
 .lens button:last-child{border-right:none}
@@ -230,6 +255,7 @@ footer{margin-top:80px;background:linear-gradient(160deg,var(--accent-deep),#0C2
       <a href="#/" data-r="deals">Сделки</a>
       <a href="#/companies" data-r="companies">Компании</a>
       <a href="#/advisors" data-r="advisors">Консультанты</a>
+      <a href="#/analytics" data-r="analytics">Аналитика</a>
       <a href="#/assistant" data-r="assistant">Ассистент</a>
     </nav>
   </div>
@@ -449,8 +475,7 @@ let DEALS = [
 ];
 
 /* ================= КОМПАКТНЫЕ ЗАПИСИ СДЕЛОК (с сайтов фирм и СМИ) ================= */
-const MINI_DEALS = [
- {date:"2026-06-30",title:"ВТБ — АФК «Система»: структурная инвестиционная сделка на 320 млрд ₽",ind:"Инвестиции и рынок ЦБ",firm:"orion",role:"За ВТБ — комплексное сопровождение (по данным сайта фирмы); независимая гарантия и залог пакета акций Ozon до 2030 года, первая сделка такого масштаба и структуры на российском рынке",src:["Интерфакс","https://www.interfax.ru/business/1099482"]},
+let MINI_DEALS = [
  {date:"2025-12-26",title:"«Ростелеком» инвестирует в сервис платформенной занятости «Рабочие Руки»",ind:"ИТ и интернет",firm:"orion",role:"За «Ростелеком» — партнёр Константин Олефир, практика венчурного инвестирования; выкуп долей ранних инвесторов, включая частичный выход ФРИИ",src:["Orion","https://orion-law.com/news/komanda-orion-vystupila-konsultantom-rostelekom-v-sdelke-po-investirovaniyu-v-servis-platformennoj-zanyatosti-rabochie-ruki"]},
  {date:"2025-03-10",title:"«Сбербанк Инвестиции»: покупка 100% «СДМ ТК-2» (склад 82 тыс. м²) и продажа 50% «Логопарк 7»",ind:"Недвижимость",firm:"orion",role:"За «Сбербанк Инвестиции» — сопровождение обеих сделок (по данным сайта фирмы)",src:["Orion","https://orion-law.com/news"]},
  {date:"2023-11-09",title:"«Магнит» покупает 100% маркетплейса KazanExpress",ind:"E-commerce",firm:"orion",role:"За «Магнит» — основной юридический консультант, партнёр Евгений Зеленский; одна из крупнейших e-commerce сделок вне Russian-exit, одобрена ФАС, экспертные оценки ~10 млрд ₽",src:["Orion","https://orion-law.com/news/orion-partners-vystupila-konsultantom-gruppy-kompanij-magnit-pri-priobretenii-marketplejsa-kazanexpress"]},
@@ -475,7 +500,7 @@ const MINI_DEALS = [
 ];
 
 /* ================= СДЕЛКИ ИЗ ТЕЛЕГРАМ-КАНАЛОВ (без привязки к консультанту) ================= */
-const CHANNEL_DEALS = [
+let CHANNEL_DEALS = [
  {date:"2022-07-27",title:"OBI закрывает сделку по продаже российского бизнеса за 1 евро",ind:"Ритейл",note:"28 гипермаркетов DIY; 60% долей — Йозеф Лиокумович (Supernova Group), 40% — ГК MAX; продавец — Tengelmann (Германия). Выручка 2021 — 41,8 млрд ₽, чистый убыток — 2,5 млрд ₽.",channel:"M&A Новости (t.me/dealsma)",src:["Ведомости","https://www.vedomosti.ru/business/articles/2022/07/30/933793-obi-zakrila-sdelku-prodazhe"]},
  {date:"2022-07-28",title:"УГМК выкупает более 80% «Сусуманзолота» у наследников основателя",ind:"ГМК и добыча",note:"Топ-10 золотодобытчиков России, добыча 7,3 т золота в 2021-м на Колыме. Выручка 2021 — 30,1 млрд ₽, EBITDA — 6,2 млрд ₽. Первый актив УГМК в золотодобыче.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5481062"]},
  {date:"2022-08-05",title:"X5 Group приобретает контроль в сибирских ритейлерах «Красный Яр» и «Слата»",ind:"Ритейл",note:"70% в каждой группе; 226+ магазинов в Красноярском крае, Хакасии, Туве, Иркутской области, Бурятии. Аналитики оценивали доли в 1,8–2,6 млрд ₽ и 2–3 млрд ₽ соответственно; сделка ожидала одобрения ФАС.",channel:"M&A Новости (t.me/dealsma)",src:["Коммерсантъ","https://www.kommersant.ru/doc/5492045"]},
@@ -642,6 +667,21 @@ async function loadBulkDeals(){
     }
   }catch(e){ console.warn("deals_2026.json недоступен:", e); }
   bulkLoaded = true;
+  // Страховка от дублей: компактная запись скрывается, если полная карточка
+  // того же года пересекается с ней по >=3 значимым словам заголовка
+  const DSTOP = new Set(["ооо","пао","компания","группа","доля","долей","акций","сделка","бизнес","приобрел","приобрела","купил","купила","может","купить","продал","продала","россии","покупает","инвестирует"]);
+  const dtoks = t => new Set((t||"").toLowerCase().replace(/[«»"'().,:;–—-]/g," ").split(/\s+/).filter(w=>w.length>3&&!DSTOP.has(w)));
+  const fullIdx = DEALS.map(d=>({y:(d.date||"").slice(0,4), t:dtoks(d.title)}));
+  const isDup = rec => {
+    const y=(rec.date||"").slice(0,4), t=dtoks(rec.title);
+    return fullIdx.some(f=>f.y===y && [...t].filter(w=>f.t.has(w)).length>=3);
+  };
+  const beforeCnt = MINI_DEALS.length+CHANNEL_DEALS.length+BULK_DEALS.length;
+  MINI_DEALS = MINI_DEALS.filter(m=>!isDup(m));
+  CHANNEL_DEALS = CHANNEL_DEALS.filter(c=>!isDup(c));
+  BULK_DEALS = BULK_DEALS.filter(b=>!isDup(b));
+  const dropped = beforeCnt-(MINI_DEALS.length+CHANNEL_DEALS.length+BULK_DEALS.length);
+  if(dropped) console.info("Скрыто компактных дублей полных карточек:", dropped);
   AI_CONTEXT = buildContext();
   route(); // перерисовать текущую страницу с уже загруженными данными
 }
@@ -658,6 +698,7 @@ function route(){
   else if(page==="companies"){renderCompanies();mark("companies");}
   else if(page==="advisors"&&arg){renderFirm(arg);mark("advisors");}
   else if(page==="advisors"){renderAdvisors();mark("advisors");}
+  else if(page==="analytics"){renderAnalytics();mark("analytics");}
   else if(page==="assistant"){renderAssistant();mark("assistant");}
   else {renderDeals();mark("deals");}
   window.scrollTo(0,0);
@@ -670,7 +711,8 @@ const rerun = ()=>requestAnimationFrame(()=>document.querySelectorAll(".reveal")
 let aiMode = "base";
 function buildContext(){
   return JSON.stringify({
-  full_deals:DEALS.map(d=>({id:d.id,date:d.date,title:d.title,industry:d.ind,type:d.type,status:d.status,economist:d.eco,lawyer:d.law,sources:d.src})),
+  full_deals:DEALS.filter(d=>!d.auto).map(d=>({id:d.id,date:d.date,title:d.title,industry:d.ind,type:d.type,status:d.status,economist:d.eco,lawyer:d.law,sources:d.src})),
+  auto_deals_2026:DEALS.filter(d=>d.auto).map(d=>({id:d.id,date:d.date,title:d.title,industry:d.ind,status:d.status,sum:d.sum,advisor:(d.law.adv[0]&&d.law.adv[0][1]!=="Не раскрывались")?d.law.adv[0][1]:null,summary:(d.eco.rationale||"").slice(0,220)})),
   compact_deals:MINI_DEALS.map(m=>({date:m.date,title:m.title,industry:m.ind,advisor:ALL_FIRM(m.firm)?ALL_FIRM(m.firm).n:m.firm,role:m.role,source:m.src})),
   channel_deals:CHANNEL_DEALS.map(c=>({date:c.date,title:c.title,industry:c.ind,note:c.note,found_via:c.channel,source:c.src})),
   firms_catalog:FIRMS.map(f=>f.n),
@@ -749,6 +791,9 @@ const HERO_SVG = `<svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slic
 
 let filterInd = "Все";
 let feedPage = 1;
+let feedQuery = "";
+let onlyFull = false;
+let feedYear = "Все";
 const PAGE_SIZE = 40;
 
 function unifiedFeed(){
@@ -784,7 +829,10 @@ function unifiedFeed(){
     ...CHANNEL_DEALS.map(c=>({kind:"chan",date:c.date,ind:c.ind,rec:c})),
     ...BULK_DEALS.map(b=>({kind:"bulk",date:b.date,ind:b.ind,rec:b})),
   ];
-  const filtered = items.filter(it=>filterInd==="Все"||it.ind===filterInd);
+  const q = feedQuery.trim().toLowerCase();
+  const matchQ = it => !q || (it.rec.title||"").toLowerCase().includes(q) || (it.rec.role||it.rec.note||"").toLowerCase().includes(q);
+  const matchY = it => feedYear==="Все" || (feedYear==="до 2023" ? (it.date!=="unknown"&&it.date.slice(0,4)<"2023") : it.date.slice(0,4)===feedYear);
+  const filtered = items.filter(it=>(filterInd==="Все"||it.ind===filterInd) && matchQ(it) && matchY(it) && (!onlyFull||it.kind==="full"));
   filtered.sort((a,b)=>{
     if(a.date==="unknown") return 1;
     if(b.date==="unknown") return -1;
@@ -811,6 +859,8 @@ function renderDeals(){
       <div class="hero-note num">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300 · ${INV_FIRMS.length} инвестиционный консультант${bulkLoaded?"":" · догружаем базу…"}</div>
     </div>
   </div>
+  <div class="feed-search reveal"><input id="feedq" placeholder="Поиск по базе: компания, отрасль, консультант…" value="${esc(feedQuery)}" aria-label="Поиск по сделкам"><button id="onlyfull" class="chip ${onlyFull?"on":""}" title="Показывать только сделки с подробными карточками">Только детальные</button></div>
+  <div class="filters reveal" style="margin-top:10px">${["Все","2026","2025","2024","2023","до 2023"].map(y=>`<button class="chip ${y===feedYear?"on":""}" data-year="${y}">${y}</button>`).join("")}</div>
   <div class="filters reveal">${INDUSTRIES.map(i=>`<button class="chip ${i===filterInd?"on":""}" data-ind="${i}">${i}</button>`).join("")}</div>
   ${shown.join("")}
   ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
@@ -824,6 +874,17 @@ function renderDeals(){
   </div>`;
   const lm = document.getElementById("loadmore");
   if(lm) lm.onclick = ()=>{feedPage++;renderDeals();rerun();};
+  const of = document.getElementById("onlyfull");
+  if(of) of.onclick = ()=>{onlyFull=!onlyFull;feedPage=1;renderDeals();rerun();};
+  app.querySelectorAll("[data-year]").forEach(b=>b.onclick=()=>{feedYear=b.dataset.year;feedPage=1;renderDeals();rerun();});
+  const fq = document.getElementById("feedq");
+  if(fq){
+    let t=null;
+    fq.addEventListener("input", ()=>{
+      clearTimeout(t);
+      t=setTimeout(()=>{feedQuery=fq.value;feedPage=1;const pos=fq.selectionStart;renderDeals();rerun();const nfq=document.getElementById("feedq");if(nfq){nfq.focus();nfq.setSelectionRange(pos,pos);}},250);
+    });
+  }
   app.querySelectorAll("[data-ind]").forEach(b=>b.onclick=()=>{filterInd=b.dataset.ind;feedPage=1;renderDeals();rerun();});
   const go=()=>{const v=document.getElementById("heroq").value.trim();if(v){sessionStorage.setItem("pendingQ",v);location.hash="#/assistant";}};
   document.getElementById("herogo").onclick=go;
@@ -886,6 +947,8 @@ function renderDeal(id){
   </div>
   <div id="facts" class="reveal"></div>
   ${d.extra?`<div class="extra-info reveal"><span class="label">Дополнительная информация</span><p>${d.extra}</p></div>`:""}
+  ${(()=>{const rel=DEALS.filter(x=>x.id!==d.id&&x.ind===d.ind).sort((a,b)=>(b.date||"").localeCompare(a.date||"")).slice(0,3);
+    return rel.length?`<div class="related reveal"><span class="label">Похожие сделки · ${d.ind}</span>${rel.map(r=>`<a class="an-deal" href="#/deal/${r.id}"><span class="an-deal-t">${r.title}</span><span class="an-deal-s num">${fmtDate(r.date)}</span></a>`).join("")}</div>`:"";})()}
   <div class="src reveal"><span class="label">Источники</span><br>${d.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join("")}</div>
   ${miniAIHtml("Уточните детали этой сделки…")}`;
   const paint = ()=>{
@@ -984,9 +1047,15 @@ function renderAdvisors(){
   const groups = ["Все","С-hi","К-hi","mid"];
   let body = "";
   if(advType==="legal"){
+    const firmInds = id => {
+      const {full,mini,bulk} = firmDeals(id);
+      const cnt = {};
+      [...full,...mini,...bulk].forEach(d=>{if(d.ind)cnt[d.ind]=(cnt[d.ind]||0)+1;});
+      return Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([i])=>i);
+    };
     const rows = FIRMS
       .filter(f=>firmGroup==="Все"||f.g.includes(firmGroup))
-      .map(f=>({f,n:firmCount(f.id)}))
+      .map(f=>({f,n:firmCount(f.id),inds:firmInds(f.id)}))
       .sort((a,b)=>(b.n-a.n)||a.f.n.localeCompare(b.f.n,"ru"));
     body = `
     <div class="filters reveal">${groups.map(g=>`<button class="chip ${g===firmGroup?"on":""}" data-g="${g}">${g==="Все"?"Все группы":GROUP_LABEL[g]}</button>`).join("")}</div>
@@ -994,7 +1063,7 @@ function renderAdvisors(){
       <thead><tr><th>Фирма</th><th>Группы Право-300 (Корп/M&A)</th><th>Сделки в базе</th></tr></thead>
       <tbody>
       ${rows.map(r=>`<tr>
-        <td style="width:36%"><div class="firm-name"><a href="#/advisors/${r.f.id}">${r.f.n}</a></div></td>
+        <td style="width:36%"><div class="firm-name"><a href="#/advisors/${r.f.id}">${r.f.n}</a></div>${r.inds.length?`<div class="firm-inds">${r.inds.map(i=>`<span class="tag steel" style="font-size:10.5px">${i}</span>`).join(" ")}</div>`:""}</td>
         <td><div class="firm-groups">${r.f.g.map(g=>GROUP_LABEL[g]).join(" · ")}</div></td>
         <td style="width:22%">${r.n?`<a class="count-btn" href="#/advisors/${r.f.id}">${r.n} ${r.n===1?"сделка":r.n<5?"сделки":"сделок"} →</a>`:`<span class="count-btn empty">—</span>`}</td>
       </tr>`).join("")}
@@ -1086,6 +1155,54 @@ function renderFirm(id){
 
 /* ================= АССИСТЕНТ ================= */
 const SUGGESTS = ["Кто сопровождал сделки в базе?","Какая самая крупная сделка?","Кто выходил из российского рынка?","Какие сделки с опционом обратного выкупа?"];
+function renderAnalytics(){
+  const all = [
+    ...DEALS.map(d=>({date:d.date,ind:d.ind,title:d.title,kind:"full",id:d.id,sum:d.sum,status:d.status})),
+    ...MINI_DEALS.map(m=>({date:m.date,ind:m.ind,title:m.title,kind:"mini"})),
+    ...CHANNEL_DEALS.map(c=>({date:c.date,ind:c.ind,title:c.title,kind:"chan"})),
+    ...BULK_DEALS.map(b=>({date:b.date,ind:b.ind,title:b.title,kind:"bulk"})),
+  ];
+  const byYear = {};
+  all.forEach(x=>{const y=x.date==="unknown"?"н/д":x.date.slice(0,4); byYear[y]=(byYear[y]||0)+1;});
+  const years = Object.entries(byYear).filter(([y])=>y!=="н/д").sort((a,b)=>a[0].localeCompare(b[0]));
+  const maxY = Math.max(...years.map(([,n])=>n));
+  const byInd = {};
+  all.forEach(x=>{if(x.ind)byInd[x.ind]=(byInd[x.ind]||0)+1;});
+  const topInd = Object.entries(byInd).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxI = topInd.length?topInd[0][1]:1;
+  const parseB = s => {const m=(s||"").replace(",",".").match(/([\d.]+)\s*млрд/); return m?parseFloat(m[1]):0;};
+  const topSum = DEALS.map(d=>({...d,_b:parseB(d.sum)})).filter(d=>d._b>0).sort((a,b)=>b._b-a._b).slice(0,10);
+  const statuses = {};
+  DEALS.forEach(d=>{statuses[d.status]=(statuses[d.status]||0)+1;});
+  const firmRank = FIRMS.map(f=>({id:f.id,n:f.n,c:firmCount(f.id)})).filter(f=>f.c>0).sort((a,b)=>b.c-a.c).slice(0,10);
+  app.innerHTML = `
+  <div class="sec-head reveal"><span class="label">Обзор рынка</span><h1>Аналитика</h1><p>Структура базы «Реестра»: ${TOTAL_DEALS()} сделок из публичных источников. Не является исчерпывающей статистикой рынка — только то, что попало в базу.</p></div>
+  <div class="an-grid">
+    <div class="an-card reveal">
+      <span class="label">Сделок по годам</span>
+      ${years.map(([y,n])=>`<div class="an-row"><span class="an-key num">${y}</span><div class="an-bar"><div style="width:${Math.round(n/maxY*100)}%"></div></div><span class="an-val num">${n}</span></div>`).join("")}
+    </div>
+    <div class="an-card reveal">
+      <span class="label">Топ-10 отраслей</span>
+      ${topInd.map(([i,n])=>`<div class="an-row"><span class="an-key">${i}</span><div class="an-bar"><div style="width:${Math.round(n/maxI*100)}%"></div></div><span class="an-val num">${n}</span></div>`).join("")}
+    </div>
+    <div class="an-card reveal">
+      <span class="label">Крупнейшие сделки по раскрытой сумме</span>
+      ${topSum.map((d,i)=>`<a class="an-deal" href="#/deal/${d.id}"><span class="num" style="color:var(--muted)">${i+1}.</span> <span class="an-deal-t">${d.title}</span><span class="an-deal-s num">${d.sum}</span></a>`).join("")}
+      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">Только детальные карточки с раскрытой суммой; сравнение сумм в разных валютах и годах — условное.</p>
+    </div>
+    <div class="an-card reveal">
+      <span class="label">Самые активные консультанты в базе</span>
+      ${firmRank.map((f,i)=>`<a class="an-deal" href="#/advisors/${f.id}"><span class="num" style="color:var(--muted)">${i+1}.</span> <span class="an-deal-t">${f.n}</span><span class="an-deal-s num">${f.c} сдел${f.c===1?"ка":f.c<5?"ки":"ок"}</span></a>`).join("")}
+      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">По публичным данным в базе «Реестра». Фирмы раскрывают не все проекты — это не рейтинг и не полная картина практик.</p>
+    </div>
+    <div class="an-card reveal">
+      <span class="label">Статусы детальных карточек</span>
+      ${Object.entries(statuses).map(([s,n])=>`<div class="an-row"><span class="an-key">${s}</span><div class="an-bar"><div style="width:${Math.round(n/DEALS.length*100)}%"></div></div><span class="an-val num">${n}</span></div>`).join("")}
+    </div>
+  </div>`;
+}
+
 function renderAssistant(){
   app.innerHTML = `
   <div class="chat">
