@@ -136,6 +136,16 @@ nav a.on::after,nav a:hover::after{width:100%}
 .feed-search input{flex:1;padding:13px 18px;font-size:15px;font-family:var(--f-sans);border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none;transition:border-color .2s}
 .feed-search input:focus{border-color:var(--accent)}
 .feed-search .chip{white-space:nowrap}
+.adv-panel{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0 4px;padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:10px}
+.adv-panel label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.adv-panel select{padding:9px 12px;font-size:14px;font-family:var(--f-sans);border:1px solid var(--line);border-radius:8px;background:var(--paper,#F5F5F1);color:var(--ink);min-width:180px}
+@media(max-width:640px){
+  .feed-search{flex-wrap:wrap}
+  .feed-search input{min-width:100%}
+  .feed-search .chip{flex:1;text-align:center}
+  .adv-panel{flex-direction:column;gap:12px}
+  .adv-panel select{min-width:100%}
+}
 .an-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;margin-top:26px}
 .an-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px}
 .an-card>.label{display:block;margin-bottom:16px}
@@ -582,7 +592,7 @@ const FIRMS = [
 const INV_FIRMS = [
  {id:"aspring",n:"Aspring Capital",g:["Инвестиционный банк"],desc:"Независимый инвестиционный банк, M&A-консультирование."},
 ];
-const GROUP_LABEL = {"С-hi":"Сделки и M&A · high market","К-hi":"Консультирование · high market","mid":"Mid market"};
+const GROUP_LABEL = {"С-hi":"Сопровождение сделок — крупный бизнес","К-hi":"Корпоративное консультирование — крупный бизнес","mid":"Средний бизнес"};
 const FIRM_MATCH = {orion:/orion|орион/i, level:/level/i, aspring:/aspring/i, tomashevskaya:/tomashevskaya/i,
   verba:/verba|верба/i, birch:/birch/i, mvp:/меллинг|voitishkin/i, nikolskaya:/никольская/i,
   epam:/епам|epam/i, nextons:/nextons/i, denuo:/denuo/i, o2:/o2 consulting|o2consult/i,
@@ -794,6 +804,7 @@ let feedPage = 1;
 let feedQuery = "";
 let onlyFull = false;
 let feedYear = "Все";
+let advOpen = false;
 const PAGE_SIZE = 40;
 
 function unifiedFeed(){
@@ -859,9 +870,22 @@ function renderDeals(){
       <div class="hero-note num">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300 · ${INV_FIRMS.length} инвестиционный консультант${bulkLoaded?"":" · догружаем базу…"}</div>
     </div>
   </div>
-  <div class="feed-search reveal"><input id="feedq" placeholder="Поиск по базе: компания, отрасль, консультант…" value="${esc(feedQuery)}" aria-label="Поиск по сделкам"><button id="onlyfull" class="chip ${onlyFull?"on":""}" title="Показывать только сделки с подробными карточками">Только детальные</button></div>
-  <div class="filters reveal" style="margin-top:10px">${["Все","2026","2025","2024","2023","до 2023"].map(y=>`<button class="chip ${y===feedYear?"on":""}" data-year="${y}">${y}</button>`).join("")}</div>
-  <div class="filters reveal">${INDUSTRIES.map(i=>`<button class="chip ${i===filterInd?"on":""}" data-ind="${i}">${i}</button>`).join("")}</div>
+  <div class="feed-search reveal">
+    <input id="feedq" placeholder="Найти в базе: компания, сделка, консультант…" value="${esc(feedQuery)}" aria-label="Поиск по сделкам">
+    <button id="feedgo" class="chip on">Найти</button>
+    <button id="advtoggle" class="chip ${advOpen?"on":""}">Расширенный поиск</button>
+  </div>
+  <div id="advpanel" class="adv-panel reveal" style="${advOpen?"":"display:none"}">
+    <label>Отрасль
+      <select id="selind"><option>Все</option>${INDUSTRIES.filter(i=>i!=="Все").map(i=>`<option ${i===filterInd?"selected":""}>${i}</option>`).join("")}</select>
+    </label>
+    <label>Год
+      <select id="selyear">${["Все","2026","2025","2024","2023","до 2023"].map(y=>`<option ${y===feedYear?"selected":""}>${y}</option>`).join("")}</select>
+    </label>
+    <label>Формат записей
+      <select id="selfmt"><option ${!onlyFull?"selected":""}>Все записи</option><option ${onlyFull?"selected":""}>Только с подробной карточкой</option></select>
+    </label>
+  </div>
   ${shown.join("")}
   ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
   ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}
@@ -874,9 +898,6 @@ function renderDeals(){
   </div>`;
   const lm = document.getElementById("loadmore");
   if(lm) lm.onclick = ()=>{feedPage++;renderDeals();rerun();};
-  const of = document.getElementById("onlyfull");
-  if(of) of.onclick = ()=>{onlyFull=!onlyFull;feedPage=1;renderDeals();rerun();};
-  app.querySelectorAll("[data-year]").forEach(b=>b.onclick=()=>{feedYear=b.dataset.year;feedPage=1;renderDeals();rerun();});
   const fq = document.getElementById("feedq");
   if(fq){
     let t=null;
@@ -884,8 +905,16 @@ function renderDeals(){
       clearTimeout(t);
       t=setTimeout(()=>{feedQuery=fq.value;feedPage=1;const pos=fq.selectionStart;renderDeals();rerun();const nfq=document.getElementById("feedq");if(nfq){nfq.focus();nfq.setSelectionRange(pos,pos);}},250);
     });
+    fq.addEventListener("keydown",e=>{if(e.key==="Enter"){feedQuery=fq.value;feedPage=1;renderDeals();rerun();}});
   }
-  app.querySelectorAll("[data-ind]").forEach(b=>b.onclick=()=>{filterInd=b.dataset.ind;feedPage=1;renderDeals();rerun();});
+  const fg = document.getElementById("feedgo");
+  if(fg) fg.onclick = ()=>{const el=document.getElementById("feedq");feedQuery=el?el.value:"";feedPage=1;renderDeals();rerun();};
+  const at = document.getElementById("advtoggle");
+  if(at) at.onclick = ()=>{advOpen=!advOpen;renderDeals();rerun();};
+  const bindSel = (id, fn) => {const el=document.getElementById(id); if(el) el.onchange=()=>{fn(el.value);feedPage=1;renderDeals();rerun();};};
+  bindSel("selind", v=>filterInd=v);
+  bindSel("selyear", v=>feedYear=v);
+  bindSel("selfmt", v=>onlyFull=(v!=="Все записи"));
   const go=()=>{const v=document.getElementById("heroq").value.trim();if(v){sessionStorage.setItem("pendingQ",v);location.hash="#/assistant";}};
   document.getElementById("herogo").onclick=go;
   document.getElementById("heroq").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
@@ -1043,27 +1072,26 @@ function renderCompany(id){
 /* ================= КОНСУЛЬТАНТЫ ================= */
 let advType = "legal"; // legal | invest | other
 let firmGroup = "Все";
+let firmSort = "active";
 function renderAdvisors(){
   const groups = ["Все","С-hi","К-hi","mid"];
   let body = "";
   if(advType==="legal"){
-    const firmInds = id => {
-      const {full,mini,bulk} = firmDeals(id);
-      const cnt = {};
-      [...full,...mini,...bulk].forEach(d=>{if(d.ind)cnt[d.ind]=(cnt[d.ind]||0)+1;});
-      return Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([i])=>i);
-    };
     const rows = FIRMS
       .filter(f=>firmGroup==="Все"||f.g.includes(firmGroup))
-      .map(f=>({f,n:firmCount(f.id),inds:firmInds(f.id)}))
-      .sort((a,b)=>(b.n-a.n)||a.f.n.localeCompare(b.f.n,"ru"));
+      .map(f=>({f,n:firmCount(f.id)}))
+      .sort((a,b)=>firmSort==="alpha" ? a.f.n.localeCompare(b.f.n,"ru") : (b.n-a.n)||a.f.n.localeCompare(b.f.n,"ru"));
     body = `
-    <div class="filters reveal">${groups.map(g=>`<button class="chip ${g===firmGroup?"on":""}" data-g="${g}">${g==="Все"?"Все группы":GROUP_LABEL[g]}</button>`).join("")}</div>
+    <div class="filters reveal">${groups.map(g=>`<button class="chip ${g===firmGroup?"on":""}" data-g="${g}">${g==="Все"?"Все группы":GROUP_LABEL[g]}</button>`).join("")}
+      <span style="flex:1"></span>
+      <button class="chip ${firmSort==="active"?"on":""}" data-sort="active">По активности</button>
+      <button class="chip ${firmSort==="alpha"?"on":""}" data-sort="alpha">По алфавиту</button>
+    </div>
     <table class="tbl reveal">
       <thead><tr><th>Фирма</th><th>Группы Право-300 (Корп/M&A)</th><th>Сделки в базе</th></tr></thead>
       <tbody>
       ${rows.map(r=>`<tr>
-        <td style="width:36%"><div class="firm-name"><a href="#/advisors/${r.f.id}">${r.f.n}</a></div>${r.inds.length?`<div class="firm-inds">${r.inds.map(i=>`<span class="tag steel" style="font-size:10.5px">${i}</span>`).join(" ")}</div>`:""}</td>
+        <td style="width:36%"><div class="firm-name"><a href="#/advisors/${r.f.id}">${r.f.n}</a></div></td>
         <td><div class="firm-groups">${r.f.g.map(g=>GROUP_LABEL[g]).join(" · ")}</div></td>
         <td style="width:22%">${r.n?`<a class="count-btn" href="#/advisors/${r.f.id}">${r.n} ${r.n===1?"сделка":r.n<5?"сделки":"сделок"} →</a>`:`<span class="count-btn empty">—</span>`}</td>
       </tr>`).join("")}
@@ -1098,6 +1126,7 @@ function renderAdvisors(){
   ${body}`;
   app.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{advType=b.dataset.t;renderAdvisors();rerun();});
   app.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{firmGroup=b.dataset.g;renderAdvisors();rerun();});
+  app.querySelectorAll("[data-sort]").forEach(b=>b.onclick=()=>{firmSort=b.dataset.sort;renderAdvisors();rerun();});
 }
 
 function renderFirm(id){
@@ -1164,7 +1193,7 @@ function renderAnalytics(){
   ];
   const byYear = {};
   all.forEach(x=>{const y=x.date==="unknown"?"н/д":x.date.slice(0,4); byYear[y]=(byYear[y]||0)+1;});
-  const years = Object.entries(byYear).filter(([y])=>y!=="н/д").sort((a,b)=>a[0].localeCompare(b[0]));
+  const years = Object.entries(byYear).filter(([y])=>y!=="н/д"&&y>="2023").sort((a,b)=>a[0].localeCompare(b[0]));
   const maxY = Math.max(...years.map(([,n])=>n));
   const byInd = {};
   all.forEach(x=>{if(x.ind)byInd[x.ind]=(byInd[x.ind]||0)+1;});
@@ -1181,6 +1210,7 @@ function renderAnalytics(){
     <div class="an-card reveal">
       <span class="label">Сделок по годам</span>
       ${years.map(([y,n])=>`<div class="an-row"><span class="an-key num">${y}</span><div class="an-bar"><div style="width:${Math.round(n/maxY*100)}%"></div></div><span class="an-val num">${n}</span></div>`).join("")}
+      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">С 2023 года — период системного наполнения базы; более ранние записи фрагментарны и в график не включены.</p>
     </div>
     <div class="an-card reveal">
       <span class="label">Топ-10 отраслей</span>
