@@ -108,12 +108,19 @@ def detect_type(title, role):
     return "M&A"
 
 
+ESTIMATE_WORDS = re.compile(r"оценк|аналит|эксперт|возможн|стартов|начальн|по некоторым данным|не раскрыв|предполож|ориентировочн", re.I)
+
+
 def short_sum(sum_text):
     if not sum_text: return "Не раскрыта"
+    # Официальное правило: в ленту идёт только раскрытая сторонами/консультантами цена.
+    # Оценки аналитиков, экспертные вилки и стартовые цены торгов остаются внутри карточки (eco.sum).
+    if ESTIMATE_WORDS.search(sum_text): return "Не раскрыта"
     m = re.search(r"([~≈]?\s?\d[\d\s.,–—-]*\s*(?:млрд|млн|тыс)\.?\s*(?:руб(?:лей)?\.?|₽|\$|долл\w*|евро|€))", sum_text)
     if m:
         s = re.sub(r"\s+", " ", m.group(1)).strip()
         s = s.replace("руб.", "₽").replace("рублей", "₽").replace("руб", "₽")
+        if s.startswith("~") or s.startswith("≈"): return "Не раскрыта"
         return s
     return "Не раскрыта"
 

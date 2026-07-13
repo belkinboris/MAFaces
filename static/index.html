@@ -41,7 +41,32 @@ button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1}.reveal.in,.hero svg g{animation:none!important}}
 
 /* ---------- shell ---------- */
-.top{position:sticky;top:0;z-index:50;background:rgba(245,245,241,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:50;background:rgba(245,245,241,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transition:transform .45s var(--ease)}
+.top.hide{transform:translateY(-100%)}
+.heroslider{position:relative;height:100vh;margin:0 -28px;overflow:hidden;background:#0A1210;color:var(--ivory)}
+.hs-slide{position:absolute;inset:0;opacity:0;transition:opacity .9s ease;pointer-events:none}
+.hs-slide.on{opacity:1;pointer-events:auto}
+.hs-slide svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hs-in{position:relative;max-width:1064px;margin:0 auto;padding:0 28px;height:100%;display:flex;flex-direction:column;justify-content:center}
+.hs-in .kicker{font-weight:600;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C9AE7C;margin-bottom:22px}
+.hs-in h1{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5vw,54px);line-height:1.14;max-width:780px}
+.hs-in h1 em{font-style:italic;color:#BFD6C9}
+.hs-in p{color:#A9BDB2;margin-top:18px;max-width:560px;font-size:16px;line-height:1.6}
+.hs-cta{display:inline-block;margin-top:32px;padding:15px 34px;background:var(--ivory);color:var(--accent-deep);font-weight:600;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;border-radius:4px;width:fit-content;transition:background .2s,transform .3s var(--ease)}
+.hs-cta:hover{background:#fff;transform:translateY(-2px)}
+.hs-cta.ghost{background:transparent;color:var(--ivory);border:1px solid rgba(243,241,233,.4)}
+.hs-cta.ghost:hover{border-color:var(--ivory);background:rgba(243,241,233,.08)}
+.hs-dots{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:flex;gap:14px;z-index:5}
+.hs-dots button{width:10px;height:10px;border-radius:50%;background:transparent;border:1.5px solid rgba(243,241,233,.55);transition:all .3s;padding:0}
+.hs-dots button.on{background:#C9AE7C;border-color:#C9AE7C;transform:scale(1.25)}
+.hs-cue{position:absolute;bottom:36px;right:44px;color:rgba(243,241,233,.6);font-size:22px;cursor:pointer;animation:cueBob 2.2s ease-in-out infinite;z-index:5}
+@keyframes cueBob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+@media(max-width:720px){
+  .heroslider{height:100svh}
+  .hs-in h1{font-size:30px}
+  .hs-cue{display:none}
+  .hs-dots{bottom:30px}
+}
 .top-in{max-width:1120px;margin:0 auto;padding:0 28px;height:64px;display:flex;align-items:center;gap:40px}
 .wordmark{font-family:var(--f-display);font-weight:600;font-size:22px}
 .wordmark span{color:var(--accent)}
@@ -54,11 +79,12 @@ nav a.on::after,nav a:hover::after{width:100%}
 .wrap{max-width:1120px;margin:0 auto;padding:0 28px 80px}
 
 /* ---------- hero ---------- */
-.hero{position:relative;background:linear-gradient(135deg,var(--accent-deep) 0%,var(--accent-mid) 62%,#1B3B45 100%);color:var(--ivory);margin:0 -28px;padding:76px 28px 66px;overflow:hidden}
-.hero svg{position:absolute;inset:0;width:100%;height:100%;opacity:.5;pointer-events:none}
-.hero svg .g1{animation:drift 14s ease-in-out infinite}
-.hero svg .g2{animation:drift2 18s ease-in-out infinite}
-.hero-in{position:relative;max-width:1064px;margin:0 auto}
+.hero{position:relative;background:#0A1210;color:var(--ivory);margin:0 -28px;padding:0 28px;overflow:hidden;min-height:calc(100vh - 74px);display:flex;align-items:center}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero svg .waves{animation:drift 16s ease-in-out infinite}
+.hero svg .yacht{animation:bob 9s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(330px,0)}50%{transform:translate(330px,-6px)}}
+.hero-in{position:relative;max-width:1064px;margin:0 auto;width:100%;padding:90px 0 120px}
 .hero .kicker{font-weight:600;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C9AE7C;margin-bottom:22px}
 .hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,4.6vw,46px);line-height:1.18;max-width:760px}
 .hero h1 em{font-style:italic;color:#BFD6C9}
@@ -132,11 +158,11 @@ nav a.on::after,nav a:hover::after{width:100%}
 .extra-info{margin:28px 0;padding:20px 22px;background:var(--paper2,#F0EFEA);border-radius:10px;border:1px solid var(--line)}
 .extra-info .label{display:block;margin-bottom:10px}
 .extra-info p{font-size:14.5px;line-height:1.65;color:var(--ink);margin:0}
-.feed-search{margin:26px 0 4px;display:flex;gap:10px;align-items:stretch}
+.feed-search{margin:40px 0 26px;display:flex;gap:10px;align-items:stretch}
 .feed-search input{flex:1;padding:13px 18px;font-size:15px;font-family:var(--f-sans);border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none;transition:border-color .2s}
 .feed-search input:focus{border-color:var(--accent)}
 .feed-search .chip{white-space:nowrap}
-.adv-panel{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0 4px;padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:10px}
+.adv-panel{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 26px;padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:10px}
 .adv-panel label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .adv-panel select{padding:9px 12px;font-size:14px;font-family:var(--f-sans);border:1px solid var(--line);border-radius:8px;background:var(--paper,#F5F5F1);color:var(--ink);min-width:180px}
 @media(max-width:640px){
@@ -455,7 +481,7 @@ let DEALS = [
    terms:"Опцион МТС на обратный выкуп доли при оговорённых условиях; долгосрочный договор аренды инфраструктуры БИК на рыночных условиях как часть структуры сделки"},
   src:[["Коммерсантъ","https://www.kommersant.ru/doc/8765262"],["Ведомости","https://www.vedomosti.ru/investments/news/2026/06/25/1208943-mts-bashennogo-biznesa"],["CNews","https://www.cnews.ru/news/top/2026-06-26_mts_lishilsya_pochti_poloviny"],["Mergers.ru","https://mergers.ru/news/MTS-prodala-499-v-svoej-bashennoj-kompanii-87113"]]},
 
- {id:"absolut-strah",date:"2026-06-26",title:"ОАО «ЦАНЦ» покупает 100% «Абсолют Страхование» у группы «Абсолют»",buyer:"canc",target:"absolutstrah",ind:"Страхование",type:"M&A · выход основателя",status:"Закрыта",sum:"~10 млрд ₽",
+ {id:"absolut-strah",date:"2026-06-26",title:"ОАО «ЦАНЦ» покупает 100% «Абсолют Страхование» у группы «Абсолют»",buyer:"canc",target:"absolutstrah",ind:"Страхование",type:"M&A · выход основателя",status:"Закрыта",sum:"Не раскрыта",
   eco:{sum:"~10 млрд ₽ (оценка на этапе переговоров по данным Ъ и «Банковского обозрения»; окончательная цена не раскрывалась)",share:"100% долей ООО «Абсолют Страхование»",val:"После закрытия ЦАНЦ заложило приобретённый актив в пользу УК «Абсолют Эссет Менеджмент» — аналитики расценивают это как элемент структурирования сделки",target_fin:"30-е место на страховом рынке РФ (премии 11,8 млрд ₽ за 2025 г.), активы 12,4 млрд ₽, капитал 5,8 млрд ₽; рейтинг «Эксперт РА» — А+ (март 2026)",fin:"Покупатель — ОАО «ЦАНЦ» (компания с 1995 года, уставный капитал ~138 тыс. ₽, состав акционеров не раскрывается)",rationale:"Выход основателя Александра Светакова (группа «Абсолют») из страхового бизнеса; компания сохраняет название, офисы и команду",context:"Актив был выставлен на продажу ещё в июне 2024 года; ранее в претендентах числились Совкомбанк, «Югория» и группа МТС — Совкомбанк впоследствии опроверг участие в итоговой сделке",finadv:"Не привлекался"},
   law:{struct:"Купля-продажа 100% долей ООО с последующим залогом актива покупателем в пользу управляющей компании продавца",appr:"Публично не сообщалось",
    adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
@@ -469,7 +495,7 @@ let DEALS = [
    terms:"Снятие залога Сбербанка с долей продавцов как отлагательное условие закрытия; впервые в истории группы M&A-сделка частично профинансирована заёмными средствами"},
   src:[["Коммерсантъ","https://www.kommersant.ru/doc/8764183"],["Ведомости","https://www.vedomosti.ru/society/news/2026/06/24/1208598-mat-ditya-ilinskuyu-bolnitsu"],["Vademecum","https://www.vademec.ru/news/2026/06/24/gk-mat-i-ditya-za-8-5-mlrd-rubley-pokupaet-ilinskuyu-bolnitsu/"],["AKM.ru","https://www.akm.ru/news/gk_md_medikal_priobretaet_ilinskuyu_bolnitsu/"]]},
 
- {id:"adamas-slh",date:"2026-01-26",title:"Гонконгская SLH Group Limited покупает ювелирное производство и сеть «Адамас»",buyer:"slhgroup",target:"adamas",ind:"Потребительские товары",type:"M&A · выход иностранного покупателя",status:"Закрыта",sum:"6,5–10 млрд ₽",
+ {id:"adamas-slh",date:"2026-01-26",title:"Гонконгская SLH Group Limited покупает ювелирное производство и сеть «Адамас»",buyer:"slhgroup",target:"adamas",ind:"Потребительские товары",type:"M&A · выход иностранного покупателя",status:"Закрыта",sum:"Не раскрыта",
   eco:{sum:"6,5–10 млрд ₽ (экспертная оценка; точная сумма не раскрывалась)",share:"—",val:"—",target_fin:"—",fin:"—",rationale:"Публичных комментариев сторон о мотивах сделки не найдено — информация носит информационно-аналитический характер",context:"—",finadv:"Не привлекался"},
   law:{struct:"Продавец — АО «Форум Капитал» (связано с М. Несветайло и партнёрами); в периметр сделки входит ООО «АДАМАС АЙПИ» с дочерними компаниями в России, Киргизии и Казахстане",appr:"Публично не сообщалось",
    adv:[["Стороны сделки","Не раскрывались","Юридические консультанты в публичных источниках не раскрывались"]],
@@ -591,12 +617,17 @@ const FIRMS = [
 ];
 const INV_FIRMS = [
  {id:"aspring",n:"Aspring Capital",g:["Инвестиционный банк"],desc:"Независимый инвестиционный банк, M&A-консультирование."},
+ {id:"uniservice",n:"Юнисервис Капитал",g:["Инвестиционная компания"],desc:"Организатор размещений на публичном рынке; финансовый консультант IPO «Инкаб Холдинга»."},
+ {id:"asbconsult",n:"ASB Consulting Group",g:["Консалтинг"],desc:"Финансовый и налоговый консалтинг; сопровождение сделки по «Технорэду»."},
+ {id:"advancecap",n:"Advance Capital",g:["Инвестиционный банк"],desc:"Независимый инвестиционный бутик, M&A и привлечение капитала на российском рынке."},
+ {id:"psbank",n:"ПСБ (инвестиционный блок)",g:["Банк"],desc:"Организатор торгов по активам Домодедово; корпоративно-инвестиционные услуги."},
 ];
 const GROUP_LABEL = {"С-hi":"Сопровождение сделок — крупный бизнес","К-hi":"Корпоративное консультирование — крупный бизнес","mid":"Средний бизнес"};
 const FIRM_MATCH = {orion:/orion|орион/i, level:/level/i, aspring:/aspring/i, tomashevskaya:/tomashevskaya/i,
   verba:/verba|верба/i, birch:/birch/i, mvp:/меллинг|voitishkin/i, nikolskaya:/никольская/i,
   epam:/епам|epam/i, nextons:/nextons/i, denuo:/denuo/i, o2:/o2 consulting|o2consult/i,
-  kkmp:/кучер кулешов|ккмп/i, lkp:/лемчик/i, alumni:/alumni/i, betterchance:/better chance/i, nikolaev:/николаев и партнеры|nikolaew/i};
+  kkmp:/кучер кулешов|ккмп/i, lkp:/лемчик/i, alumni:/alumni/i, betterchance:/better chance/i, nikolaev:/николаев и партнеры|nikolaew/i,
+  uniservice:/юнисервис/i, asbconsult:/asb consulting/i, advancecap:/advance capital/i, psbank:/псб|промсвязьбанк/i};
 
 /* ================= РОУТЕР ================= */
 const app = document.getElementById("app");
@@ -712,9 +743,17 @@ function route(){
   else if(page==="assistant"){renderAssistant();mark("assistant");}
   else {renderDeals();mark("deals");}
   window.scrollTo(0,0);
+  if(typeof updTop==="function") updTop();
   requestAnimationFrame(()=>document.querySelectorAll(".reveal").forEach((el,i)=>setTimeout(()=>el.classList.add("in"),i*55)));
 }
 window.addEventListener("hashchange",route);
+function updTop(){
+  const top = document.querySelector(".top"); if(!top) return;
+  const h = location.hash.replace("#","");
+  const onHome = h==="" || h==="/";
+  top.classList.toggle("hide", onHome && window.scrollY < window.innerHeight*0.55);
+}
+window.addEventListener("scroll", updTop, {passive:true});
 const rerun = ()=>requestAnimationFrame(()=>document.querySelectorAll(".reveal").forEach(el=>el.classList.add("in")));
 
 /* ================= ИИ ================= */
@@ -784,19 +823,105 @@ function bindModeToggles(scope){
 }
 
 /* ================= ЛЕНТА ================= */
-const HERO_SVG = `<svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <g class="g1" stroke="#F3F1E9" stroke-opacity=".16" fill="none">
-    <path d="M80 340 L300 220 L520 300 L760 160 L1000 250 L1160 120"/>
-    <circle cx="300" cy="220" r="4" fill="#F3F1E9" fill-opacity=".35" stroke="none"/>
-    <circle cx="760" cy="160" r="5" fill="#C9AE7C" fill-opacity=".5" stroke="none"/>
-    <circle cx="1000" cy="250" r="3.5" fill="#F3F1E9" fill-opacity=".35" stroke="none"/>
+const HERO_SVG = `<svg viewBox="0 0 1440 780" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A1210"/><stop offset="55%" stop-color="#0F2B21"/><stop offset="100%" stop-color="#173B2E"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#12332A"/><stop offset="100%" stop-color="#0A1A15"/>
+    </linearGradient>
+    <linearGradient id="moonpath" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C9AE7C" stop-opacity=".55"/><stop offset="100%" stop-color="#C9AE7C" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="520" fill="url(#sky)"/>
+  <rect y="520" width="1440" height="260" fill="url(#sea)"/>
+  <circle cx="1080" cy="180" r="64" fill="#E9DCBE" opacity=".92"/>
+  <circle cx="1054" cy="164" r="60" fill="#0F2B21" opacity=".28"/>
+  <g stroke="#E9DCBE" stroke-opacity=".08" fill="none">
+    <circle cx="230" cy="120" r="1.4" fill="#E9DCBE" stroke="none"/><circle cx="420" cy="70" r="1.1" fill="#E9DCBE" stroke="none"/>
+    <circle cx="640" cy="140" r="1.3" fill="#E9DCBE" stroke="none"/><circle cx="880" cy="60" r="1" fill="#E9DCBE" stroke="none"/>
+    <circle cx="170" cy="260" r="1" fill="#E9DCBE" stroke="none"/><circle cx="1320" cy="90" r="1.3" fill="#E9DCBE" stroke="none"/>
+    <circle cx="520" cy="240" r="1" fill="#E9DCBE" stroke="none"/><circle cx="1240" cy="330" r="1.1" fill="#E9DCBE" stroke="none"/>
   </g>
-  <g class="g2" stroke="#F3F1E9" stroke-opacity=".1" fill="none">
-    <path d="M-40 140 L220 90 L480 170 L700 60 L980 130 L1240 40"/>
-    <circle cx="220" cy="90" r="3" fill="#F3F1E9" fill-opacity=".3" stroke="none"/>
-    <circle cx="480" cy="170" r="4.5" fill="#C9AE7C" fill-opacity=".4" stroke="none"/>
-    <circle cx="700" cy="60" r="3" fill="#F3F1E9" fill-opacity=".3" stroke="none"/>
+  <path d="M1044 520 L1116 520 L1108 780 L1052 780 Z" fill="url(#moonpath)"/>
+  <g class="waves" stroke="#E9DCBE" stroke-opacity=".10" fill="none" stroke-width="1.2">
+    <path d="M0 560 Q 180 552 360 560 T 720 560 T 1080 560 T 1440 560"/>
+    <path d="M0 610 Q 200 602 400 610 T 800 610 T 1200 610 T 1600 610" stroke-opacity=".07"/>
+    <path d="M0 668 Q 160 660 320 668 T 640 668 T 960 668 T 1280 668 T 1600 668" stroke-opacity=".05"/>
   </g>
+  <g class="yacht" transform="translate(330 0)">
+    <path d="M258 470 L258 300 Q 340 400 350 470 Z" fill="#0A1210" opacity=".95"/>
+    <path d="M246 470 L246 330 Q 190 420 178 470 Z" fill="#0A1210" opacity=".85"/>
+    <path d="M150 486 L392 486 Q 372 522 320 522 L200 522 Q 168 512 150 486 Z" fill="#0A1210"/>
+    <line x1="252" y1="286" x2="252" y2="486" stroke="#0A1210" stroke-width="4"/>
+    <circle cx="252" cy="284" r="3.4" fill="#C9AE7C"/>
+    <g opacity=".22" transform="translate(0 1046) scale(1 -1)">
+      <path d="M258 470 L258 380 Q 330 430 350 470 Z" fill="#0A1210"/>
+      <path d="M150 486 L392 486 Q 372 512 320 512 L200 512 Z" fill="#0A1210"/>
+    </g>
+  </g>
+</svg>`;
+
+const SCENE_CITY = `<svg viewBox="0 0 1440 780" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs><linearGradient id="csky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0A1210"/><stop offset="100%" stop-color="#14332B"/></linearGradient></defs>
+  <rect width="1440" height="780" fill="url(#csky)"/>
+  <circle cx="1150" cy="150" r="52" fill="#E9DCBE" opacity=".85"/>
+  <g fill="#0A1210">
+    <rect x="120" y="380" width="130" height="400"/><rect x="290" y="300" width="90" height="480"/>
+    <rect x="420" y="430" width="150" height="350"/><rect x="610" y="240" width="110" height="540"/>
+    <rect x="760" y="360" width="80" height="420"/><rect x="880" y="300" width="140" height="480"/>
+    <rect x="1060" y="420" width="100" height="360"/><rect x="1200" y="340" width="120" height="440"/>
+  </g>
+  <g fill="#C9AE7C" opacity=".55">
+    <rect x="315" y="330" width="8" height="10"/><rect x="345" y="368" width="8" height="10"/><rect x="315" y="410" width="8" height="10"/>
+    <rect x="636" y="272" width="8" height="10"/><rect x="666" y="310" width="8" height="10"/><rect x="636" y="352" width="8" height="10"/><rect x="666" y="394" width="8" height="10"/>
+    <rect x="906" y="330" width="8" height="10"/><rect x="936" y="372" width="8" height="10"/><rect x="966" y="330" width="8" height="10"/>
+    <rect x="1226" y="372" width="8" height="10"/><rect x="1256" y="414" width="8" height="10"/>
+    <rect x="146" y="410" width="8" height="10"/><rect x="176" y="452" width="8" height="10"/><rect x="446" y="460" width="8" height="10"/><rect x="1086" y="450" width="8" height="10"/>
+  </g>
+</svg>`;
+
+const SCENE_COLUMNS = `<svg viewBox="0 0 1440 780" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs><linearGradient id="ksky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0B1512"/><stop offset="100%" stop-color="#173B2E"/></linearGradient></defs>
+  <rect width="1440" height="780" fill="url(#ksky)"/>
+  <circle cx="290" cy="170" r="46" fill="#E9DCBE" opacity=".8"/>
+  <g fill="#0A1210">
+    <rect x="440" y="200" width="600" height="34"/>
+    <polygon points="400,200 1080,200 1040,150 440,150"/>
+    ${[0,1,2,3,4,5].map(i=>`<rect x="${470+i*100}" y="234" width="42" height="460"/>`).join("")}
+    <rect x="430" y="694" width="620" height="24"/><rect x="410" y="718" width="660" height="20"/>
+  </g>
+  <g stroke="#C9AE7C" stroke-opacity=".35" stroke-width="1.5" fill="none">
+    ${[0,1,2,3,4,5].map(i=>`<line x1="${478+i*100}" y1="240" x2="${478+i*100}" y2="690"/>`).join("")}
+  </g>
+</svg>`;
+
+const SCENE_CHART = `<svg viewBox="0 0 1440 780" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs><linearGradient id="asky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0A1210"/><stop offset="100%" stop-color="#12302A"/></linearGradient></defs>
+  <rect width="1440" height="780" fill="url(#asky)"/>
+  <g stroke="#E9DCBE" stroke-opacity=".08" fill="none">${[0,1,2,3,4].map(i=>`<line x1="0" y1="${200+i*110}" x2="1440" y2="${200+i*110}"/>`).join("")}</g>
+  <g fill="#0F2B21" stroke="#C9AE7C" stroke-opacity=".4">
+    <rect x="300" y="500" width="70" height="180"/><rect x="430" y="430" width="70" height="250"/>
+    <rect x="560" y="470" width="70" height="210"/><rect x="690" y="350" width="70" height="330"/>
+    <rect x="820" y="390" width="70" height="290"/><rect x="950" y="260" width="70" height="420"/>
+  </g>
+  <path d="M335 470 L465 400 L595 440 L725 320 L855 360 L985 230" stroke="#C9AE7C" stroke-width="2.5" fill="none"/>
+  <g fill="#C9AE7C"><circle cx="335" cy="470" r="5"/><circle cx="725" cy="320" r="5"/><circle cx="985" cy="230" r="6"/></g>
+</svg>`;
+
+const SCENE_AI = `<svg viewBox="0 0 1440 780" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs><radialGradient id="aig" cx="50%" cy="42%" r="65%"><stop offset="0%" stop-color="#1D5A44"/><stop offset="55%" stop-color="#0F2B21"/><stop offset="100%" stop-color="#0A1210"/></radialGradient></defs>
+  <rect width="1440" height="780" fill="url(#aig)"/>
+  <g fill="none" stroke="#C9AE7C">
+    <circle cx="720" cy="330" r="70" stroke-opacity=".65" stroke-width="1.6"/>
+    <circle cx="720" cy="330" r="140" stroke-opacity=".3"/>
+    <circle cx="720" cy="330" r="220" stroke-opacity=".16"/>
+    <circle cx="720" cy="330" r="310" stroke-opacity=".08"/>
+  </g>
+  <circle cx="720" cy="330" r="9" fill="#C9AE7C"/>
+  <g fill="#E9DCBE" opacity=".7"><circle cx="580" cy="260" r="2.4"/><circle cx="866" cy="410" r="2.4"/><circle cx="920" cy="220" r="2"/><circle cx="540" cy="420" r="2"/></g>
 </svg>`;
 
 let filterInd = "Все";
@@ -856,20 +981,57 @@ function renderDeals(){
   const allRows = unifiedFeed();
   const shown = allRows.slice(0, feedPage*PAGE_SIZE);
   app.innerHTML = `
-  <div class="hero reveal">${HERO_SVG}
-    <div class="hero-in">
-      <div class="kicker">Российский рынок сделок</div>
-      <h1>Сделки, компании и консультанты — <em>в одном месте</em>, со ссылками на первоисточники</h1>
-      <p>Каждая сделка — глазами экономиста и глазами юриста. Только то, что есть в публичном поле.</p>
-      <div class="aisearch">
-        <input id="heroq" placeholder="Спросите: кто сопровождал сделки? какая самая крупная?" aria-label="Вопрос ассистенту">
-        <button id="herogo">Спросить ИИ</button>
+  <div class="heroslider">
+    <div class="hs-slide on">${HERO_SVG}
+      <div class="hs-in">
+        <div class="kicker">Российский рынок сделок</div>
+        <h1>Сделки — <em>вся картина рынка</em> со ссылками на первоисточники</h1>
+        <p>Каждая сделка — глазами экономиста и глазами юриста. Только то, что есть в публичном поле.</p>
+        <a class="hs-cta" href="#feed" data-scroll>Смотреть сделки</a>
+        <div class="hero-note num" style="margin-top:34px">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300${bulkLoaded?"":" · догружаем базу…"}</div>
       </div>
-      ${modeToggleHtml(false)}
-      <div class="hero-rule"></div>
-      <div class="hero-note num">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300 · ${INV_FIRMS.length} инвестиционный консультант${bulkLoaded?"":" · догружаем базу…"}</div>
     </div>
+    <div class="hs-slide">${SCENE_CITY}
+      <div class="hs-in">
+        <div class="kicker">Профили участников</div>
+        <h1>Компании — <em>кто, кого и у кого</em> покупает</h1>
+        <p>Профили сторон сделок: ключевые показатели, история сделок компании, упоминания по всей базе.</p>
+        <a class="hs-cta" href="#/companies">Открыть компании</a>
+      </div>
+    </div>
+    <div class="hs-slide">${SCENE_COLUMNS}
+      <div class="hs-in">
+        <div class="kicker">Каталог Право-300</div>
+        <h1>Консультанты — <em>кто ведёт сделки</em> на рынке</h1>
+        <p>Юридические и инвестиционные консультанты с реальными сделками из публичных источников. Не рейтинг — факты.</p>
+        <a class="hs-cta" href="#/advisors">Открыть консультантов</a>
+      </div>
+    </div>
+    <div class="hs-slide">${SCENE_CHART}
+      <div class="hs-in">
+        <div class="kicker">Обзор рынка</div>
+        <h1>Аналитика — <em>структура рынка</em> в цифрах</h1>
+        <p>Сделки по годам и отраслям, крупнейшие сделки по раскрытым суммам, самые активные консультанты базы.</p>
+        <a class="hs-cta" href="#/analytics">Открыть аналитику</a>
+      </div>
+    </div>
+    <div class="hs-slide">${SCENE_AI}
+      <div class="hs-in">
+        <div class="kicker">Задайте вопрос</div>
+        <h1>Ассистент — <em>спросите базу</em> обычным языком</h1>
+        <p>Кто сопровождал сделку? Какая крупнейшая в фарме? Ищет по базе «Реестра» или по всему интернету.</p>
+        <div class="aisearch">
+          <input id="heroq" placeholder="Спросите: кто сопровождал сделки? какая самая крупная?" aria-label="Вопрос ассистенту">
+          <button id="herogo">Спросить ИИ</button>
+        </div>
+        ${modeToggleHtml(false)}
+        <a class="hs-cta ghost" href="#/assistant" style="margin-top:22px">Открыть ассистента</a>
+      </div>
+    </div>
+    <div class="hs-dots">${[0,1,2,3,4].map(i=>`<button data-dot="${i}" class="${i===0?"on":""}" aria-label="Слайд ${i+1}"></button>`).join("")}</div>
+    <div class="hs-cue">↓</div>
   </div>
+  <div id="feed"></div>
   <div class="feed-search reveal">
     <input id="feedq" placeholder="Найти в базе: компания, сделка, консультант…" value="${esc(feedQuery)}" aria-label="Поиск по сделкам">
     <button id="feedgo" class="chip on">Найти</button>
@@ -918,6 +1080,22 @@ function renderDeals(){
   const go=()=>{const v=document.getElementById("heroq").value.trim();if(v){sessionStorage.setItem("pendingQ",v);location.hash="#/assistant";}};
   document.getElementById("herogo").onclick=go;
   document.getElementById("heroq").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+  // слайдер hero
+  let hsIdx = 0;
+  const hsSlides = app.querySelectorAll(".hs-slide");
+  const hsDots = app.querySelectorAll("[data-dot]");
+  const hsGo = i => {
+    hsIdx = (i + hsSlides.length) % hsSlides.length;
+    hsSlides.forEach((s,k)=>s.classList.toggle("on",k===hsIdx));
+    hsDots.forEach((d,k)=>d.classList.toggle("on",k===hsIdx));
+  };
+  hsDots.forEach(d=>d.onclick=()=>{hsGo(+d.dataset.dot);resetHsTimer();});
+  if(window.hsTimer) clearInterval(window.hsTimer);
+  const resetHsTimer = ()=>{if(window.hsTimer)clearInterval(window.hsTimer);window.hsTimer=setInterval(()=>hsGo(hsIdx+1),8000);};
+  resetHsTimer();
+  const cue=app.querySelector(".hs-cue"); const feedAnchor=document.getElementById("feed");
+  if(cue&&feedAnchor) cue.onclick=()=>feedAnchor.scrollIntoView({behavior:"smooth"});
+  app.querySelectorAll("[data-scroll]").forEach(a=>a.onclick=e=>{e.preventDefault();feedAnchor.scrollIntoView({behavior:"smooth"});});
   bindModeToggles(app);
 }
 
