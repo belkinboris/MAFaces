@@ -12,7 +12,7 @@
 <meta property="og:locale" content="ru_RU">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,300;7..72,400;7..72,500;7..72,600&family=Unbounded:wght@500;700&family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=Bitter:wght@500;600&family=Yeseva+One&family=IBM+Plex+Sans:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=IBM+Plex+Sans:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F5F5F1; --card:#FFFFFF; --ink:#15191D; --muted:#66707A;
@@ -21,7 +21,7 @@
   --steel:#33556B; --steel-soft:#E8EEF2;
   --bronze:#A3814E; --bronze-soft:#F2EDE2;
   --radius:4px;
-  --f-display:'Literata',Georgia,serif;
+  --f-display:'Yeseva One',Georgia,serif;
   --f-body:'IBM Plex Sans',system-ui,sans-serif;
   --ease:cubic-bezier(.22,.61,.36,1);
 }
@@ -59,15 +59,6 @@ button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
 .hs-cta:hover{background:#fff;transform:translateY(-2px)}
 .hs-cta.ghost{background:transparent;color:var(--ivory);border:1px solid rgba(243,241,233,.4)}
 .hs-cta.ghost:hover{border-color:var(--ivory);background:rgba(243,241,233,.08)}
-.hs-f1 h1{font-family:'Literata',Georgia,serif}
-.hs-f2 h1{font-family:'Unbounded',sans-serif;font-weight:700;letter-spacing:-.01em}
-.hs-f2 h1 em{font-style:normal;font-weight:500}
-.hs-f3 h1{font-family:'Bodoni Moda',Georgia,serif;font-weight:600}
-.hs-f4 h1{font-family:'Bitter',Georgia,serif;font-weight:600}
-.hs-f5 h1{font-family:'Yeseva One',Georgia,serif}
-.hs-f5 h1 em{font-style:normal}
-.hs-fontname{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 46px);left:44px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,241,233,.45);z-index:6}
-@media(max-width:720px){.hs-fontname{left:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 70px)}}
 .hs-dots{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 46px);left:50%;transform:translateX(-50%);display:flex;gap:14px;z-index:6}
 .hs-dots button{width:10px;height:10px;border-radius:50%;background:transparent;border:1.5px solid rgba(243,241,233,.55);transition:all .3s;padding:0}
 .hs-dots button.on{background:#C9AE7C;border-color:#C9AE7C;transform:scale(1.25)}
@@ -216,6 +207,22 @@ nav a.on::after,nav a:hover::after{width:100%}
 .fact .val{font-size:14.5px;line-height:1.55}
 .fact .val.big{font-family:var(--f-display);font-weight:600;font-size:21px;line-height:1.35}
 .fact.wide{grid-column:1/-1}
+
+#facts .label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stat-hero{animation:fadeUp .4s var(--ease);margin-bottom:28px}
+.stat-hero .label{margin-bottom:10px}
+.stat-hero .stat-num{font-family:var(--f-display);font-size:clamp(30px,4.4vw,44px);line-height:1.1;color:var(--ink)}
+.spec-list{border-top:1px solid var(--line);margin-bottom:26px;animation:fadeUp .45s var(--ease)}
+.spec-row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid var(--line)}
+.spec-k{color:var(--muted);font-size:13.5px;flex-shrink:0}
+.spec-v{font-size:14px;text-align:right;color:var(--ink)}
+.narrative{margin-bottom:26px;max-width:660px;animation:fadeUp .5s var(--ease)}
+.narrative .label{margin-bottom:9px}
+.narrative p{font-size:15px;line-height:1.68;color:var(--ink);margin:0}
+.adv-card{border-left:2.5px solid var(--bronze,#A3814E);padding:4px 0 4px 18px;margin-bottom:22px;animation:fadeUp .45s var(--ease)}
+.adv-card .label{margin-bottom:6px}
+.adv-card .adv-name{font-family:var(--f-display);font-size:19px;color:var(--ink);margin-bottom:6px}
+.adv-card p{font-size:13.5px;line-height:1.6;color:var(--muted);margin:0;max-width:600px}
 .src{margin-top:30px;padding-top:20px;border-top:1px solid var(--line)}
 .src a{color:var(--accent);font-size:13.5px;display:inline-block;margin:6px 20px 0 0;border-bottom:1px solid transparent;transition:border-color .2s}
 .src a:hover{border-color:var(--accent)}
@@ -1004,7 +1011,7 @@ function renderDeals(){
   const shown = allRows.slice(0, feedPage*PAGE_SIZE);
   app.innerHTML = `
   <div class="heroslider">
-    <div class="hs-slide hs-f1 on">${HERO_SVG}<div class="hs-fontname">Шрифт: Literata (текущий)</div>
+    <div class="hs-slide on">${HERO_SVG}
       <div class="hs-in">
         <div class="kicker">Российский рынок сделок</div>
         <h1>Сделки — <em>вся картина рынка</em> со ссылками на первоисточники</h1>
@@ -1013,7 +1020,7 @@ function renderDeals(){
         <div class="hero-note num" style="margin-top:34px">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300${bulkLoaded?"":" · догружаем базу…"}</div>
       </div>
     </div>
-    <div class="hs-slide hs-f2">${SCENE_CITY}<div class="hs-fontname">Шрифт: Unbounded (жирный гротеск)</div>
+    <div class="hs-slide">${SCENE_CITY}
       <div class="hs-in">
         <div class="kicker">Профили участников</div>
         <h1>Компании — <em>кто, кого и у кого</em> покупает</h1>
@@ -1021,7 +1028,7 @@ function renderDeals(){
         <a class="hs-cta" href="#/companies">Открыть компании</a>
       </div>
     </div>
-    <div class="hs-slide hs-f3">${SCENE_COLUMNS}<div class="hs-fontname">Шрифт: Bodoni Moda (модный контраст)</div>
+    <div class="hs-slide">${SCENE_COLUMNS}
       <div class="hs-in">
         <div class="kicker">Каталог Право-300</div>
         <h1>Консультанты — <em>кто ведёт сделки</em> на рынке</h1>
@@ -1029,7 +1036,7 @@ function renderDeals(){
         <a class="hs-cta" href="#/advisors">Открыть консультантов</a>
       </div>
     </div>
-    <div class="hs-slide hs-f4">${SCENE_CHART}<div class="hs-fontname">Шрифт: Bitter (слаб-серИф, сдержанный)</div>
+    <div class="hs-slide">${SCENE_CHART}
       <div class="hs-in">
         <div class="kicker">Обзор рынка</div>
         <h1>Аналитика — <em>структура рынка</em> в цифрах</h1>
@@ -1037,7 +1044,7 @@ function renderDeals(){
         <a class="hs-cta" href="#/analytics">Открыть аналитику</a>
       </div>
     </div>
-    <div class="hs-slide hs-f5">${SCENE_AI}<div class="hs-fontname">Шрифт: Yeseva One (декоративный)</div>
+    <div class="hs-slide">${SCENE_AI}
       <div class="hs-in">
         <div class="kicker">Задайте вопрос</div>
         <h1>Ассистент — <em>спросите базу</em> обычным языком</h1>
@@ -1204,30 +1211,40 @@ function renderDeal(id){
   ${miniAIHtml("Уточните детали этой сделки…")}`;
   const paint = ()=>{
     const f = document.getElementById("facts");
-    const F = (label,val,cls="",wide=false)=> (!val||val==="—") ? "" :
-      `<div class="fact${wide?" wide":""}"><span class="label">${label}</span><div class="val ${cls}">${val}</div></div>`;
-    if(lens==="eco") f.innerHTML = `<div class="facts">
-      ${F("Сумма сделки",d.eco.sum,"big num",true)}
-      ${F("Предмет / доля",d.eco.share)}
-      ${F("Оценка и дисконт",d.eco.val,"num")}
-      ${F("Показатели таргета",d.eco.target_fin,"num")}
-      ${F("Форма расчётов",d.eco.fin)}
-      ${F("Финансовый консультант",d.eco.finadv)}
-      ${F("Цель сделки",d.eco.rationale,"",true)}
-      ${F("Контекст",d.eco.context,"",true)}
-    </div>`;
-    else if(lens==="law") f.innerHTML = `<div class="facts">
-      ${F("Структура",d.law.struct,"",true)}
-      ${F("Согласования",d.law.appr,"",true)}
-      ${d.law.adv.map(a=>`<div class="fact"><span class="label">${a[0]}</span><div class="val"><b>${a[1]}</b>${a[2]?`<br><span style="color:var(--muted);font-size:13px">${a[2]}</span>`:""}</div></div>`).join("")}
-      ${F("Условия и особенности (из публичных данных)",d.law.terms,"",true)}
-    </div>`;
-    else f.innerHTML = `<div class="facts">
-      ${F("Сумма",d.sum,"big num")}
-      ${F("Предмет",d.eco.share)}
-      ${F("Статус",d.status)}
-      ${F("Согласования",d.law.appr!=="Публично не сообщалось"?d.law.appr:"")}
-    </div>`;
+    const has = v => v && v!=="—";
+    const hero = (label,val) => has(val) ? `<div class="stat-hero"><span class="label">${label}</span><div class="stat-num num">${val}</div></div>` : "";
+    const specRow = (label,val) => has(val) ? `<div class="spec-row"><span class="spec-k">${label}</span><span class="spec-v num">${val}</span></div>` : "";
+    const para = (label,val) => has(val) ? `<div class="narrative"><span class="label">${label}</span><p>${val}</p></div>` : "";
+    const specBlock = rows => rows.filter(Boolean).length ? `<div class="spec-list">${rows.join("")}</div>` : "";
+
+    if(lens==="eco") f.innerHTML = `
+      ${hero("Сумма сделки", d.eco.sum)}
+      ${specBlock([
+        specRow("Предмет / доля", d.eco.share),
+        specRow("Оценка и дисконт", d.eco.val),
+        specRow("Показатели таргета", d.eco.target_fin),
+        specRow("Форма расчётов", d.eco.fin),
+        specRow("Финансовый консультант", d.eco.finadv),
+      ])}
+      ${para("Цель сделки", d.eco.rationale)}
+      ${para("Контекст", d.eco.context)}`;
+    else if(lens==="law") f.innerHTML = `
+      ${para("Структура", d.law.struct)}
+      ${specBlock([specRow("Согласования", d.law.appr)])}
+      ${d.law.adv.map(a=>`
+        <div class="adv-card">
+          <span class="label">${a[0]}</span>
+          <div class="adv-name">${a[1]}</div>
+          ${a[2]?`<p>${a[2]}</p>`:""}
+        </div>`).join("")}
+      ${para("Условия и особенности (из публичных данных)", d.law.terms)}`;
+    else f.innerHTML = `
+      ${hero("Сумма", d.sum)}
+      ${specBlock([
+        specRow("Предмет", d.eco.share),
+        specRow("Статус", d.status),
+        specRow("Согласования", d.law.appr!=="Публично не сообщалось"?d.law.appr:""),
+      ])}`;
   };
   paint();
   app.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{
