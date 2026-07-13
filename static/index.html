@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A1210">
 <title>Реестр — сделки и компании российского рынка</title>
 <meta name="description" content="База сделок M&A российского рынка: 1300+ сделок со ссылками на первоисточники, профили компаний, каталог юридических и инвестиционных консультантов. Каждая сделка — глазами экономиста и юриста.">
 <meta property="og:title" content="Реестр — сделки российского рынка M&A">
@@ -11,7 +12,7 @@
 <meta property="og:locale" content="ru_RU">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,300;7..72,400;7..72,500;7..72,600&family=IBM+Plex+Sans:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,300;7..72,400;7..72,500;7..72,600&family=Playfair+Display:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Spectral:wght@300;400&family=Old+Standard+TT:wght@400&family=IBM+Plex+Sans:wght@400;500;600&subset=cyrillic&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F5F5F1; --card:#FFFFFF; --ink:#15191D; --muted:#66707A;
@@ -58,6 +59,13 @@ button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
 .hs-cta:hover{background:#fff;transform:translateY(-2px)}
 .hs-cta.ghost{background:transparent;color:var(--ivory);border:1px solid rgba(243,241,233,.4)}
 .hs-cta.ghost:hover{border-color:var(--ivory);background:rgba(243,241,233,.08)}
+.hs-f1 h1{font-family:'Literata',Georgia,serif}
+.hs-f2 h1{font-family:'Playfair Display',Georgia,serif}
+.hs-f3 h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600}
+.hs-f4 h1{font-family:'Spectral',Georgia,serif;font-weight:300}
+.hs-f5 h1{font-family:'Old Standard TT',Georgia,serif}
+.hs-fontname{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 46px);left:44px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,241,233,.45);z-index:6}
+@media(max-width:720px){.hs-fontname{left:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 70px)}}
 .hs-dots{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 46px);left:50%;transform:translateX(-50%);display:flex;gap:14px;z-index:6}
 .hs-dots button{width:10px;height:10px;border-radius:50%;background:transparent;border:1.5px solid rgba(243,241,233,.55);transition:all .3s;padding:0}
 .hs-dots button.on{background:#C9AE7C;border-color:#C9AE7C;transform:scale(1.25)}
@@ -262,6 +270,7 @@ nav a.on::after,nav a:hover::after{width:100%}
 .chat-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);min-height:300px;padding:24px;display:flex;flex-direction:column;gap:14px}
 .suggests{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
 
+html{background:#0A1210}
 /* ---------- footer ---------- */
 footer{margin-top:80px;background:linear-gradient(160deg,var(--accent-deep),#0C2430 100%);color:#A9BDB2}
 .foot-in{max-width:1120px;margin:0 auto;padding:56px 28px 0}
@@ -988,7 +997,7 @@ function renderDeals(){
   const shown = allRows.slice(0, feedPage*PAGE_SIZE);
   app.innerHTML = `
   <div class="heroslider">
-    <div class="hs-slide on">${HERO_SVG}
+    <div class="hs-slide hs-f1 on">${HERO_SVG}<div class="hs-fontname">Шрифт: Literata (текущий)</div>
       <div class="hs-in">
         <div class="kicker">Российский рынок сделок</div>
         <h1>Сделки — <em>вся картина рынка</em> со ссылками на первоисточники</h1>
@@ -997,7 +1006,7 @@ function renderDeals(){
         <div class="hero-note num" style="margin-top:34px">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300${bulkLoaded?"":" · догружаем базу…"}</div>
       </div>
     </div>
-    <div class="hs-slide">${SCENE_CITY}
+    <div class="hs-slide hs-f2">${SCENE_CITY}<div class="hs-fontname">Шрифт: Playfair Display</div>
       <div class="hs-in">
         <div class="kicker">Профили участников</div>
         <h1>Компании — <em>кто, кого и у кого</em> покупает</h1>
@@ -1005,7 +1014,7 @@ function renderDeals(){
         <a class="hs-cta" href="#/companies">Открыть компании</a>
       </div>
     </div>
-    <div class="hs-slide">${SCENE_COLUMNS}
+    <div class="hs-slide hs-f3">${SCENE_COLUMNS}<div class="hs-fontname">Шрифт: Cormorant Garamond</div>
       <div class="hs-in">
         <div class="kicker">Каталог Право-300</div>
         <h1>Консультанты — <em>кто ведёт сделки</em> на рынке</h1>
@@ -1013,7 +1022,7 @@ function renderDeals(){
         <a class="hs-cta" href="#/advisors">Открыть консультантов</a>
       </div>
     </div>
-    <div class="hs-slide">${SCENE_CHART}
+    <div class="hs-slide hs-f4">${SCENE_CHART}<div class="hs-fontname">Шрифт: Spectral</div>
       <div class="hs-in">
         <div class="kicker">Обзор рынка</div>
         <h1>Аналитика — <em>структура рынка</em> в цифрах</h1>
@@ -1021,7 +1030,7 @@ function renderDeals(){
         <a class="hs-cta" href="#/analytics">Открыть аналитику</a>
       </div>
     </div>
-    <div class="hs-slide">${SCENE_AI}
+    <div class="hs-slide hs-f5">${SCENE_AI}<div class="hs-fontname">Шрифт: Old Standard TT</div>
       <div class="hs-in">
         <div class="kicker">Задайте вопрос</div>
         <h1>Ассистент — <em>спросите базу</em> обычным языком</h1>
