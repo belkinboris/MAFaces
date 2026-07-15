@@ -1,37 +1,210 @@
 {
   "_comment": "Фирмы с известными сайтами. news_paths — типовые разделы, скрипт проверит каждый. Добавляй новые фирмы по образцу.",
-  "default_news_paths": ["/news", "/press-center", "/press", "/media", "/publications", "/insights", "/novosti", "/press-centr"],
+  "default_news_paths": [
+    "/news",
+    "/press-center",
+    "/press",
+    "/media",
+    "/publications",
+    "/insights",
+    "/novosti",
+    "/press-centr"
+  ],
   "firms": [
-    {"id": "orion",        "name": "Orion",                          "site": "https://orion-law.com"},
-    {"id": "level",        "name": "LEVEL Legal Services",           "site": "https://www.level-legal.com"},
-    {"id": "alrud",        "name": "АЛРУД",                          "site": "https://www.alrud.ru"},
-    {"id": "epam",         "name": "ЕПАМ",                           "site": "https://epam.ru"},
-    {"id": "verba",        "name": "VERBA LEGAL",                    "site": "https://verba.legal"},
-    {"id": "denuo",        "name": "Denuo",                          "site": "https://denuo.legal"},
-    {"id": "nikolskaya",   "name": "Никольская Консалтинг",          "site": "https://nikolskaya.ru"},
-    {"id": "mvp",          "name": "Melling, Voitishkin & Partners", "site": "http://mv.legal"},
-    {"id": "kkmp",         "name": "ККМП",                           "site": "http://kkmp.legal"},
-    {"id": "alumni",       "name": "ALUMNI Partners",                "site": "https://www.alumnipartners.ru"},
-    {"id": "nextons",      "name": "Nextons",                        "site": "https://nextons.ru"},
-    {"id": "stonebridge",  "name": "Stonebridge Legal",              "site": "http://www.stonebridgelegal.ru"},
-    {"id": "betterchance", "name": "Better Chance",                  "site": "https://www.betterchance.ru"},
-    {"id": "birch",        "name": "BIRCH",                          "site": "https://www.birchlegal.ru"},
-    {"id": "cls",          "name": "CLS",                            "site": "http://cls.ru"},
-    {"id": "elwi",         "name": "ELWI",                           "site": "https://elwi.com"},
-    {"id": "ingvarr",      "name": "INGVARR",                        "site": "https://ingvarr.com"},
-    {"id": "o2",           "name": "O2 Consulting",                  "site": "https://o2consult.com"},
-    {"id": "dgp",          "name": "Дякин, Горцунян и Партнеры",     "site": "https://dgpartners.legal"},
-    {"id": "ivanyan",      "name": "Иванян и партнеры",              "site": "https://ivanyan.partners"},
-    {"id": "vegaslex",     "name": "VEGAS LEX",                      "site": "https://www.vegaslex.ru"},
-    {"id": "asari",        "name": "Asari Legal",                    "site": "https://asari.legal"},
-    {"id": "whitesquare",  "name": "White Square",                   "site": "https://whitesquarepartners.com"},
-    {"id": "delcredere",   "name": "Delcredere",                     "site": "http://www.delcredere.org"},
-    {"id": "nikolaev",     "name": "МКА «Николаев и партнеры»",      "site": "https://nikolaew.ru"},
-    {"id": "lgs",          "name": "ЛГС Юридические Услуги",         "site": "https://lgs.law"},
-    {"id": "b1",           "name": "Б1 – Консалт",                   "site": "https://b1.ru"},
-    {"id": "fbk",          "name": "ФБК Право",                      "site": "http://fbk-pravo.ru"},
-    {"id": "amond",        "name": "Amond & Smith",                  "site": "https://amondsmith.com"},
-    {"id": "althaus",      "name": "Althaus Group",                  "site": "https://althausgroup.ru"},
-    {"id": "aspring",      "name": "Aspring Capital",                "site": "https://aspringcapital.com", "type": "invest"}
+    {
+      "id": "orion",
+      "name": "Orion",
+      "site": "https://orion-law.com"
+    },
+    {
+      "id": "level",
+      "name": "LEVEL Legal Services",
+      "site": "https://www.level-legal.com",
+      "telegram": "LevelLegalServices"
+    },
+    {
+      "id": "alrud",
+      "name": "АЛРУД",
+      "site": "https://www.alrud.ru"
+    },
+    {
+      "id": "epam",
+      "name": "ЕПАМ",
+      "site": "https://epam.ru"
+    },
+    {
+      "id": "verba",
+      "name": "VERBA LEGAL",
+      "site": "https://verba.legal",
+      "telegram": "verbalegal"
+    },
+    {
+      "id": "denuo",
+      "name": "Denuo",
+      "site": "https://denuo.legal",
+      "telegram": "denuolaw"
+    },
+    {
+      "id": "nikolskaya",
+      "name": "Никольская Консалтинг",
+      "site": "https://nikolskaya.ru"
+    },
+    {
+      "id": "mvp",
+      "name": "Melling, Voitishkin & Partners",
+      "site": "http://mv.legal",
+      "telegram": "mvplegal"
+    },
+    {
+      "id": "kkmp",
+      "name": "ККМП",
+      "site": "http://kkmp.legal",
+      "telegram": "kkmpconnect"
+    },
+    {
+      "id": "alumni",
+      "name": "ALUMNI Partners",
+      "site": "https://www.alumnipartners.ru",
+      "telegram": "alumnimna"
+    },
+    {
+      "id": "nextons",
+      "name": "Nextons",
+      "site": "https://nextons.ru",
+      "telegram": "nextons_ru"
+    },
+    {
+      "id": "stonebridge",
+      "name": "Stonebridge Legal",
+      "site": "http://www.stonebridgelegal.ru"
+    },
+    {
+      "id": "betterchance",
+      "name": "Better Chance",
+      "site": "https://www.betterchance.ru",
+      "telegram": "betterchance_ru"
+    },
+    {
+      "id": "birch",
+      "name": "BIRCH",
+      "site": "https://www.birchlegal.ru",
+      "telegram": "BIRCHLEGAL"
+    },
+    {
+      "id": "cls",
+      "name": "CLS",
+      "site": "http://cls.ru"
+    },
+    {
+      "id": "elwi",
+      "name": "ELWI",
+      "site": "https://elwi.com"
+    },
+    {
+      "id": "ingvarr",
+      "name": "INGVARR",
+      "site": "https://ingvarr.com"
+    },
+    {
+      "id": "o2",
+      "name": "O2 Consulting",
+      "site": "https://o2consult.com"
+    },
+    {
+      "id": "dgp",
+      "name": "Дякин, Горцунян и Партнеры",
+      "site": "https://dgpartners.legal"
+    },
+    {
+      "id": "ivanyan",
+      "name": "Иванян и партнеры",
+      "site": "https://ivanyan.partners"
+    },
+    {
+      "id": "vegaslex",
+      "name": "VEGAS LEX",
+      "site": "https://www.vegaslex.ru"
+    },
+    {
+      "id": "asari",
+      "name": "Asari Legal",
+      "site": "https://asari.legal"
+    },
+    {
+      "id": "whitesquare",
+      "name": "White Square",
+      "site": "https://whitesquarepartners.com"
+    },
+    {
+      "id": "delcredere",
+      "name": "Delcredere",
+      "site": "http://www.delcredere.org"
+    },
+    {
+      "id": "nikolaev",
+      "name": "МКА «Николаев и партнеры»",
+      "site": "https://nikolaew.ru"
+    },
+    {
+      "id": "lgs",
+      "name": "ЛГС Юридические Услуги",
+      "site": "https://lgs.law"
+    },
+    {
+      "id": "b1",
+      "name": "Б1 – Консалт",
+      "site": "https://b1.ru"
+    },
+    {
+      "id": "fbk",
+      "name": "ФБК Право",
+      "site": "http://fbk-pravo.ru"
+    },
+    {
+      "id": "amond",
+      "name": "Amond & Smith",
+      "site": "https://amondsmith.com"
+    },
+    {
+      "id": "althaus",
+      "name": "Althaus Group",
+      "site": "https://althausgroup.ru"
+    },
+    {
+      "id": "aspring",
+      "name": "Aspring Capital",
+      "site": "https://aspringcapital.com",
+      "type": "invest"
+    },
+    {
+      "id": "lkp",
+      "name": "Лемчик, Крупский и Партнеры",
+      "site": "https://lkpconsult.ru",
+      "telegram": "LKPconsult"
+    },
+    {
+      "id": "pgp",
+      "name": "Пепеляев Групп",
+      "site": "https://www.pgplaw.ru",
+      "telegram": "pgp_official"
+    },
+    {
+      "id": "gate",
+      "name": "Gate.Legal",
+      "site": "https://gate.legal",
+      "telegram": null
+    },
+    {
+      "id": "mzs",
+      "name": "Монастырский, Зюба, Степанов & Партнеры",
+      "site": "https://mzs.ru",
+      "telegram": null
+    },
+    {
+      "id": "lch",
+      "name": "LCH Legal",
+      "site": "https://lch.legal",
+      "telegram": null
+    }
   ]
 }

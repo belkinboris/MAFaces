@@ -723,14 +723,14 @@ async function loadBulkDeals(){
     if(r.ok){ BULK_DEALS = await r.json(); }
   }catch(e){ console.warn("bulk_deals.json недоступен:", e); }
   try{
-    const r2 = await fetch("static/data/deals_2026.json");
+    const r2 = await fetch("static/data/deals_promoted.json");
     if(r2.ok){
       const j = await r2.json();
       DEALS.push(...(j.deals||[]));
       Object.assign(COMPANIES, j.companies||{});
       Object.assign(MATCH_KEYS, j.match_keys||{});
     }
-  }catch(e){ console.warn("deals_2026.json недоступен:", e); }
+  }catch(e){ console.warn("deals_promoted.json недоступен:", e); }
   bulkLoaded = true;
   // Страховка от дублей: компактная запись скрывается, если полная карточка
   // того же года пересекается с ней по >=3 значимым словам заголовка
