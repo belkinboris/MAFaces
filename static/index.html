@@ -39,7 +39,7 @@ button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
 @keyframes wipe{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .reveal{opacity:0}
 .reveal.in{animation:fadeUp .6s var(--ease) forwards}
-@media(prefers-reduced-motion:reduce){.reveal{opacity:1}.reveal.in,.hero svg g{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1}.reveal.in,.hero svg g,.an-bar div,.dp-arrow,.dp-arrow:after{animation:none!important}.dp-arrow:after{opacity:1}}
 
 /* ---------- shell ---------- */
 .top{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(245,245,241,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transition:transform .45s var(--ease)}
@@ -77,6 +77,9 @@ button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
 .top-in{max-width:1120px;margin:0 auto;padding:0 28px;height:64px;display:flex;align-items:center;gap:40px}
 .wordmark{font-family:var(--f-display);font-weight:600;font-size:22px}
 .wordmark span{color:var(--accent)}
+/* М и А — бронзой: в имени КОМПАС спрятано M&A */
+.wordmark em,.foot-brand em{font-style:normal;color:var(--bronze)}
+.foot-brand em{color:#C9AE7C}
 nav{display:flex;gap:30px;margin-left:auto}
 nav a{position:relative;padding:6px 0;font-weight:500;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);transition:color .25s}
 nav a::after{content:"";position:absolute;left:0;bottom:0;height:1.5px;width:0;background:var(--accent);transition:width .3s var(--ease)}
@@ -136,7 +139,7 @@ nav a.on::after,nav a:hover::after{width:100%}
 .deal-meta{text-align:right}
 .deal-sum{font-family:var(--f-display);font-weight:600;font-size:17.5px}
 .deal-sum.na{color:var(--muted);font-weight:400;font-size:13.5px;font-family:var(--f-body)}
-.tag{display:inline-block;margin-top:8px;font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:2px}
+.tag{display:inline-block;font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);background:none;border:1px solid var(--line);padding:3px 8px;border-radius:2px}
 .tag.steel{color:var(--steel);background:var(--steel-soft)}
 .tag.bronze{color:var(--bronze);background:var(--bronze-soft)}
 .status{display:inline-block;font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--line);border-radius:2px;color:var(--muted)}
@@ -185,7 +188,7 @@ nav a.on::after,nav a:hover::after{width:100%}
 .an-row{display:grid;grid-template-columns:minmax(70px,150px) 1fr 44px;gap:10px;align-items:center;margin:7px 0;font-size:13.5px}
 .an-key{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .an-bar{height:9px;background:var(--paper2,#F0EFEA);border-radius:5px;overflow:hidden}
-.an-bar div{height:100%;background:linear-gradient(90deg,var(--accent),#33556B);border-radius:5px;min-width:3px}
+.an-bar div{height:100%;background:linear-gradient(90deg,var(--accent),#33556B);border-radius:5px;min-width:3px;transform-origin:left;animation:wipe .7s var(--ease) both}
 .an-val{text-align:right;color:var(--muted)}
 .an-deal{display:flex;gap:8px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink);text-decoration:none}
 .an-deal:last-of-type{border-bottom:none}
@@ -238,8 +241,12 @@ nav a.on::after,nav a:hover::after{width:100%}
 .dp-party a.dp-name:hover{color:var(--accent)}
 .dp-link{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;min-width:120px}
 .dp-link .dp-share{font-weight:600;font-size:12.5px;color:var(--accent);white-space:nowrap}
-.dp-link .dp-arrow{width:100%;height:2px;background:var(--accent);position:relative;margin:7px 0;min-width:70px}
-.dp-link .dp-arrow:after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:var(--accent)}
+.dp-link .dp-arrow{width:calc(100% - 7px);height:2px;background:var(--accent);position:relative;margin:7px 7px 7px 0;min-width:64px;transform-origin:left;animation:wipe .55s var(--ease) .2s both}
+.dp-link .dp-arrow:after{opacity:0;animation:fin .25s ease .7s forwards}
+@keyframes fin{to{opacity:1}}
+.dp-link .dp-arrow:after{content:"";position:absolute;left:100%;top:-4px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--accent)}
+.dp-link .dp-join{font-size:22px;line-height:1;color:var(--accent);font-weight:400;margin:2px 0}
+.dp-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--muted)}
 .dp-link .dp-sum{font-size:12px;color:var(--muted);white-space:nowrap}
 @media(max-width:560px){.dp-row{flex-direction:column}.dp-link{padding:14px 0;min-width:0}.dp-link .dp-arrow{transform:rotate(90deg);min-width:44px;margin:16px 0}}
 
@@ -359,7 +366,7 @@ footer{margin-top:80px;background:linear-gradient(160deg,var(--accent-deep),#0C2
 
 <header class="top">
   <div class="top-in">
-    <a href="#/" class="wordmark">КОМПАС<span>.</span></a>
+    <a href="#/" class="wordmark">КО<em>М</em>П<em>А</em>С<span>.</span></a>
     <nav id="nav">
       <a href="#/" data-r="deals">Сделки</a>
       <a href="#/companies" data-r="companies">Компании</a>
@@ -376,7 +383,7 @@ footer{margin-top:80px;background:linear-gradient(160deg,var(--accent-deep),#0C2
   <div class="foot-in">
     <div class="foot-grid">
       <div>
-        <div class="foot-brand">КОМПАС<span>.</span></div>
+        <div class="foot-brand">КО<em>М</em>П<em>А</em>С<span>.</span></div>
         <div class="foot-desc">Сделки, компании и консультанты российского рынка — структурированно, с двойной линзой «экономист / юрист» и ссылками на первоисточники. Демо-версия.</div>
       </div>
       <div class="foot-col">
@@ -696,17 +703,48 @@ const INV_FIRMS = [
  {id:"psbank",n:"ПСБ (инвестиционный блок)",g:["Банк"],desc:"Организатор торгов по активам Домодедово; корпоративно-инвестиционные услуги."},
 ];
 const GROUP_LABEL = {"С-hi":"Сопровождение сделок — крупный бизнес","К-hi":"Корпоративное консультирование — крупный бизнес","mid":"Средний бизнес"};
-const FIRM_MATCH = {orion:/orion|орион/i, level:/level/i, aspring:/aspring/i, tomashevskaya:/tomashevskaya/i,
-  verba:/verba|верба/i, birch:/birch/i, mvp:/меллинг|voitishkin/i, nikolskaya:/никольская/i,
-  epam:/епам|epam/i, nextons:/nextons/i, denuo:/denuo/i, o2:/o2 consulting|o2consult/i,
-  kkmp:/кучер кулешов|ккмп/i, lkp:/лемчик/i, alumni:/alumni/i, betterchance:/better chance/i, nikolaev:/николаев и партнеры|nikolaew/i,
-  uniservice:/юнисервис/i, asbconsult:/asb consulting/i, advancecap:/advance capital/i, psbank:/псб|промсвязьбанк/i};
+const FIRM_MATCH = {orion:/orion|орион/i, level:/level legal|\blevel\b/i, aspring:/aspring/i, tomashevskaya:/tomashevskaya|томашевск/i,
+  verba:/verba|верба/i, birch:/birch|бёрч|берч/i, mvp:/меллинг|voitishkin|мвп\b/i, nikolskaya:/никольская/i,
+  epam:/епам|epam|егоров.{0,15}пугинск/i, nextons:/nextons|некстонс/i, denuo:/denuo|денуо/i, o2:/o2 consulting|o2consult/i,
+  kkmp:/кучер кулешов|ккмп|kulkov/i, lkp:/лемчик/i, alumni:/alumni/i, betterchance:/better chance|бэттер чанс/i, nikolaev:/николаев и партнеры|nikolaew/i,
+  uniservice:/юнисервис/i, asbconsult:/asb consulting/i, advancecap:/advance capital/i, psbank:/псб|промсвязьбанк/i,
+  alrud:/alrud|алруд/i, pgp:/пепеляев/i, althaus:/althaus|альтхаус/i, stonebridge:/stonebridge|стоунбридж/i,
+  whitesquare:/white square|уайт сквер/i, delcredere:/delcredere|делькредере/i, ingvarr:/ingvarr|ингварр/i,
+  vegaslex:/vegas lex|вегас лекс/i, cls:/\bCLS\b/, kept:/\bkept\b/i, stream:/\bSTREAM\b/, seamless:/seamless/i,
+  elwi:/\belwi\b/i, asari:/asari|асари/i, sllegal:/\bSL Legal\b/i, forward:/forward legal/i, artdelex:/art de lex/i,
+  arno:/arno legal/i, vkpartners:/vk partners/i, firmone:/firm one/i};
+
+/* фолбэк: если для фирмы нет явной регулярки — строим её из названия
+   (полное имя, без регистра). Так сделки считаются у ВСЕХ фирм каталога,
+   а не только у тех, кому регулярку прописали руками. */
+const firmRxOf = f => {
+  if(FIRM_MATCH[f.id]) return FIRM_MATCH[f.id];
+  const escaped = f.n.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/\s+/g,"\\s+");
+  return new RegExp(escaped,"i");
+};
 
 /* ================= РОУТЕР ================= */
 const app = document.getElementById("app");
 const co = id => COMPANIES[id];
 const fmtDate = d => d==="unknown" ? "Дата уточняется" : new Date(d).toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"}).replace(" г.","");
 const esc = s => s.replace(/</g,"&lt;");
+/* счётчики статистики: число набегает от 0 до значения за ~0.9с (ease-out).
+   При prefers-reduced-motion просто ставим итоговое число без анимации. */
+function animateCounts(root){
+  const els = root.querySelectorAll(".cnt[data-n]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  els.forEach(el=>{
+    const target = parseInt(el.dataset.n,10)||0;
+    if(reduce || target===0){ el.textContent = target; return; }
+    const t0 = performance.now(), dur = 900;
+    const tick = now => {
+      const p = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-p,3);
+      el.textContent = Math.round(target*e);
+      if(p<1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
 const ALL_FIRM = id => FIRMS.find(f=>f.id===id)||INV_FIRMS.find(f=>f.id===id);
 
 /* ================= КЛЮЧИ ПОИСКА КОМПАНИЙ ПО ВСЕЙ БАЗЕ (не только по buyer/target) ================= */
@@ -751,7 +789,8 @@ function companyDeals(id){
 const companyTotal = id => { const {structured,mentions} = companyDeals(id); return structured.length+mentions.length; };
 
 function firmDeals(id){
-  const rx = FIRM_MATCH[id];
+  const fobj = FIRMS.find(f=>f.id===id)||INV_FIRMS.find(f=>f.id===id);
+  const rx = fobj ? firmRxOf(fobj) : FIRM_MATCH[id];
   if(!rx) return {full:[],mini:[],bulk:[]};
   return {
     full: DEALS.filter(d=>d.law.adv.some(a=>rx.test(a[1]))||rx.test(d.eco.finadv||"")),
@@ -1023,7 +1062,7 @@ let feedQuery = "";
 let onlyFull = false;
 let feedYear = "Все";
 let advOpen = false;
-const PAGE_SIZE = 40;
+const PAGE_SIZE = 20;
 
 const KIND_BADGE_META = {
   acquisition: null, // самый частый тип — не выделяем отдельно, чтобы не шуметь
@@ -1092,7 +1131,7 @@ function renderDeals(){
         <h1>Сделки — <em>вся картина рынка</em> со ссылками на первоисточники</h1>
         <p>Каждая сделка — глазами экономиста и глазами юриста. Только то, что есть в публичном поле.</p>
         <a class="hs-cta" href="#feed" data-scroll>Смотреть сделки</a>
-        <div class="hero-note num" style="margin-top:34px">${TOTAL_DEALS()} сделок · ${Object.keys(COMPANIES).length} компаний · ${FIRMS.length} юрфирм Право-300${bulkLoaded?"":" · догружаем базу…"}</div>
+        <div class="hero-note num" style="margin-top:34px"><b class="cnt" data-n="${TOTAL_DEALS()}">0</b> сделок · <b class="cnt" data-n="${Object.keys(COMPANIES).length}">0</b> компаний · <b class="cnt" data-n="${FIRMS.length}">0</b> юрфирм Право-300 · <b class="cnt" data-n="${DEALS.filter(d=>d.law&&d.law.adv&&d.law.adv.some(a=>a[1]&&!/не раскрыв/i.test(a[1]))).length}">0</b> сделок с раскрытой командой${bulkLoaded?"":" · догружаем базу…"}</div>
       </div>
     </div>
     <div class="hs-slide">${SCENE_CITY}
@@ -1218,8 +1257,19 @@ function renderDeals(){
   };
   document.addEventListener("keydown",window.hsKeys);
   if(window.hsTimer) clearInterval(window.hsTimer);
-  const resetHsTimer = ()=>{if(window.hsTimer)clearInterval(window.hsTimer);window.hsTimer=setInterval(()=>hsGo(hsIdx+1),8000);};
+  const resetHsTimer = ()=>{if(window.hsTimer)clearInterval(window.hsTimer);
+    window.hsTimer=setInterval(()=>{
+      // последний слайд — с полем вопроса ИИ: на нём автопрокрутка останавливается,
+      // чтобы не увести человека посреди набора вопроса
+      if(hsIdx>=hsSlides.length-1){clearInterval(window.hsTimer);window.hsTimer=null;return;}
+      hsGo(hsIdx+1);
+    },8000);};
   resetHsTimer();
+  animateCounts(app);
+  // любое взаимодействие с полем ввода на герое также останавливает автопрокрутку
+  app.querySelectorAll(".heroslider input, .heroslider textarea").forEach(el=>{
+    el.addEventListener("focus",()=>{if(window.hsTimer){clearInterval(window.hsTimer);window.hsTimer=null;}});
+  });
   const cue=app.querySelector(".hs-cue"); const feedAnchor=document.getElementById("feed");
   if(cue&&feedAnchor) cue.onclick=()=>feedAnchor.scrollIntoView({behavior:"smooth"});
   app.querySelectorAll("[data-scroll]").forEach(a=>a.onclick=e=>{e.preventDefault();feedAnchor.scrollIntoView({behavior:"smooth"});});
@@ -1264,7 +1314,8 @@ const KIND_LABELS = {
 function dealKindOf(typeStr){
   const t = (typeStr||"").toLowerCase();
   if(t.includes("ipo")) return "ipo";
-  if(/\bсп\b|совместн|greenfield|joint venture/.test(t)) return "jv";
+  // важно: \b в JS не работает с кириллицей, поэтому границы «СП» проверяем вручную
+  if(/(^|[^а-яёa-z])сп($|[^а-яёa-z])|совместн|greenfield|joint venture/.test(t)) return "jv";
   if(/кредитн|деконсолидац|структурн\w* сделк|под залог|рефинансирован/.test(t)) return "credit";
   if(/финансирован|венчурн|раунд|\bseed\b/.test(t)) return "financing";
   return "acquisition";
@@ -1272,7 +1323,11 @@ function dealKindOf(typeStr){
 function renderDeal(id){
   const d = DEALS.find(x=>x.id===id); if(!d){renderDeals();return;}
   lens = "overview";
-  const kind = KIND_LABELS[d.kind || dealKindOf(d.type)] || KIND_LABELS.acquisition;
+  // тип из текстового поля type главнее сохранённого kind: текст писали люди,
+  // kind проставлял генератор и мог ошибиться (дефолт acquisition)
+  const kindFromType = dealKindOf(d.type);
+  const kindKey = (kindFromType!=="acquisition" ? kindFromType : (d.kind || kindFromType));
+  const kind = KIND_LABELS[kindKey] || KIND_LABELS.acquisition;
   const buyerName = d.buyer && co(d.buyer) ? co(d.buyer).name : null;
   const targetName = d.target && co(d.target) ? co(d.target).name : null;
   app.innerHTML = `
@@ -1282,7 +1337,7 @@ function renderDeal(id){
       <span class="label num">${fmtDate(d.date)}</span>
       <span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span>
       <span class="tag">${d.ind}</span>
-      ${kindBadge(d.kind)}
+      ${kindBadge(kindKey)}
     </div>
     <div class="deal-parties-strong reveal">
       ${buyerName?`<a href="#/companies/${d.buyer}">${buyerName}</a>`:(targetName?"":`<span style="color:var(--muted)">${kind.empty}</span>`)}
@@ -1310,16 +1365,34 @@ function renderDeal(id){
     const para = (label,val) => has(val) ? `<div class="narrative"><span class="label">${label}</span><p>${val}</p></div>` : "";
     const specBlock = rows => rows.filter(Boolean).length ? `<div class="spec-list">${rows.join("")}</div>` : "";
 
-    /* --- плашка структуры сделки (только когда известны обе стороны) --- */
+    /* --- плашка структуры сделки: раскладка зависит от ТИПА сделки --- */
     const dealPlate = ()=>{
-      if(!buyerName || !targetName || !kind.arrow) return "";
+      if(!buyerName || !targetName) return "";
       const share = has(d.eco&&d.eco.share) && d.eco.share.length<40 ? d.eco.share : "";
       const sum = has(d.sum) && !/не раскрыт/i.test(d.sum) ? d.sum : "";
+      const party = (role,idKey,name)=>`<div class="dp-party"><span class="dp-role">${role}</span><a class="dp-name" href="#/companies/${idKey}">${name}</a></div>`;
+
+      if(kindKey==="jv"){
+        // у СП нет покупателя и продавца — есть равноправные участники;
+        // вместо стрелки — знак соединения, сумма подписывается как вклад.
+        // Распределение долей — самое ценное в СП, показываем полнее (до 120 симв.)
+        const jvShare = has(d.eco&&d.eco.share) && d.eco.share.length<=120 ? d.eco.share : "";
+        return `<div class="deal-plate"><span class="label">Участники совместного предприятия</span>
+          <div class="dp-row">
+            ${party("Участник СП", d.buyer, buyerName)}
+            <div class="dp-link"><span class="dp-join">＋</span>${sum?`<span class="dp-sum num">${sum}</span>`:""}</div>
+            ${party("Участник СП", d.target, targetName)}
+          </div>${jvShare?`<div class="dp-foot num">${jvShare}</div>`:""}</div>`;
+      }
+      if(!kind.arrow) return "";
+      const roles = kindKey==="credit" ? ["Кредитор","Заёмщик"]
+                  : kindKey==="financing" ? ["Инвестор","Получатель инвестиций"]
+                  : ["Покупатель","Приобретаемая компания"];
       return `<div class="deal-plate"><span class="label">Структура сделки</span>
         <div class="dp-row">
-          <div class="dp-party"><span class="dp-role">Покупатель</span><a class="dp-name" href="#/companies/${d.buyer}">${buyerName}</a></div>
+          ${party(roles[0], d.buyer, buyerName)}
           <div class="dp-link">${share?`<span class="dp-share num">${share}</span>`:""}<span class="dp-arrow"></span>${sum?`<span class="dp-sum num">${sum}</span>`:""}</div>
-          <div class="dp-party"><span class="dp-role">Приобретаемая компания</span><a class="dp-name" href="#/companies/${d.target}">${targetName}</a></div>
+          ${party(roles[1], d.target, targetName)}
         </div></div>`;
     };
 
@@ -1571,7 +1644,11 @@ function renderAnalytics(){
   ];
   const byYear = {};
   all.forEach(x=>{const y=x.date==="unknown"?"н/д":x.date.slice(0,4); byYear[y]=(byYear[y]||0)+1;});
-  const years = Object.entries(byYear).filter(([y])=>y!=="н/д"&&y>="2023").sort((a,b)=>a[0].localeCompare(b[0]));
+  const MIN_YEAR_N = 100; // год попадает в график, только если записей достаточно для честной динамики
+  const yearsAll = Object.entries(byYear).filter(([y])=>y!=="н/д").sort((a,b)=>a[0].localeCompare(b[0]));
+  const years = yearsAll.filter(([,n])=>n>=MIN_YEAR_N);
+  const yearsThin = yearsAll.filter(([,n])=>n<MIN_YEAR_N);
+  const thinNote = yearsThin.length?`${yearsThin[0][0]}–${yearsThin[yearsThin.length-1][0]} в базе фрагментарно (${yearsThin.reduce((s,[,n])=>s+n,0)} записей суммарно) — в график не включены, чтобы не выдавать неполноту базы за динамику рынка.`:"";
   const maxY = Math.max(...years.map(([,n])=>n));
   const byInd = {};
   all.forEach(x=>{if(x.ind)byInd[x.ind]=(byInd[x.ind]||0)+1;});
@@ -1587,12 +1664,12 @@ function renderAnalytics(){
   <div class="an-grid">
     <div class="an-card reveal">
       <span class="label">Сделок по годам</span>
-      ${years.map(([y,n])=>`<div class="an-row"><span class="an-key num">${y}</span><div class="an-bar"><div style="width:${Math.round(n/maxY*100)}%"></div></div><span class="an-val num">${n}</span></div>`).join("")}
-      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">С 2023 года — период системного наполнения базы; более ранние записи фрагментарны и в график не включены.</p>
+      ${years.map(([y,n],ri)=>`<div class="an-row"><span class="an-key num">${y}</span><div class="an-bar"><div style="width:${Math.round(n/maxY*100)}%;animation-delay:${ri*70}ms"></div></div><span class="an-val num">${n}</span></div>`).join("")}
+      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">${thinNote}</p>
     </div>
     <div class="an-card reveal">
       <span class="label">Топ-10 отраслей</span>
-      ${topInd.map(([i,n])=>`<div class="an-row"><span class="an-key">${i}</span><div class="an-bar"><div style="width:${Math.round(n/maxI*100)}%"></div></div><span class="an-val num">${n}</span></div>`).join("")}
+      ${topInd.map(([i,n],ri)=>`<div class="an-row"><span class="an-key">${i}</span><div class="an-bar"><div style="width:${Math.round(n/maxI*100)}%;animation-delay:${ri*70}ms"></div></div><span class="an-val num">${n}</span></div>`).join("")}
     </div>
     <div class="an-card reveal">
       <span class="label">Крупнейшие сделки по раскрытой сумме</span>
