@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0A1210">
-<title>Реестр — сделки и компании российского рынка</title>
+<title>КОМПАС — сделки и компании российского рынка M&A</title>
 <meta name="description" content="База сделок M&A российского рынка: 1300+ сделок со ссылками на первоисточники, профили компаний, каталог юридических и инвестиционных консультантов. Каждая сделка — глазами экономиста и юриста.">
-<meta property="og:title" content="Реестр — сделки российского рынка M&A">
+<meta property="og:title" content="КОМПАС — сделки российского рынка M&A">
 <meta property="og:description" content="1300+ сделок с первоисточниками, профили компаний, консультанты Право-300. Двойная линза: экономист и юрист.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
@@ -195,6 +195,8 @@ nav a.on::after,nav a:hover::after{width:100%}
 .firm-inds{margin-top:6px;display:flex;gap:5px;flex-wrap:wrap}
 .related{margin:28px 0;padding:20px 22px;background:#fff;border:1px solid var(--line);border-radius:12px}
 .related>.label{display:block;margin-bottom:8px}
+.spinner{width:26px;height:26px;border:2.5px solid var(--line);border-top-color:var(--accent);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .lens{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);margin-bottom:26px}
 .lens button{padding:11px 24px;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);transition:all .25s var(--ease)}
 .lens button:last-child{border-right:none}
@@ -310,7 +312,7 @@ footer{margin-top:80px;background:linear-gradient(160deg,var(--accent-deep),#0C2
 
 <header class="top">
   <div class="top-in">
-    <a href="#/" class="wordmark">Реестр<span>.</span></a>
+    <a href="#/" class="wordmark">КОМПАС<span>.</span></a>
     <nav id="nav">
       <a href="#/" data-r="deals">Сделки</a>
       <a href="#/companies" data-r="companies">Компании</a>
@@ -327,7 +329,7 @@ footer{margin-top:80px;background:linear-gradient(160deg,var(--accent-deep),#0C2
   <div class="foot-in">
     <div class="foot-grid">
       <div>
-        <div class="foot-brand">Реестр<span>.</span></div>
+        <div class="foot-brand">КОМПАС<span>.</span></div>
         <div class="foot-desc">Сделки, компании и консультанты российского рынка — структурированно, с двойной линзой «экономист / юрист» и ссылками на первоисточники. Демо-версия.</div>
       </div>
       <div class="foot-col">
@@ -693,7 +695,7 @@ function companyDeals(id){
   const structured = DEALS.filter(d=>d.buyer===id||d.target===id);
   const structuredIds = new Set(structured.map(d=>d.id));
   const mentions = [];
-  DEALS.forEach(d=>{ if(!structuredIds.has(d.id) && matchesCompany(d.title, id)) mentions.push({date:d.date,title:d.title,url:"#/deal/"+d.id,source:"Карточка «Реестра»"}); });
+  DEALS.forEach(d=>{ if(!structuredIds.has(d.id) && matchesCompany(d.title, id)) mentions.push({date:d.date,title:d.title,url:"#/deal/"+d.id,source:"Карточка «Компаса»"}); });
   MINI_DEALS.forEach(m=>{ if(matchesCompany(m.title, id)) mentions.push({date:m.date,title:m.title,url:m.src[1],source:m.src[0]}); });
   CHANNEL_DEALS.forEach(c=>{ if(matchesCompany(c.title, id)) mentions.push({date:c.date,title:c.title,url:c.src[1],source:c.src[0]}); });
   BULK_DEALS.forEach(b=>{ if(matchesCompany(b.title, id)) mentions.push({date:b.date,title:b.title,url:(b.src&&b.src[1])||"#",source:(b.src&&b.src[0])||"?"}); });
@@ -734,12 +736,27 @@ async function loadBulkDeals(){
   bulkLoaded = true;
   // Страховка от дублей: компактная запись скрывается, если полная карточка
   // того же года пересекается с ней по >=3 значимым словам заголовка
-  const DSTOP = new Set(["ооо","пао","компания","группа","доля","долей","акций","сделка","бизнес","приобрел","приобрела","купил","купила","может","купить","продал","продала","россии","покупает","инвестирует"]);
-  const dtoks = t => new Set((t||"").toLowerCase().replace(/[«»"'().,:;–—-]/g," ").split(/\s+/).filter(w=>w.length>3&&!DSTOP.has(w)));
-  const fullIdx = DEALS.map(d=>({y:(d.date||"").slice(0,4), t:dtoks(d.title)}));
+  const DSTOP = new Set(["ооо","пао","компания","группа","доля","долей","акций","сделка","бизнес","приобрел","приобрела","купил","купила","может","купить","продал","продала","россии","покупает","инвестирует",
+    "структурн","инвестиционн","совместн","предприят","создают","создала","создаёт","организац","группой","инвесторов","залог","закрыт","провел","провёл","получил","заключил","заключила","консолидировал","привлек","привлекла","привлекла","выкупил","выкупила","компании","стороны","участием","рамках"]);
+  const DSTOP_STEMS = new Set([...DSTOP].map(w=>w.slice(0,6)));
+  const dtoks = t => new Set((t||"").replace(/«[^»]{2,40}»/g," ").toLowerCase().replace(/[«»"'().,:;–—-]/g," ").split(/\s+/)
+    .filter(w=>w.length>4).map(w=>w.slice(0,6)).filter(w=>!DSTOP_STEMS.has(w)));
+  const quotedNames = t => new Set([...(t||"").matchAll(/«([^»]{2,40})»/g)].map(m=>m[1].toLowerCase()));
+  const amountOf = t => { const m=(t||"").match(/(\d[\d\s.,]*)\s*(млрд|млн)/i); return m?parseFloat(m[1].replace(/\s/g,"").replace(",","."))*(m[2].toLowerCase()==="млрд"?1000:1):null; };
+  const fullIdx = DEALS.map(d=>({y:(d.date||"").slice(0,4), date:d.date, t:dtoks(d.title), q:quotedNames(d.title), a:amountOf(d.title)}));
+  const daysBetween = (d1,d2) => { const a=Date.parse(d1),b=Date.parse(d2); return (isNaN(a)||isNaN(b))?9999:Math.abs(a-b)/86400000; };
   const isDup = rec => {
-    const y=(rec.date||"").slice(0,4), t=dtoks(rec.title);
-    return fullIdx.some(f=>f.y===y && [...t].filter(w=>f.t.has(w)).length>=3);
+    const y=(rec.date||"").slice(0,4), t=dtoks(rec.title), q=quotedNames(rec.title), a=amountOf(rec.title);
+    return fullIdx.some(f=>{
+      if(f.y!==y) return false;
+      // порог 5 (не 3), слова из «кавычек» дедуп-функция dtoks уже не считает (см. ниже),
+      // плюс проверка близости дат — иначе разные сделки одних сторон в разное
+      // время рискуют слиться (пример: две разные SPO HeadHunter в 2020 и 2021)
+      if(daysBetween(rec.date,f.date)<=90 && [...t].filter(w=>f.t.has(w)).length>=5) return true;
+      const sharedName = [...q].some(n=>f.q.has(n));
+      if(sharedName && a!=null && f.a!=null && Math.abs(a-f.a)/Math.max(a,f.a) < 0.05 && daysBetween(rec.date,f.date)<=45) return true;
+      return false;
+    });
   };
   const beforeCnt = MINI_DEALS.length+CHANNEL_DEALS.length+BULK_DEALS.length;
   MINI_DEALS = MINI_DEALS.filter(m=>!isDup(m));
@@ -841,7 +858,7 @@ async function aiAnswer(q, mode){
 
 const modeToggleHtml = light => `
   <div class="mode ${light?"light":""}" data-mode-toggle>
-    <button data-m="base" class="${aiMode==="base"?"on":""}">По базе Реестра</button>
+    <button data-m="base" class="${aiMode==="base"?"on":""}">По базе Компаса</button>
     <button data-m="web" class="${aiMode==="web"?"on":""}">По всему интернету</button>
   </div>`;
 function bindModeToggles(scope){
@@ -1048,7 +1065,7 @@ function renderDeals(){
       <div class="hs-in">
         <div class="kicker">Задайте вопрос</div>
         <h1>Ассистент — <em>спросите базу</em> обычным языком</h1>
-        <p>Кто сопровождал сделку? Какая крупнейшая в фарме? Ищет по базе «Реестра» или по всему интернету.</p>
+        <p>Кто сопровождал сделку? Какая крупнейшая в фарме? Ищет по базе «Компаса» или по всему интернету.</p>
         <div class="aisearch">
           <input id="heroq" placeholder="Спросите: кто сопровождал сделки? какая самая крупная?" aria-label="Вопрос ассистенту">
           <button id="herogo">Спросить ИИ</button>
@@ -1079,13 +1096,14 @@ function renderDeals(){
       <select id="selfmt"><option ${!onlyFull?"selected":""}>Все записи</option><option ${onlyFull?"selected":""}>Только с подробной карточкой</option></select>
     </label>
   </div>
+  ${!bulkLoaded?`<div class="reveal" style="text-align:center;padding:60px 0;color:var(--muted)"><div class="spinner"></div>Загружаем базу сделок…</div>`:`
   ${shown.join("")}
   ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
-  ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}
+  ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}`}
   <div class="cta reveal">
     <div>
       <h3>Не нашли сделку в базе?</h3>
-      <p>Спросите ассистента — он ищет по базе «Реестра» или по всему интернету: сайты юрфирм, консультантов, деловые СМИ.</p>
+      <p>Спросите ассистента — он ищет по базе «Компаса» или по всему интернету: сайты юрфирм, консультантов, деловые СМИ.</p>
     </div>
     <a href="#/assistant">Спросить ИИ</a>
   </div>`;
@@ -1178,9 +1196,23 @@ const miniAIHtml = ph => `
 
 /* ================= КАРТОЧКА СДЕЛКИ ================= */
 let lens = "overview";
+const KIND_LABELS = {
+  acquisition: {a:"Покупатель",b:"Цель",empty:"Покупатель не раскрыт",arrow:true},
+  jv:          {a:"Участник СП",b:"Участник СП",empty:"Стороны не раскрыты",arrow:false},
+  financing:   {a:"Организатор / инвестор",b:"Получатель",empty:"Стороны не раскрыты",arrow:true},
+  ipo:         {a:"Эмитент",b:null,empty:"Эмитент не раскрыт",arrow:false},
+};
+function dealKindOf(typeStr){
+  const t = (typeStr||"").toLowerCase();
+  if(t.includes("ipo")) return "ipo";
+  if(/\bсп\b|совместн|greenfield|joint venture/.test(t)) return "jv";
+  if(/финансирован|деконсолидац|структурн\w* сделк|кредитн|рефинансирован|венчурн|раунд|\bseed\b/.test(t)) return "financing";
+  return "acquisition";
+}
 function renderDeal(id){
   const d = DEALS.find(x=>x.id===id); if(!d){renderDeals();return;}
   lens = "overview";
+  const kind = KIND_LABELS[d.kind || dealKindOf(d.type)] || KIND_LABELS.acquisition;
   const buyerName = d.buyer && co(d.buyer) ? co(d.buyer).name : null;
   const targetName = d.target && co(d.target) ? co(d.target).name : null;
   app.innerHTML = `
@@ -1192,8 +1224,8 @@ function renderDeal(id){
       <span class="tag">${d.ind}</span>
     </div>
     <div class="deal-parties-strong reveal">
-      ${d.buyer&&buyerName?`<a href="#/companies/${d.buyer}">${buyerName}</a>`:`<span style="color:var(--muted)">Покупатель не раскрыт</span>`}
-      ${targetName?`<span class="arrow">→</span><a href="#/companies/${d.target}">${targetName}</a>`:""}
+      ${buyerName?`<a href="#/companies/${d.buyer}">${buyerName}</a>`:(targetName?"":`<span style="color:var(--muted)">${kind.empty}</span>`)}
+      ${targetName?`${buyerName&&kind.arrow?`<span class="arrow">→</span>`:(buyerName?`<span style="color:var(--muted);font-weight:400;font-size:16px">и</span>`:"")}<a href="#/companies/${d.target}">${targetName}</a>`:""}
     </div>
     <h1>${d.title}</h1>
     <div class="d-parties"><span>Тип: <b>${d.type}</b></span></div>
@@ -1383,7 +1415,7 @@ function renderFirm(id){
     </div>
   </div>
   <div class="facts reveal" style="margin-bottom:30px">
-    <div class="fact"><span class="label">Сделок в базе «Реестра»</span><div class="val big num">${full.length+mini.length+bulk.length}</div></div>
+    <div class="fact"><span class="label">Сделок в базе «Компаса»</span><div class="val big num">${full.length+mini.length+bulk.length}</div></div>
     <div class="fact wide" style="display:flex;align-items:center"><span style="color:var(--muted);font-size:13px">Только сделки, известные из публичных источников (прежде всего — публикаций самой фирмы). Фирмы раскрывают не все проекты: список заведомо неполный и не отражает объём практики.</span></div>
   </div>
   ${full.map(d=>{
@@ -1444,7 +1476,7 @@ function renderAnalytics(){
   DEALS.forEach(d=>{statuses[d.status]=(statuses[d.status]||0)+1;});
   const firmRank = FIRMS.map(f=>({id:f.id,n:f.n,c:firmCount(f.id)})).filter(f=>f.c>0).sort((a,b)=>b.c-a.c).slice(0,10);
   app.innerHTML = `
-  <div class="sec-head reveal"><span class="label">Обзор рынка</span><h1>Аналитика</h1><p>Структура базы «Реестра»: ${TOTAL_DEALS()} сделок из публичных источников. Не является исчерпывающей статистикой рынка — только то, что попало в базу.</p></div>
+  <div class="sec-head reveal"><span class="label">Обзор рынка</span><h1>Аналитика</h1><p>Структура базы «Компаса»: ${TOTAL_DEALS()} сделок из публичных источников. Не является исчерпывающей статистикой рынка — только то, что попало в базу.</p></div>
   <div class="an-grid">
     <div class="an-card reveal">
       <span class="label">Сделок по годам</span>
@@ -1463,7 +1495,7 @@ function renderAnalytics(){
     <div class="an-card reveal">
       <span class="label">Самые активные консультанты в базе</span>
       ${firmRank.map((f,i)=>`<a class="an-deal" href="#/advisors/${f.id}"><span class="num" style="color:var(--muted)">${i+1}.</span> <span class="an-deal-t">${f.n}</span><span class="an-deal-s num">${f.c} сдел${f.c===1?"ка":f.c<5?"ки":"ок"}</span></a>`).join("")}
-      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">По публичным данным в базе «Реестра». Фирмы раскрывают не все проекты — это не рейтинг и не полная картина практик.</p>
+      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">По публичным данным в базе «Компаса». Фирмы раскрывают не все проекты — это не рейтинг и не полная картина практик.</p>
     </div>
     <div class="an-card reveal">
       <span class="label">Статусы детальных карточек</span>
@@ -1475,7 +1507,7 @@ function renderAnalytics(){
 function renderAssistant(){
   app.innerHTML = `
   <div class="chat">
-    <div class="sec-head reveal"><span class="label">ИИ-поиск</span><h1>Ассистент</h1><p>Два режима: строго по базе «Реестра» — или по всему интернету (сайты юрфирм, консультантов, деловые СМИ) с обязательными ссылками на источники.</p></div>
+    <div class="sec-head reveal"><span class="label">ИИ-поиск</span><h1>Ассистент</h1><p>Два режима: строго по базе «Компаса» — или по всему интернету (сайты юрфирм, консультантов, деловые СМИ) с обязательными ссылками на источники.</p></div>
     <div style="margin-bottom:16px" class="reveal">${modeToggleHtml(true)}</div>
     <div class="chat-box reveal" id="chatbox">
       <div class="msg ai">Задайте вопрос о сделках, компаниях или консультантах. Переключатель выше задаёт, где искать.</div>

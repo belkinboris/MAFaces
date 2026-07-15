@@ -30,8 +30,8 @@ STOP = {"ооо", "ао", "пао", "гк", "компания", "группа", 
 
 
 def toks(t):
-    return {w for w in re.sub(r"[«»\"'().,:;–—-]", " ", (t or "").lower()).split()
-            if len(w) > 3 and w not in STOP}
+    return {w[:6] for w in re.sub(r"[«»\"'().,:;–—-]", " ", (t or "").lower()).split()
+            if len(w) > 4 and w not in STOP}
 
 
 def parse_amount(text_for_amount, full_context, title=""):

@@ -116,7 +116,28 @@ def detect_type(title, role):
     if re.search(r"совместн\w+ предприят|созда\w+ сп\b", t): return "M&A · создание СП"
     if re.search(r"банкрот|аукцион|торг", t): return "Продажа с торгов"
     if re.search(r"венчурн|инвестиro|раунд", t): return "Венчурная инвестиция"
+    if re.search(r"структурн\w+ (инвестицион\w+ )?сделк|под залог акци|привлек\w+ финансирован|"
+                 r"кредитн\w+ лини|деконсолидац|рефинансирован", t):
+        return "Финансирование · структурная сделка"
     return "M&A"
+
+
+# Категория определяет, как рисуется шапка карточки: у M&A есть покупатель/цель,
+# у финансирования/СП/IPO таких ролей структурно нет — не натягиваем чужую схему.
+# Классификатор по ключевым словам (не жёсткий список) — типы формулируются
+# очень по-разному («Выкуп у иностранного владельца», «Greenfield · СП», MBO...),
+# и жёсткий словарь неизбежно отстаёт от реальных формулировок.
+def deal_kind(type_str):
+    t = (type_str or "").lower()
+    if "ipo" in t:
+        return "ipo"
+    if re.search(r"\bсп\b|совместн|greenfield|joint venture", t):
+        return "jv"
+    if re.search(r"финансирован|деконсолидац|структурн\w* сделк|кредитн|рефинансирован|венчурн|раунд|\bseed\b", t):
+        return "financing"
+    # выкуп (в т.ч. MBO, у иностранного владельца, торги/аукцион/банкротство) —
+    # это всё равно приобретение с понятным покупателем, буквальная схема M&A
+    return "acquisition"
 
 
 ESTIMATE_WORDS = re.compile(r"оценк|аналит|эксперт|возможн|стартов|начальн|по некоторым данным|не раскрыв|предполож|ориентировочн", re.I)
@@ -239,13 +260,15 @@ def main():
         share_hint = extract_first(SHARE_HINTS, extra, role)
         target_fin_hint = extract_first(TARGET_FIN_HINTS, extra, role)
 
+        deal_type = detect_type(r.get("title", ""), role)
         deals.append({
             "id": slug(r.get("source_url") or r.get("title", "")),
             "date": norm_date(r.get("date", "")),
             "title": r.get("title", "").strip(),
             "buyer": buyer_id, "target": target_id,
             "ind": ind,
-            "type": detect_type(r.get("title", ""), role),
+            "type": deal_type,
+            "kind": deal_kind(deal_type),
             "status": resolve_status(r.get("status_hint"), r.get("title", ""), full_text),
             "sum": short_sum(r.get("sum")),
             "eco": {
@@ -271,22 +294,71 @@ def main():
 
     out = {"deals": deals, "companies": companies, "match_keys": match_keys, "consumed_urls": consumed}
 
-    # Слияние пар «слух + закрытие» одной сделки: если у двух карточек пересечение
-    # значимых слов заголовка >= 3 и одна «Закрыта», а другая «Обсуждается» — оставляем
-    # закрытую, источники слуха переносим в неё.
-    STOP = {"ооо","ао","пао","гк","компания","группа","доля","долей","акций","сделка","бизнес","приобрел","приобрела","купил","купила","может","купить","продал","продала","россии"}
+    # Слияние дублей одной сделки из разных источников. Раньше ловились только
+    # пары «слух + закрытие» — этого недостаточно: несколько независимых статей
+    # про уже ЗАКРЫТУЮ сделку (оба «Закрыта») тоже дают дубли, и старая логика
+    # их пропускала. Теперь два сигнала (как и на сайте):
+    #  1) много общих слов-стеблей в заголовке (>=3)
+    #  2) общее имя в кавычках + похожая сумма + близкие даты (<=45 дней) —
+    #     страхует от словоформ («сделку»/«сделка»), но требует близости дат,
+    #     чтобы НЕ слить две РАЗНЫЕ сделки одних и тех же сторон в разное время
+    #     (напр. «А купила у Б» в январе и «А продала Б» в июле — не дубль).
+    STOP = {"ооо","ао","пао","гк","компания","группа","доля","долей","акций","сделка","бизнес",
+            "приобрел","приобрела","купил","купила","может","купить","продал","продала","россии",
+            "структурн","инвестиционн","совместн","предприят","создают","создала","создаёт",
+            "организац","группой","инвесторов","залог","закрыт","провел","провёл","получил",
+            "заключил","заключила","консолидировал","привлек","привлекла","выкупил","выкупила",
+            "компании","стороны","участием","рамках"}
     def toks(t):
-        return {w for w in re.sub(r"[«»\"'().,–—-]"," ",t.lower()).split() if len(w)>3 and w not in STOP}
+        without_quoted = QUOTED_STRIP.sub(" ", t)
+        return {w[:6] for w in re.sub(r"[«»\"'().,–—-]"," ",without_quoted.lower()).split() if len(w)>4 and w not in STOP}
+    QUOTED_STRIP = re.compile(r"«[^»]{2,40}»")
+    QUOTED = re.compile(r"«([^»]{2,40})»")
+    def quoted_names(t):
+        return {m.lower() for m in QUOTED.findall(t or "")}
+    def amount_of(t):
+        m = re.search(r"(\d[\d\s.,]*)\s*(млрд|млн)", t or "", re.I)
+        if not m: return None
+        val = float(m.group(1).replace(" ", "").replace(",", "."))
+        return val * (1000 if m.group(2).lower() == "млрд" else 1)
+    def days_between(d1, d2):
+        try:
+            from datetime import date
+            a = date.fromisoformat(d1); b = date.fromisoformat(d2)
+            return abs((a - b).days)
+        except (ValueError, TypeError):
+            return 9999
+
+    def is_dup(a, b):
+        # порог 5 (не 3) и слова из «кавычек» не считаются — общее название компании
+        # само по себе не значит одну и ту же сделку (может быть двух РАЗНЫХ);
+        # плюс проверка дат для ОБОИХ сигналов — иначе рискуем слить две разные
+        # сделки одних и тех же сторон, разнесённые по времени.
+        close_in_time = days_between(a["date"], b["date"]) <= 90
+        if close_in_time and len(toks(a["title"]) & toks(b["title"])) >= 5:
+            return True
+        shared_name = quoted_names(a["title"]) & quoted_names(b["title"])
+        amt_a, amt_b = amount_of(a["title"]), amount_of(b["title"])
+        if shared_name and amt_a and amt_b and abs(amt_a - amt_b) / max(amt_a, amt_b) < 0.05 \
+                and days_between(a["date"], b["date"]) <= 45:
+            return True
+        return False
+
+    def richness(d):
+        """Чем богаче карточка (источники + названный консультант), тем выше приоритет остаться."""
+        has_adv = 1 if d["law"]["adv"] and d["law"]["adv"][0][1] not in ("Не раскрывались",) else 0
+        return (has_adv, len(d.get("src", [])))
+
     drop = set()
     for i, a in enumerate(deals):
         for j, b in enumerate(deals):
             if i >= j or i in drop or j in drop: continue
-            if len(toks(a["title"]) & toks(b["title"])) >= 3:
-                closed, rumor = (a, b) if a["status"]=="Закрыта" else (b, a) if b["status"]=="Закрыта" else (None, None)
-                if closed and rumor and rumor["status"]=="Обсуждается":
-                    seen = {s[1] for s in closed["src"]}
-                    closed["src"] += [s for s in rumor["src"] if s[1] not in seen][:2]
-                    drop.add(deals.index(rumor))
+            if is_dup(a, b):
+                # оставляем более богатую карточку, источники второй переносим в неё
+                keep, lose = (a, b) if richness(a) >= richness(b) else (b, a)
+                seen = {s[1] for s in keep["src"]}
+                keep["src"] += [s for s in lose["src"] if s[1] not in seen]
+                drop.add(deals.index(lose))
     if drop:
         merged_titles = [deals[k]["title"][:60] for k in sorted(drop)]
         deals = [d for k, d in enumerate(deals) if k not in drop]
