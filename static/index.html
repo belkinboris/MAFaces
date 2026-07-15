@@ -197,6 +197,11 @@ nav a.on::after,nav a:hover::after{width:100%}
 .related>.label{display:block;margin-bottom:8px}
 .spinner{width:26px;height:26px;border:2.5px solid var(--line);border-top-color:var(--accent);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.kind-badge{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-right:6px}
+.badge-credit{background:#E4EBF2;color:#3A5A85}
+.badge-financing{background:#E1EFE6;color:#2E6E47}
+.badge-jv{background:#F2E9D8;color:#8A6423}
+.badge-ipo{background:#EFE3F2;color:#7A3A8A}
 .lens{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);margin-bottom:26px}
 .lens button{padding:11px 24px;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);transition:all .25s var(--ease)}
 .lens button:last-child{border-right:none}
@@ -222,6 +227,48 @@ nav a.on::after,nav a:hover::after{width:100%}
 .narrative .label{margin-bottom:9px}
 .narrative p{font-size:15px;line-height:1.68;color:var(--ink);margin:0}
 .adv-card{border-left:2.5px solid var(--bronze,#A3814E);padding:4px 0 4px 18px;margin-bottom:22px;animation:fadeUp .45s var(--ease)}
+
+/* ---------- плашка структуры сделки ---------- */
+.deal-plate{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px 24px;margin-bottom:28px;animation:fadeUp .45s var(--ease)}
+.deal-plate .label{display:block;margin-bottom:18px}
+.dp-row{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+.dp-party{flex:1;min-width:150px;padding:16px 18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
+.dp-party .dp-role{font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.dp-party .dp-name{font-family:var(--f-display);font-size:17px;line-height:1.25;color:var(--ink)}
+.dp-party a.dp-name:hover{color:var(--accent)}
+.dp-link{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;min-width:120px}
+.dp-link .dp-share{font-weight:600;font-size:12.5px;color:var(--accent);white-space:nowrap}
+.dp-link .dp-arrow{width:100%;height:2px;background:var(--accent);position:relative;margin:7px 0;min-width:70px}
+.dp-link .dp-arrow:after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:var(--accent)}
+.dp-link .dp-sum{font-size:12px;color:var(--muted);white-space:nowrap}
+@media(max-width:560px){.dp-row{flex-direction:column}.dp-link{padding:14px 0;min-width:0}.dp-link .dp-arrow{transform:rotate(90deg);min-width:44px;margin:16px 0}}
+
+/* ---------- команда сделки ---------- */
+.team{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:28px;animation:fadeUp .5s var(--ease)}
+.team>.label{display:block;margin-bottom:16px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px}
+.team-col .team-kind{font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);display:block;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--line-soft)}
+.team-item{padding:7px 0;border-bottom:1px dashed var(--line-soft)}
+.team-item:last-child{border-bottom:none}
+.team-item .t-firm{font-weight:600;font-size:14px;color:var(--ink)}
+.team-item .t-side{font-size:12px;color:var(--muted);margin-top:1px}
+.team-note{font-size:11.5px;color:var(--muted);margin-top:14px;padding-top:10px;border-top:1px solid var(--line-soft)}
+
+/* ---------- цепочка владения ---------- */
+.own{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:28px;animation:fadeUp .5s var(--ease)}
+.own>.label{display:block;margin-bottom:4px}
+.own-asof{font-size:11.5px;color:var(--muted);margin-bottom:16px}
+.own-chain{position:relative;padding-left:22px}
+.own-chain:before{content:"";position:absolute;left:7px;top:10px;bottom:12px;width:2px;background:var(--line)}
+.own-node{position:relative;padding:8px 0 8px 14px}
+.own-node:before{content:"";position:absolute;left:-19px;top:16px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--card)}
+.own-node.opaque:before{background:var(--card);border:2px solid var(--bronze)}
+.own-node .o-name{font-weight:600;font-size:14px}
+.own-node .o-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.own-node .o-share{color:var(--accent);font-weight:600}
+.own-node.opaque .o-name{color:var(--bronze)}
+.own-conflict{margin-top:14px;padding:10px 14px;background:var(--bronze-soft);border-left:2.5px solid var(--bronze);font-size:12.5px;border-radius:0 var(--radius) var(--radius) 0}
+.own-src{font-size:11.5px;color:var(--muted);margin-top:12px}
 .adv-card .label{margin-bottom:6px}
 .adv-card .adv-name{font-family:var(--f-display);font-size:19px;color:var(--ink);margin-bottom:6px}
 .adv-card p{font-size:13.5px;line-height:1.6;color:var(--muted);margin:0;max-width:600px}
@@ -721,11 +768,11 @@ let bulkLoaded = false;
 async function loadBulkDeals(){
   if(bulkLoaded) return;
   try{
-    const r = await fetch("static/data/bulk_deals.json");
+    const r = await fetch("static/data/bulk_deals.json?v=20260716");
     if(r.ok){ BULK_DEALS = await r.json(); }
   }catch(e){ console.warn("bulk_deals.json недоступен:", e); }
   try{
-    const r2 = await fetch("static/data/deals_promoted.json");
+    const r2 = await fetch("static/data/deals_promoted.json?v=20260716");
     if(r2.ok){
       const j = await r2.json();
       DEALS.push(...(j.deals||[]));
@@ -978,13 +1025,24 @@ let feedYear = "Все";
 let advOpen = false;
 const PAGE_SIZE = 40;
 
+const KIND_BADGE_META = {
+  acquisition: null, // самый частый тип — не выделяем отдельно, чтобы не шуметь
+  credit:      {label:"Кредит", cls:"badge-credit"},
+  financing:   {label:"Инвестиция", cls:"badge-financing"},
+  jv:          {label:"СП", cls:"badge-jv"},
+  ipo:         {label:"IPO", cls:"badge-ipo"},
+};
+function kindBadge(kind){
+  const meta = KIND_BADGE_META[kind || dealKindOf("")];
+  return meta ? `<span class="kind-badge ${meta.cls}">${meta.label}</span>` : "";
+}
 function unifiedFeed(){
   const rowHtml = {
     full: d => `
     <a class="deal-row reveal" href="#/deal/${d.id}">
       <div><span class="label num">${fmtDate(d.date)}</span><br><span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span></div>
       <div><div class="deal-title">${d.title}</div><div class="deal-sub">${d.type}</div></div>
-      <div class="deal-meta"><div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div><span class="tag">${d.ind}</span></div>
+      <div class="deal-meta">${kindBadge(d.kind)}<div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div><span class="tag">${d.ind}</span></div>
     </a>`,
     mini: m => `
     <a class="deal-row mini reveal" href="${m.src[1]}" target="_blank" rel="noopener">
@@ -1199,14 +1257,16 @@ let lens = "overview";
 const KIND_LABELS = {
   acquisition: {a:"Покупатель",b:"Цель",empty:"Покупатель не раскрыт",arrow:true},
   jv:          {a:"Участник СП",b:"Участник СП",empty:"Стороны не раскрыты",arrow:false},
-  financing:   {a:"Организатор / инвестор",b:"Получатель",empty:"Стороны не раскрыты",arrow:true},
+  financing:   {a:"Инвестор",b:"Получатель инвестиций",empty:"Стороны не раскрыты",arrow:true},
+  credit:      {a:"Кредитор",b:"Заёмщик",empty:"Стороны не раскрыты",arrow:true},
   ipo:         {a:"Эмитент",b:null,empty:"Эмитент не раскрыт",arrow:false},
 };
 function dealKindOf(typeStr){
   const t = (typeStr||"").toLowerCase();
   if(t.includes("ipo")) return "ipo";
   if(/\bсп\b|совместн|greenfield|joint venture/.test(t)) return "jv";
-  if(/финансирован|деконсолидац|структурн\w* сделк|кредитн|рефинансирован|венчурн|раунд|\bseed\b/.test(t)) return "financing";
+  if(/кредитн|деконсолидац|структурн\w* сделк|под залог|рефинансирован/.test(t)) return "credit";
+  if(/финансирован|венчурн|раунд|\bseed\b/.test(t)) return "financing";
   return "acquisition";
 }
 function renderDeal(id){
@@ -1222,6 +1282,7 @@ function renderDeal(id){
       <span class="label num">${fmtDate(d.date)}</span>
       <span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span>
       <span class="tag">${d.ind}</span>
+      ${kindBadge(d.kind)}
     </div>
     <div class="deal-parties-strong reveal">
       ${buyerName?`<a href="#/companies/${d.buyer}">${buyerName}</a>`:(targetName?"":`<span style="color:var(--muted)">${kind.empty}</span>`)}
@@ -1249,6 +1310,48 @@ function renderDeal(id){
     const para = (label,val) => has(val) ? `<div class="narrative"><span class="label">${label}</span><p>${val}</p></div>` : "";
     const specBlock = rows => rows.filter(Boolean).length ? `<div class="spec-list">${rows.join("")}</div>` : "";
 
+    /* --- плашка структуры сделки (только когда известны обе стороны) --- */
+    const dealPlate = ()=>{
+      if(!buyerName || !targetName || !kind.arrow) return "";
+      const share = has(d.eco&&d.eco.share) && d.eco.share.length<40 ? d.eco.share : "";
+      const sum = has(d.sum) && !/не раскрыт/i.test(d.sum) ? d.sum : "";
+      return `<div class="deal-plate"><span class="label">Структура сделки</span>
+        <div class="dp-row">
+          <div class="dp-party"><span class="dp-role">Покупатель</span><a class="dp-name" href="#/companies/${d.buyer}">${buyerName}</a></div>
+          <div class="dp-link">${share?`<span class="dp-share num">${share}</span>`:""}<span class="dp-arrow"></span>${sum?`<span class="dp-sum num">${sum}</span>`:""}</div>
+          <div class="dp-party"><span class="dp-role">Приобретаемая компания</span><a class="dp-name" href="#/companies/${d.target}">${targetName}</a></div>
+        </div></div>`;
+    };
+
+    /* --- команда сделки: юридические + финансовые консультанты одним блоком --- */
+    const dealTeam = ()=>{
+      const legal = (d.law&&d.law.adv||[]).filter(a=>a[1] && !/не раскрыв/i.test(a[1]));
+      const fin = has(d.eco&&d.eco.finadv) && !/не привлека|не раскрыв/i.test(d.eco.finadv)
+        ? d.eco.finadv.split(";").map(s=>s.trim()).filter(Boolean) : [];
+      if(!legal.length && !fin.length) return "";
+      const legalHtml = legal.length?`<div class="team-col"><span class="team-kind">Юридические консультанты</span>
+        ${legal.map(a=>`<div class="team-item"><div class="t-firm">${a[1]}</div>${a[0]&&!/сторона не уточнена/i.test(a[0])?`<div class="t-side">${a[0]}</div>`:""}</div>`).join("")}</div>`:"";
+      const finHtml = fin.length?`<div class="team-col"><span class="team-kind">Финансовые консультанты</span>
+        ${fin.map(x=>{const p=x.split("—");return `<div class="team-item"><div class="t-firm">${p[0].trim()}</div>${p[1]?`<div class="t-side">${p.slice(1).join("—").trim()}</div>`:""}</div>`}).join("")}</div>`:"";
+      return `<div class="team"><span class="label">Команда сделки</span><div class="team-grid">${legalHtml}${finHtml}</div>
+        <div class="team-note">По публичным данным: пресс-релизы фирм, раскрытия, деловые СМИ. Полный список сторон мог не раскрываться.</div></div>`;
+    };
+
+    /* --- цепочка владения до бенефициаров (когда собрана для этой сделки) --- */
+    const ownership = ()=>{
+      const o = d.ownership; if(!o || !o.chain || !o.chain.length) return "";
+      return `<div class="own"><span class="label">Цепочка владения${o.company?` · ${o.company}`:""}</span>
+        <div class="own-asof">По состоянию на ${o.as_of||"дату публикации"} · данные могли измениться</div>
+        <div class="own-chain">${o.chain.map(n=>`
+          <div class="own-node${n.opaque?" opaque":""}">
+            <div class="o-name">${n.name}${n.share?` — <span class="o-share num">${n.share}</span>`:""}</div>
+            ${n.inn||n.ogrn||n.note?`<div class="o-meta num">${[n.inn?`ИНН ${n.inn}`:"",n.ogrn?`ОГРН ${n.ogrn}`:"",n.note||""].filter(Boolean).join(" · ")}</div>`:""}
+          </div>`).join("")}</div>
+        ${o.conflict?`<div class="own-conflict">Источники расходятся: ${o.conflict}</div>`:""}
+        ${o.sources&&o.sources.length?`<div class="own-src">Источники: ${o.sources.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(" · ")}</div>`:""}
+      </div>`;
+    };
+
     if(lens==="eco") f.innerHTML = `
       ${hero("Сумма сделки", d.eco.sum)}
       ${specBlock([
@@ -1263,6 +1366,7 @@ function renderDeal(id){
     else if(lens==="law") f.innerHTML = `
       ${para("Структура", d.law.struct)}
       ${specBlock([specRow("Согласования", d.law.appr)])}
+      ${ownership()}
       ${d.law.adv.map(a=>`
         <div class="adv-card">
           <span class="label">${a[0]}</span>
@@ -1272,6 +1376,9 @@ function renderDeal(id){
       ${para("Условия и особенности (из публичных данных)", d.law.terms)}`;
     else f.innerHTML = `
       ${hero("Сумма", d.sum)}
+      ${dealPlate()}
+      ${dealTeam()}
+      ${ownership()}
       ${specBlock([
         specRow("Предмет", d.eco.share),
         specRow("Статус", d.status),
