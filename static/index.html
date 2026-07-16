@@ -730,6 +730,7 @@ const app = document.getElementById("app");
 const co = id => COMPANIES[id];
 const fmtDate = d => d==="unknown" ? "Дата уточняется" : new Date(d).toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"}).replace(" г.","");
 const esc = s => s.replace(/</g,"&lt;");
+const capType = s => s ? s.split("·").map(p=>{const t=p.trim();return t?t.charAt(0).toUpperCase()+t.slice(1):t;}).join(" · ") : s;
 /* счётчики статистики: число набегает от 0 до значения за ~0.9с (ease-out).
    При prefers-reduced-motion просто ставим итоговое число без анимации. */
 function animateCounts(root){
@@ -1083,8 +1084,8 @@ function unifiedFeed(){
     full: d => `
     <a class="deal-row reveal" href="#/deal/${d.id}">
       <div><span class="label num">${fmtDate(d.date)}</span><br><span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span></div>
-      <div><div class="deal-title">${d.title}</div><div class="deal-sub">${d.type}</div></div>
-      <div class="deal-meta">${kindBadge(d.kind)}<div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div><span class="tag">${d.ind}</span></div>
+      <div><div class="deal-title">${d.title}</div><div class="deal-sub">${capType(d.type)}</div></div>
+      <div class="deal-meta"><div class="deal-sum num ${d.sum==="Не раскрыта"?"na":""}">${d.sum}</div><span class="tag">${d.ind}</span></div>
     </a>`,
     mini: m => `
     <a class="deal-row mini reveal" href="${m.src[1]}" target="_blank" rel="noopener">
@@ -1348,14 +1349,13 @@ function renderDeal(id){
       <span class="label num">${fmtDate(d.date)}</span>
       <span class="status ${d.status==="Закрыта"?"closed":""}">${d.status}</span>
       <span class="tag">${d.ind}</span>
-      ${kindBadge(kindKey)}
     </div>
     <div class="deal-parties-strong reveal">
       ${buyerName?`<a href="#/companies/${d.buyer}">${buyerName}</a>`:(targetName?"":`<span style="color:var(--muted)">${kind.empty}</span>`)}
       ${targetName?`${buyerName&&kind.arrow?`<span class="arrow">→</span>`:(buyerName?`<span style="color:var(--muted);font-weight:400;font-size:16px">и</span>`:"")}<a href="#/companies/${d.target}">${targetName}</a>`:""}
     </div>
     <h1>${d.title}</h1>
-    <div class="d-parties"><span>Тип: <b>${d.type}</b></span></div>
+    <div class="d-parties"><span>Тип: <b>${capType(d.type)}</b></span></div>
   </div>
   <div class="lens reveal" role="tablist" aria-label="Линза просмотра">
     <button data-l="overview" class="on">Обзор</button>
