@@ -230,6 +230,8 @@ nav a.on::after,nav a:hover::after{width:100%}
 .narrative .label{margin-bottom:9px}
 .narrative p{font-size:15px;line-height:1.68;color:var(--ink);margin:0}
 .adv-card{border-left:2.5px solid var(--bronze,#A3814E);padding:4px 0 4px 18px;margin-bottom:22px;animation:fadeUp .45s var(--ease)}
+.adv-card.muted{border-left-color:var(--line)}
+.adv-card.muted .adv-name{color:var(--muted);font-weight:400}
 
 /* ---------- плашка структуры сделки ---------- */
 .deal-plate{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px 24px;margin-bottom:28px;animation:fadeUp .45s var(--ease)}
@@ -1067,6 +1069,7 @@ const PAGE_SIZE = 20;
 const KIND_BADGE_META = {
   acquisition: null, // самый частый тип — не выделяем отдельно, чтобы не шуметь
   credit:      {label:"Кредит", cls:"badge-credit"},
+  structured:  {label:"Структурная сделка", cls:"badge-credit"},
   financing:   {label:"Инвестиция", cls:"badge-financing"},
   jv:          {label:"СП", cls:"badge-jv"},
   ipo:         {label:"IPO", cls:"badge-ipo"},
@@ -1308,6 +1311,7 @@ const KIND_LABELS = {
   acquisition: {a:"Покупатель",b:"Цель",empty:"Покупатель не раскрыт",arrow:true},
   jv:          {a:"Участник СП",b:"Участник СП",empty:"Стороны не раскрыты",arrow:false},
   financing:   {a:"Инвестор",b:"Получатель инвестиций",empty:"Стороны не раскрыты",arrow:true},
+  structured:  {a:"Финансирующая сторона",b:"Получатель финансирования",empty:"Стороны не раскрыты",arrow:true},
   credit:      {a:"Кредитор",b:"Заёмщик",empty:"Стороны не раскрыты",arrow:true},
   ipo:         {a:"Эмитент",b:null,empty:"Эмитент не раскрыт",arrow:false},
 };
@@ -1316,8 +1320,15 @@ function dealKindOf(typeStr){
   if(t.includes("ipo")) return "ipo";
   // важно: \b в JS не работает с кириллицей, поэтому границы «СП» проверяем вручную
   if(/(^|[^а-яёa-z])сп($|[^а-яёa-z])|совместн|greenfield|joint venture/.test(t)) return "jv";
-  if(/кредитн|деконсолидац|структурн\w* сделк|под залог|рефинансирован/.test(t)) return "credit";
-  if(/финансирован|венчурн|раунд|\bseed\b/.test(t)) return "financing";
+  // КРЕДИТ — строго: заём/кредитный договор/кредитная линия у банка.
+  // Слово «деконсолидация» кредитом НЕ является: это продажа доли, у которой
+  // деконсолидация долга — цель, а не форма (пример: МТС → БИК → ЗПИФ).
+  if(/кредитн[а-яё]* (договор|лини|соглашен)|синдицированн|(^|[^а-яё])(за[её]м|займ)|кредитован/.test(t)) return "credit";
+  // СТРУКТУРНАЯ сделка — финансирование под залог, репо, форварды и т.п.
+  // Экономически похоже на кредит, но юридически кредитом не является —
+  // честнее отдельная категория (пример: ВТБ/АФК «Система» под залог Ozon)
+  if(/структурн[а-яё]* (сделк|финансирован)|под залог|(^|[^а-яё])репо($|[^а-яё])|форвардн/.test(t)) return "structured";
+  if(/финансирован|венчурн|раунд|\bseed\b|допэмисси/.test(t)) return "financing";
   return "acquisition";
 }
 function renderDeal(id){
@@ -1386,6 +1397,7 @@ function renderDeal(id){
       }
       if(!kind.arrow) return "";
       const roles = kindKey==="credit" ? ["Кредитор","Заёмщик"]
+                  : kindKey==="structured" ? ["Финансирующая сторона","Получатель финансирования"]
                   : kindKey==="financing" ? ["Инвестор","Получатель инвестиций"]
                   : ["Покупатель","Приобретаемая компания"];
       return `<div class="deal-plate"><span class="label">Структура сделки</span>
@@ -1440,12 +1452,16 @@ function renderDeal(id){
       ${para("Структура", d.law.struct)}
       ${specBlock([specRow("Согласования", d.law.appr)])}
       ${ownership()}
-      ${d.law.adv.map(a=>`
-        <div class="adv-card">
-          <span class="label">${a[0]}</span>
-          <div class="adv-name">${a[1]}</div>
-          ${a[2]?`<p>${a[2]}</p>`:""}
-        </div>`).join("")}
+      ${d.law.adv.map(a=>{
+        // заглушка «консультанты не раскрывались» не должна читаться как
+        // «СТОРОНЫ сделки не раскрывались» — подписываем её правильно
+        const isPh = /не раскрыв/i.test(a[1]||"");
+        return `
+        <div class="adv-card${isPh?" muted":""}">
+          <span class="label">${isPh?"Юридические консультанты":a[0]}</span>
+          <div class="adv-name">${isPh?"Публично не раскрывались":a[1]}</div>
+          ${!isPh&&a[2]?`<p>${a[2]}</p>`:""}
+        </div>`;}).join("")}
       ${para("Условия и особенности (из публичных данных)", d.law.terms)}`;
     else f.innerHTML = `
       ${hero("Сумма", d.sum)}
