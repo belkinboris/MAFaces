@@ -928,7 +928,7 @@ function localAnswer(q){
   }
   const hit = DEALS.find(d=>(d.title+" "+d.ind+" "+d.type).toLowerCase().split(/[^а-яa-zё0-9]+/).some(w=>w.length>3&&s.includes(w)));
   if(hit) return `Похоже, вы про ${link(hit)} (${hit.ind}, ${fmtDate(hit.date)}).`;
-  return `В демо-базе ${TOTAL_DEALS()} сделок — точного совпадения нет. Попробуйте: «самая крупная сделка», «кто сопровождал сделки», «выходы иностранцев». С ключом ANTHROPIC_API_KEY доступен полноценный ИИ и режим «По всему интернету».`;
+  return `В демо-базе ${TOTAL_DEALS()} сделок — точного совпадения нет. Попробуйте: «самая крупная сделка», «кто сопровождал сделки», «выходы иностранцев». С ключами Yandex AI Studio доступен полноценный ИИ и режим «По всему интернету».`;
 }
 
 async function aiAnswer(q, mode){
@@ -941,7 +941,7 @@ async function aiAnswer(q, mode){
       .replace(/\[([^\]]+)\]\((https?:[^\)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
       .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
   }catch(e){}
-  if(mode==="web") return "Поиск по интернету включится, когда в Railway → Variables будет задан ANTHROPIC_API_KEY. Пока отвечаю по базе:<br><br>"+localAnswer(q);
+  if(mode==="web") return "Поиск по интернету включится, когда в переменных приложения будут заданы YANDEX_API_KEY и YANDEX_FOLDER_ID. Пока отвечаю по базе:<br><br>"+localAnswer(q);
   return localAnswer(q);
 }
 
