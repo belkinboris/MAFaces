@@ -13,6 +13,7 @@ LLM: DeepSeek 4 Flash через Yandex AI Studio Responses API.
 """
 import logging
 import os
+import re
 
 import httpx
 from fastapi import FastAPI
@@ -20,7 +21,9 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from yandex_search import SearchConfig, SearchError, build_search_block, yandex_search
+from yandex_search import SearchConfig, SearchError, SearchResult, build_search_block, yandex_search
+
+_MD_LINK_RE = re.compile(r"\[[^\]]+\]\(https?://[^)]+\)")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 logger = logging.getLogger("kompas")
@@ -61,6 +64,7 @@ SYSTEM_WEB = """Ты — ассистент платформы «КОМПАС» 
 - Сначала проверь базу; факты из интернета бери ТОЛЬКО из блока выдачи поиска. Не выдумывай ничего сверх этих двух источников.
 - По-русски, кратко, как аналитик для юристов и банкиров.
 - Ссылки на сделки платформы: [название](#/deal/ID). Для фактов из выдачи ОБЯЗАТЕЛЬНО указывай источник ссылкой [название источника](URL) — URL бери из строки «Источник:».
+- Формат обязателен для КАЖДОГО факта из выдачи, без исключений. Пример: «Роснефть выкупила «Саянскхимпласт» за 30,3 млрд ₽ [Интерфакс](https://www.interfax.ru/...).» Факт из выдачи без ссылки сразу после него — ошибка, так делать нельзя.
 - Чётко различай, что из базы «Компаса», а что найдено в сети.
 - Разрешённое форматирование: ссылки [текст](адрес) и выделение **жирным**. Запрещены: заголовки #, списки с - или *, таблицы, код в ```.
 - Никаких вступительных фраз — сразу ответ по существу.
@@ -127,6 +131,13 @@ def call_llm(system: str, user: str, max_tokens: int) -> str:
     raise RuntimeError(f"LLM недоступен после {1 + LLM_RETRIES} попыток: {last_err}")
 
 
+def _sources_footer(results: list[SearchResult]) -> str:
+    """Список источников как markdown-ссылки — гарантия цитирования, даже если модель
+    проигнорировала инструкцию про ссылки в тексте (DeepSeek это делает не всегда)."""
+    lines = "\n".join(f"[{r.title}]({r.url})" for r in results[:5])
+    return f"\n\nИсточники:\n{lines}"
+
+
 @app.post("/api/ask")
 def ask(req: AskRequest):
     if not _yandex_ready():
@@ -135,6 +146,7 @@ def ask(req: AskRequest):
     web = req.mode == "web"
     system = SYSTEM_BASE
     search_block = ""
+    results: list = []
 
     if web:
         try:
@@ -154,6 +166,9 @@ def ask(req: AskRequest):
 
     try:
         text = call_llm(system, user_msg, max_tokens=1400 if search_block else 700)
+        if search_block and not _MD_LINK_RE.search(text):
+            logger.info("web-режим: модель не дала ссылки сама, подставляю источники")
+            text += _sources_footer(results)
         return {"answer": text}
     except RuntimeError as e:
         logger.error("ask() failed: %s", e)
