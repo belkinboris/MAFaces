@@ -3,4 +3,4 @@ __pycache__/
 .env
 nohup.out
 *.db
-pipeline/entity_review_candidates.csv
+pipeline/*review_candidates*.csv

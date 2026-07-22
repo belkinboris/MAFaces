@@ -15,6 +15,7 @@
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 
@@ -175,21 +176,46 @@ def clean_party(p):
     return re.sub(r"\s*\((покупатель|продавец|продавцы|инвестор\w*)\)\s*$", "", p, flags=re.I).strip()
 
 
-def resolve_company(name, new_companies, match_keys, ind):
+LEGAL_FORMS = {"ооо", "зао", "оао", "пао", "ао", "гк", "нко", "ип"}
+
+
+def normalize_name(name):
+    """Тот же принцип, что и в db/migrate_to_db.py: без орг.-правовой формы
+    и пунктуации, схлопнутые пробелы — база для сравнения имён компаний."""
+    s = re.sub(r"[«»\"'().,]", " ", (name or "").lower())
+    tokens = [t for t in s.split() if t not in LEGAL_FORMS]
+    return re.sub(r"\s+", " ", " ".join(tokens)).strip()
+
+
+def resolve_company(name, new_companies, match_keys, ind, review):
+    """Сливаем с существующим профилем только при точном совпадении
+    нормализованного имени. Раньше сливали по одной лишь подстроке
+    (`k in low or low in k`) — из-за этого разные юрлица с похожими именами
+    («Softline» / «Softline Venture Partners») попадали в один профиль.
+    Частичное совпадение теперь не сливает автоматически — компания
+    заводится новая, а пара откладывается в review на ручной пересмотр
+    (тот же принцип, что и для консультантов в migrate_to_db.py)."""
     low = name.lower()
-    for cid, keys in {**EXISTING_KEYS, **match_keys}.items():
-        for k in keys:
-            if k in low or low in k:
-                return cid, False
+    norm = normalize_name(name)
+    all_keys = {**EXISTING_KEYS, **match_keys}
+    for cid, keys in all_keys.items():
+        if any(normalize_name(k) == norm for k in keys):
+            return cid, False
+    if norm:
+        for cid, keys in all_keys.items():
+            for k in keys:
+                nk = normalize_name(k)
+                if len(norm) >= 4 and len(nk) >= 4 and (nk in norm or norm in nk):
+                    review.append((name.strip(), cid))
+                    break
     cid = slug(low)
-    key = re.sub(r"[«»\"']", "", low).strip()
     new_companies[cid] = {
         "name": name,
         "ind": ind,
         "desc": "Профиль сформирован автоматически из данных сделки; уточняется по мере поступления информации.",
         "kpi": ["Профиль", "Автоматический"],
     }
-    match_keys[cid] = [key] if len(key) > 3 else []
+    match_keys[cid] = [norm] if len(norm) > 3 else []
     return cid, True
 
 
@@ -218,7 +244,7 @@ def main():
             and r.get("source_url") not in already]
     print(f"Кандидатов на промоушен: {len(good)}")
 
-    deals, companies, match_keys, consumed = [], {}, {}, []
+    deals, companies, match_keys, consumed, review = [], {}, {}, [], []
     for r in good:
         role = r.get("role", "") or ""
         extra = r.get("extra_details", "") or ""
@@ -232,7 +258,7 @@ def main():
             cp = clean_party(p)
             if not cp or GENERIC_PARTIES.search(cp):
                 continue
-            cid, _ = resolve_company(cp, companies, match_keys, ind)
+            cid, _ = resolve_company(cp, companies, match_keys, ind, review)
             # Только явная метка «покупатель» назначает buyer_id. Без метки —
             # честно кладём в target_id (роль стороны не установлена уверенно,
             # лучше нейтральный "участник", чем ошибочно назвать покупателем).
@@ -374,6 +400,14 @@ def main():
     with_sum = sum(1 for d in deals if d['sum'] != 'Не раскрыта')
     with_adv = sum(1 for d in deals if d['law']['adv'][0][1] != 'Не раскрывались')
     print(f"С суммой: {with_sum}, с консультантом: {with_adv}")
+    print(f"Возможных дублей компаний на ручной пересмотр: {len(review)}")
+    if review:
+        report_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "company_review_candidates.csv")
+        with open(report_path, "w", encoding="utf-8") as f:
+            f.write("новое_имя,похоже_на_id\n")
+            for new_name, existing_cid in review:
+                f.write(f"\"{new_name}\",{existing_cid}\n")
+        print(f"Отчёт: {report_path}")
 
 
 if __name__ == "__main__":
