@@ -1127,9 +1127,32 @@ function unifiedFeed(){
   return filtered.map(it=>rowHtml[it.kind](it.rec));
 }
 
-function renderDeals(){
+// Список сделок рендерится отдельно от остальной страницы (hero-слайдер,
+// строка поиска, панель фильтров): раньше каждый дебаунсенный ввод в поиск
+// перерисовывал весь app.innerHTML целиком, из-за чего переигрывались все
+// .reveal-анимации и сбрасывался hero-слайдер. Теперь поиск/фильтры/«Показать
+// ещё» трогают только #feedlist.
+function feedListHtml(){
   const allRows = unifiedFeed();
   const shown = allRows.slice(0, feedPage*PAGE_SIZE);
+  if(!bulkLoaded) return `<div class="reveal" style="text-align:center;padding:60px 0;color:var(--muted)"><div class="spinner"></div>Загружаем базу сделок…</div>`;
+  return `
+  ${shown.join("")}
+  ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
+  ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}`;
+}
+function bindFeedListEvents(){
+  const lm = document.getElementById("loadmore");
+  if(lm) lm.onclick = ()=>{feedPage++;renderFeedList();};
+}
+function renderFeedList(){
+  const el = document.getElementById("feedlist");
+  if(!el) return;
+  el.innerHTML = feedListHtml();
+  bindFeedListEvents();
+  requestAnimationFrame(()=>el.querySelectorAll(".reveal").forEach(r=>r.classList.add("in")));
+}
+function renderDeals(){
   app.innerHTML = `
   <div class="heroslider">
     <div class="hs-slide on">${HERO_SVG}
@@ -1200,10 +1223,7 @@ function renderDeals(){
       <select id="selfmt"><option ${!onlyFull?"selected":""}>Все записи</option><option ${onlyFull?"selected":""}>Только с подробной карточкой</option></select>
     </label>
   </div>
-  ${!bulkLoaded?`<div class="reveal" style="text-align:center;padding:60px 0;color:var(--muted)"><div class="spinner"></div>Загружаем базу сделок…</div>`:`
-  ${shown.join("")}
-  ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
-  ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}`}
+  <div id="feedlist">${feedListHtml()}</div>
   <div class="cta reveal">
     <div>
       <h3>Не нашли сделку в базе?</h3>
@@ -1211,22 +1231,26 @@ function renderDeals(){
     </div>
     <a href="#/assistant">Спросить ИИ</a>
   </div>`;
-  const lm = document.getElementById("loadmore");
-  if(lm) lm.onclick = ()=>{feedPage++;renderDeals();rerun();};
+  bindFeedListEvents();
   const fq = document.getElementById("feedq");
   if(fq){
     let t=null;
     fq.addEventListener("input", ()=>{
       clearTimeout(t);
-      t=setTimeout(()=>{feedQuery=fq.value;feedPage=1;const pos=fq.selectionStart;renderDeals();rerun();const nfq=document.getElementById("feedq");if(nfq){nfq.focus();nfq.setSelectionRange(pos,pos);}},250);
+      t=setTimeout(()=>{feedQuery=fq.value;feedPage=1;renderFeedList();},250);
     });
-    fq.addEventListener("keydown",e=>{if(e.key==="Enter"){feedQuery=fq.value;feedPage=1;renderDeals();rerun();}});
+    fq.addEventListener("keydown",e=>{if(e.key==="Enter"){feedQuery=fq.value;feedPage=1;renderFeedList();}});
   }
   const fg = document.getElementById("feedgo");
-  if(fg) fg.onclick = ()=>{const el=document.getElementById("feedq");feedQuery=el?el.value:"";feedPage=1;renderDeals();rerun();};
+  if(fg) fg.onclick = ()=>{const el=document.getElementById("feedq");feedQuery=el?el.value:"";feedPage=1;renderFeedList();};
   const at = document.getElementById("advtoggle");
-  if(at) at.onclick = ()=>{advOpen=!advOpen;renderDeals();rerun();};
-  const bindSel = (id, fn) => {const el=document.getElementById(id); if(el) el.onchange=()=>{fn(el.value);feedPage=1;renderDeals();rerun();};};
+  if(at) at.onclick = ()=>{
+    advOpen=!advOpen;
+    at.classList.toggle("on", advOpen);
+    const panel = document.getElementById("advpanel");
+    if(panel) panel.style.display = advOpen ? "" : "none";
+  };
+  const bindSel = (id, fn) => {const el=document.getElementById(id); if(el) el.onchange=()=>{fn(el.value);feedPage=1;renderFeedList();};};
   bindSel("selind", v=>filterInd=v);
   bindSel("selyear", v=>feedYear=v);
   bindSel("selfmt", v=>onlyFull=(v!=="Все записи"));
