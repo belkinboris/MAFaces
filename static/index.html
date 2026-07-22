@@ -111,6 +111,8 @@ nav a.on::after,nav a:hover::after{width:100%}
 .mode button.on{background:var(--ivory);color:var(--accent-deep);border-color:var(--ivory)}
 .mode.light button{border-color:var(--line);color:var(--muted)}
 .mode.light button.on{background:var(--accent-deep);color:var(--ivory);border-color:var(--accent-deep)}
+.mode-note{font-size:11.5px;color:#7E948A;margin-top:9px;max-width:540px;line-height:1.55}
+.mode-note.light{color:var(--muted)}
 .hero-rule{height:1px;background:rgba(243,241,233,.22);margin:40px 0 0;max-width:680px;transform-origin:left;animation:wipe 1.2s var(--ease) .3s both}
 .hero-note{margin-top:14px;font-size:12.5px;color:#7E948A}
 
@@ -454,6 +456,15 @@ const COMPANIES = {
   slhgroup:{name:"SLH Group Limited",ind:"Потребительские товары",desc:"Гонконгский покупатель ювелирного производства и сети «Адамас».",kpi:["Юрисдикция","Гонконг"]},
   adamas:{name:"Адамас (ООО «АДАМАС АЙПИ»)",ind:"Потребительские товары",desc:"Ювелирное производство и розничная сеть с дочерними компаниями в России, Киргизии и Казахстане. До сделки — актив АО «Форум Капитал».",kpi:["География","Россия · Киргизия · Казахстан"]},
   agrostroy:{name:"ООО «Агрострой»",ind:"Недвижимость",desc:"Продавец земельного массива в Новой Москве; покупатель в публичных источниках не назван.",kpi:["Роль в сделке","Продавец"]},
+};
+
+/* ================= ГРУППЫ КОМПАНИЙ (холдинги) =================
+   Не путать с GROUP_LABEL у консультантов (Право-300) — это другая сущность.
+   confidence на company.holding: "disclosed" (подтверждено источником) или
+   "rumored" (по слухам/неподтверждённым данным) — тот же принцип, что и у
+   amount_confidence для сумм сделок: не гарантируем то, что не подтверждено. */
+const HOLDINGS = {
+  arnest:{name:"«Арнест»",desc:"Российский производитель товаров личной гигиены и бытовой химии (аэрозоли, косметика); контролируется Алексеем Сагалом."},
 };
 
 /* ================= ПОЛНЫЕ КАРТОЧКИ СДЕЛОК ================= */
@@ -949,7 +960,8 @@ const modeToggleHtml = light => `
   <div class="mode ${light?"light":""}" data-mode-toggle>
     <button data-m="base" class="${aiMode==="base"?"on":""}">По базе Компаса</button>
     <button data-m="web" class="${aiMode==="web"?"on":""}">По всему интернету</button>
-  </div>`;
+  </div>
+  <p class="mode-note ${light?"light":""}">«По базе» — только источники, которые уже есть на платформе. «По всему интернету» — внешний поиск: точность не гарантируем, сверяйте по ссылке в ответе.</p>`;
 function bindModeToggles(scope){
   (scope||document).querySelectorAll("[data-mode-toggle] button").forEach(b=>b.onclick=()=>{
     aiMode=b.dataset.m;
@@ -1124,9 +1136,32 @@ function unifiedFeed(){
   return filtered.map(it=>rowHtml[it.kind](it.rec));
 }
 
-function renderDeals(){
+// Список сделок рендерится отдельно от остальной страницы (hero-слайдер,
+// строка поиска, панель фильтров): раньше каждый дебаунсенный ввод в поиск
+// перерисовывал весь app.innerHTML целиком, из-за чего переигрывались все
+// .reveal-анимации и сбрасывался hero-слайдер. Теперь поиск/фильтры/«Показать
+// ещё» трогают только #feedlist.
+function feedListHtml(){
   const allRows = unifiedFeed();
   const shown = allRows.slice(0, feedPage*PAGE_SIZE);
+  if(!bulkLoaded) return `<div class="reveal" style="text-align:center;padding:60px 0;color:var(--muted)"><div class="spinner"></div>Загружаем базу сделок…</div>`;
+  return `
+  ${shown.join("")}
+  ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
+  ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}`;
+}
+function bindFeedListEvents(){
+  const lm = document.getElementById("loadmore");
+  if(lm) lm.onclick = ()=>{feedPage++;renderFeedList();};
+}
+function renderFeedList(){
+  const el = document.getElementById("feedlist");
+  if(!el) return;
+  el.innerHTML = feedListHtml();
+  bindFeedListEvents();
+  requestAnimationFrame(()=>el.querySelectorAll(".reveal").forEach(r=>r.classList.add("in")));
+}
+function renderDeals(){
   app.innerHTML = `
   <div class="heroslider">
     <div class="hs-slide on">${HERO_SVG}
@@ -1197,10 +1232,7 @@ function renderDeals(){
       <select id="selfmt"><option ${!onlyFull?"selected":""}>Все записи</option><option ${onlyFull?"selected":""}>Только с подробной карточкой</option></select>
     </label>
   </div>
-  ${!bulkLoaded?`<div class="reveal" style="text-align:center;padding:60px 0;color:var(--muted)"><div class="spinner"></div>Загружаем базу сделок…</div>`:`
-  ${shown.join("")}
-  ${allRows.length?"":`<p class="reveal" style="color:var(--muted)">В этой отрасли сделок в базе пока нет — фильтр честный, ничего не прячем.</p>`}
-  ${allRows.length>shown.length?`<div class="reveal" style="text-align:center;margin:18px 0"><button class="chip" id="loadmore" style="padding:10px 22px">Показать ещё (осталось ${allRows.length-shown.length})</button></div>`:""}`}
+  <div id="feedlist">${feedListHtml()}</div>
   <div class="cta reveal">
     <div>
       <h3>Не нашли сделку в базе?</h3>
@@ -1208,22 +1240,26 @@ function renderDeals(){
     </div>
     <a href="#/assistant">Спросить ИИ</a>
   </div>`;
-  const lm = document.getElementById("loadmore");
-  if(lm) lm.onclick = ()=>{feedPage++;renderDeals();rerun();};
+  bindFeedListEvents();
   const fq = document.getElementById("feedq");
   if(fq){
     let t=null;
     fq.addEventListener("input", ()=>{
       clearTimeout(t);
-      t=setTimeout(()=>{feedQuery=fq.value;feedPage=1;const pos=fq.selectionStart;renderDeals();rerun();const nfq=document.getElementById("feedq");if(nfq){nfq.focus();nfq.setSelectionRange(pos,pos);}},250);
+      t=setTimeout(()=>{feedQuery=fq.value;feedPage=1;renderFeedList();},250);
     });
-    fq.addEventListener("keydown",e=>{if(e.key==="Enter"){feedQuery=fq.value;feedPage=1;renderDeals();rerun();}});
+    fq.addEventListener("keydown",e=>{if(e.key==="Enter"){feedQuery=fq.value;feedPage=1;renderFeedList();}});
   }
   const fg = document.getElementById("feedgo");
-  if(fg) fg.onclick = ()=>{const el=document.getElementById("feedq");feedQuery=el?el.value:"";feedPage=1;renderDeals();rerun();};
+  if(fg) fg.onclick = ()=>{const el=document.getElementById("feedq");feedQuery=el?el.value:"";feedPage=1;renderFeedList();};
   const at = document.getElementById("advtoggle");
-  if(at) at.onclick = ()=>{advOpen=!advOpen;renderDeals();rerun();};
-  const bindSel = (id, fn) => {const el=document.getElementById(id); if(el) el.onchange=()=>{fn(el.value);feedPage=1;renderDeals();rerun();};};
+  if(at) at.onclick = ()=>{
+    advOpen=!advOpen;
+    at.classList.toggle("on", advOpen);
+    const panel = document.getElementById("advpanel");
+    if(panel) panel.style.display = advOpen ? "" : "none";
+  };
+  const bindSel = (id, fn) => {const el=document.getElementById(id); if(el) el.onchange=()=>{fn(el.value);feedPage=1;renderFeedList();};};
   bindSel("selind", v=>filterInd=v);
   bindSel("selyear", v=>feedYear=v);
   bindSel("selfmt", v=>onlyFull=(v!=="Все записи"));
@@ -1505,12 +1541,19 @@ function renderCompany(id){
   const c = co(id); if(!c){renderCompanies();return;}
   const {structured, mentions} = companyDeals(id);
   mentions.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const holding = c.holding && HOLDINGS[c.holding.id];
+  const siblings = holding ? Object.entries(COMPANIES).filter(([sid,s])=>sid!==id && s.holding && s.holding.id===c.holding.id) : [];
   app.innerHTML = `
   <a class="back reveal" href="#/companies">← Все компании</a>
   <div class="d-head reveal">
     <span class="tag">${c.ind}</span>
     <h1>${c.name}</h1>
     <div class="d-parties"><span>${c.desc}</span></div>
+    ${holding?`<div class="d-parties" style="margin-top:8px;font-size:14px">
+      <span class="tag steel">${c.holding.confidence==="rumored"?"По неподтверждённым данным входит в группу":"Входит в группу"} ${holding.name}</span>
+      ${siblings.length?` <span style="color:var(--muted)">· другие карточки группы: ${siblings.map(([sid,s])=>`<a href="#/companies/${sid}">${s.name}</a>`).join(", ")}</span>`:""}
+      ${c.holding.source?` <a href="${c.holding.source[1]}" target="_blank" rel="noopener" style="font-size:12px;color:var(--muted)">(источник: ${c.holding.source[0]} ↗)</a>`:""}
+    </div>`:""}
   </div>
   <div class="facts reveal" style="margin-bottom:36px">
     <div class="fact"><span class="label">${c.kpi[0]}</span><div class="val big num" style="font-size:17px">${c.kpi[1]}</div></div>

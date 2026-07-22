@@ -133,11 +133,11 @@ def test_ask_base_mode(client, monkeypatch):
 
 
 def test_ask_web_mode_with_results(client, monkeypatch):
+    # Модель не дала ссылку сама -> ask() обязан подставить источники
+    # (см. main._sources_footer): это гарантия цитирования, а не опция.
     captured = {}
-    monkeypatch.setattr(
-        main, "yandex_search",
-        lambda q, config=None, client=None: ys.parse_search_xml(XML_OK.encode()),
-    )
+    results = ys.parse_search_xml(XML_OK.encode())
+    monkeypatch.setattr(main, "yandex_search", lambda q, config=None, client=None: results)
 
     def fake_llm(system, user, max_tokens):
         captured.update(system=system, user=user, max_tokens=max_tokens)
@@ -145,10 +145,22 @@ def test_ask_web_mode_with_results(client, monkeypatch):
 
     monkeypatch.setattr(main, "call_llm", fake_llm)
     r = client.post("/api/ask", json={"question": "q", "context": "{}", "mode": "web"})
-    assert r.json() == {"answer": "Ответ с фактами"}
+    assert r.json() == {"answer": "Ответ с фактами" + main._sources_footer(results)}
     assert captured["system"] == main.SYSTEM_WEB
     assert "СВЕЖАЯ ВЫДАЧА ПОИСКА (Яндекс)" in captured["user"]
     assert captured["max_tokens"] == 1400
+
+
+def test_ask_web_mode_model_already_cited_no_footer(client, monkeypatch):
+    # Модель сама вставила markdown-ссылку -> источники повторно не приписываем.
+    monkeypatch.setattr(
+        main, "yandex_search",
+        lambda q, config=None, client=None: ys.parse_search_xml(XML_OK.encode()),
+    )
+    cited = "Ответ с фактами и [ссылкой на источник](https://fresh.example.ru/b)."
+    monkeypatch.setattr(main, "call_llm", lambda s, u, max_tokens: cited)
+    r = client.post("/api/ask", json={"question": "q", "context": "{}", "mode": "web"})
+    assert r.json() == {"answer": cited}
 
 
 def test_ask_web_mode_search_fails_degrades_to_base(client, monkeypatch):
