@@ -60,7 +60,12 @@ EXISTING_KEYS = {
     "ilyinskaya":["ильинская больница"],
 }
 
-GENERIC_PARTIES = re.compile(r"физическ|не указан|неизвестн|не раскрыв|инвестор[ыа]?$|акционер|основател|менеджмент|консорциум|частн", re.I)
+GENERIC_PARTIES = re.compile(r"физическ|не указан|неизвестн|не раскрыв|инвестор[ыа]?$|акционер|основател|менеджмент|консорциум|частн|^кредитор|^банки\b", re.I)
+# Список из нескольких сторон через запятую («Кредиторы: Сбербанк, Т-Банк, ...»)
+# сам по себе не название одной компании — resolve_company() заведёт по нему
+# мусорный профиль. Порог 2 — «А и Б» или «А, Б» ещё может быть одной стороной
+# с двойным названием, три и больше запятых почти всегда перечисление.
+PARTY_LIST_RE = re.compile(r",.*,.*,")
 
 FIN_HINTS = re.compile(r"[^.]*(?:финансирован\w+|кредитн\w+ лини\w+|заёмны[хе] средств|собственных средств|обеспечит\s+финанс|предоставит\s+финанс|кредит[а-я]* (?:сбербанк|банк))[^.]*\.", re.I)
 SHARE_HINTS = re.compile(r"[^.]*\b\d{1,3}(?:[.,]\d+)?\s?%[^.]*\.", re.I)
@@ -202,11 +207,11 @@ def main():
         ind_raw = r.get("industry", "")
         ind = ind_raw if ind_raw in INDUSTRIES else IND_FALLBACK.get(ind_raw, ind_raw or "Инвестиции и рынок ЦБ")
 
-        parties = [clean_party(p) for p in (r.get("parties") or []) if p and not GENERIC_PARTIES.search(p)]
+        parties = [clean_party(p) for p in (r.get("parties") or []) if p and not GENERIC_PARTIES.search(p) and not PARTY_LIST_RE.search(p)]
         buyer_id, target_id = None, None
         for i, p in enumerate((r.get("parties") or [])[:4]):
             cp = clean_party(p)
-            if not cp or GENERIC_PARTIES.search(cp):
+            if not cp or GENERIC_PARTIES.search(cp) or PARTY_LIST_RE.search(cp):
                 continue
             cid, _ = resolve_company(cp, companies, match_keys, ind, review)
             if buyer_id is None and ("покупатель" in p.lower() or i == 0):
