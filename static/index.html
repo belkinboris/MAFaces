@@ -458,6 +458,15 @@ const COMPANIES = {
   agrostroy:{name:"ООО «Агрострой»",ind:"Недвижимость",desc:"Продавец земельного массива в Новой Москве; покупатель в публичных источниках не назван.",kpi:["Роль в сделке","Продавец"]},
 };
 
+/* ================= ГРУППЫ КОМПАНИЙ (холдинги) =================
+   Не путать с GROUP_LABEL у консультантов (Право-300) — это другая сущность.
+   confidence на company.holding: "disclosed" (подтверждено источником) или
+   "rumored" (по слухам/неподтверждённым данным) — тот же принцип, что и у
+   amount_confidence для сумм сделок: не гарантируем то, что не подтверждено. */
+const HOLDINGS = {
+  arnest:{name:"«Арнест»",desc:"Российский производитель товаров личной гигиены и бытовой химии (аэрозоли, косметика); контролируется Алексеем Сагалом."},
+};
+
 /* ================= ПОЛНЫЕ КАРТОЧКИ СДЕЛОК ================= */
 let DEALS = [
  {id:"citibank",date:"2026-02-18",title:"«Ренессанс Капитал» покупает российский Ситибанк у Citigroup",buyer:"rencap",target:"citibank",ind:"Банки",type:"Выкуп у иностранного владельца",status:"Закрыта",sum:"Не раскрыта",
@@ -1532,12 +1541,19 @@ function renderCompany(id){
   const c = co(id); if(!c){renderCompanies();return;}
   const {structured, mentions} = companyDeals(id);
   mentions.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const holding = c.holding && HOLDINGS[c.holding.id];
+  const siblings = holding ? Object.entries(COMPANIES).filter(([sid,s])=>sid!==id && s.holding && s.holding.id===c.holding.id) : [];
   app.innerHTML = `
   <a class="back reveal" href="#/companies">← Все компании</a>
   <div class="d-head reveal">
     <span class="tag">${c.ind}</span>
     <h1>${c.name}</h1>
     <div class="d-parties"><span>${c.desc}</span></div>
+    ${holding?`<div class="d-parties" style="margin-top:8px;font-size:14px">
+      <span class="tag steel">${c.holding.confidence==="rumored"?"По неподтверждённым данным входит в группу":"Входит в группу"} ${holding.name}</span>
+      ${siblings.length?` <span style="color:var(--muted)">· другие карточки группы: ${siblings.map(([sid,s])=>`<a href="#/companies/${sid}">${s.name}</a>`).join(", ")}</span>`:""}
+      ${c.holding.source?` <a href="${c.holding.source[1]}" target="_blank" rel="noopener" style="font-size:12px;color:var(--muted)">(источник: ${c.holding.source[0]} ↗)</a>`:""}
+    </div>`:""}
   </div>
   <div class="facts reveal" style="margin-bottom:36px">
     <div class="fact"><span class="label">${c.kpi[0]}</span><div class="val big num" style="font-size:17px">${c.kpi[1]}</div></div>
